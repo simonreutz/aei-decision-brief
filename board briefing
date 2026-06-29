@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Genotwin · Board Briefing Pack · SAP SE · Q3 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0c0e1a;--paper:#f4ecd8;--paper-2:#efe6cf;--ink:#1a1610;--ink-2:#2a2418;--soft:#6b5d3a;--line:#cabf9d;
+    --gold:#9a7b2e;--gold-bright:#c9a44c;--oxblood:#7a2e2e;--moss:#5a6e3a;--burnt:#b3622a;
+    --serif:'Fraunces','Iowan Old Style',Georgia,serif;--sans:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--bg);font-family:var(--sans);color:var(--ink-2);-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--gold-bright);color:var(--ink)}
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--gold-bright);width:0;z-index:50;transition:width .1s}
+  .toc{position:fixed;top:28px;right:28px;z-index:40;background:rgba(12,14,26,.85);backdrop-filter:blur(14px);border:1px solid #252a44;padding:14px 16px;max-width:200px}
+  .toc-l{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#7a8099;margin-bottom:10px}
+  .toc a{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:#c8c2b1;text-decoration:none;padding:4px 0;transition:color .2s}
+  .toc a:hover{color:var(--gold-bright)}
+  @media(max-width:900px){.toc{display:none}}
+
+  .doc{max-width:760px;margin:0 auto;padding:60px 24px 100px}
+  .page{background:var(--paper);color:var(--ink-2);padding:64px 60px;margin-bottom:28px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+  .page::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--gold-bright),var(--oxblood))}
+  .kicker{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin-bottom:18px}
+  .cover{min-height:420px;display:flex;flex-direction:column;justify-content:center}
+  .cover-title{font-family:var(--serif);font-size:clamp(40px,7vw,64px);font-weight:300;color:var(--ink);letter-spacing:-.03em;line-height:1;margin:0 0 16px}
+  .cover-sub{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--soft);margin-bottom:40px}
+  .cover-meta{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);line-height:2;border-top:1px solid var(--line);padding-top:24px}
+  .cover-meta b{color:var(--ink)}
+  h2{font-family:var(--serif);font-size:30px;font-weight:300;color:var(--ink);letter-spacing:-.02em;margin:0 0 8px;line-height:1.1}
+  .rule{height:1px;background:var(--line);margin:22px 0}
+  p{font-size:15px;line-height:1.7;color:var(--ink-2)}
+  .letter{font-family:var(--serif);font-size:16px;line-height:1.8;color:var(--ink-2)}
+  .letter p{font-size:16px;line-height:1.8;margin:0 0 18px}
+  .sign{margin-top:30px;font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink)}
+  .sign small{display:block;font-family:var(--mono);font-style:normal;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);margin-top:5px}
+  .traj{display:flex;align-items:flex-end;gap:30px;margin:30px 0}
+  .traj-svg{flex:1}
+  .traj-now{font-family:var(--serif);font-size:48px;font-weight:300;color:var(--oxblood);line-height:1}
+  .traj-now small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);margin-top:6px}
+  .decision{border:1px solid var(--line);border-left:3px solid var(--oxblood);padding:28px 30px;margin:20px 0;background:rgba(122,46,46,.04)}
+  .decision-tag{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--oxblood);margin-bottom:10px}
+  .decision-name{font-family:var(--serif);font-size:26px;color:var(--ink);letter-spacing:-.02em;margin-bottom:8px}
+  .decision-name em{font-style:italic;color:var(--gold)}
+  .dgrid{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:16px 0}
+  .dcell{flex:1;padding:14px 0;border-right:1px solid var(--line)}
+  .dcell:last-child{border-right:none}
+  .dcell-v{font-family:var(--serif);font-size:24px;color:var(--gold);font-weight:400}
+  .dcell-l{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin-top:5px}
+  .timeline{list-style:none;padding:0;margin:18px 0 0}
+  .timeline li{display:grid;grid-template-columns:90px 1fr;gap:16px;padding:11px 0;border-bottom:1px dotted var(--line);font-size:14px;align-items:baseline}
+  .timeline .date{font-family:var(--mono);font-size:11px;color:var(--soft)}
+  .bs{margin:24px 0;padding-bottom:20px;border-bottom:1px solid var(--line)}
+  .bs:last-child{border-bottom:none}
+  .bs-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .bs-title{font-family:var(--serif);font-size:20px;color:var(--ink)}
+  .bs-val{font-family:var(--mono);font-size:13px;color:var(--oxblood)}
+  .bs-status{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;margin-bottom:10px}
+  .st-watch{background:rgba(179,98,42,.14);color:var(--burnt)}
+  .st-active{background:rgba(122,46,46,.12);color:var(--oxblood)}
+  .st-improving{background:rgba(90,110,58,.14);color:var(--moss)}
+  table{width:100%;border-collapse:collapse;margin-top:14px}
+  th{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{padding:10px;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)}
+  td.n{font-family:var(--mono);text-align:right}
+  .up{color:var(--moss)}.down{color:var(--oxblood)}
+  .q{counter-reset:q;list-style:none;padding:0;margin:18px 0 0}
+  .q li{counter-increment:q;padding:16px 0 16px 44px;border-bottom:1px solid var(--line);font-family:var(--serif);font-size:17px;color:var(--ink);position:relative;line-height:1.4}
+  .q li::before{content:counter(q,decimal-leading-zero);position:absolute;left:0;top:16px;font-family:var(--mono);font-size:12px;color:var(--gold)}
+  .record{font-family:var(--mono);font-size:12px}
+  .record-row{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:9px 0;border-bottom:1px dotted var(--line)}
+  .record-id{color:var(--oxblood)}
+  .record-d{color:var(--ink-2);font-family:var(--sans);font-size:13px}
+  .audit{font-family:var(--mono);font-size:12px;line-height:2;color:var(--soft)}
+  .audit b{color:var(--ink)}
+  .back{display:inline-block;margin-bottom:30px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7a8099;text-decoration:none;border:1px solid #252a44;padding:11px 18px;transition:all .2s}
+  .back:hover{color:var(--gold-bright);border-color:var(--gold-bright)}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="toc">
+  <div class="toc-l">Contents</div>
+  <a href="#cover">Cover</a>
+  <a href="#letter">Strategist letter</a>
+  <a href="#trajectory">Score trajectory</a>
+  <a href="#d1">Decision · Consolidate</a>
+  <a href="#d2">Decision · Acquire</a>
+  <a href="#blindspots">Blind-spot status</a>
+  <a href="#peers">Peer movement</a>
+  <a href="#questions">Open questions</a>
+  <a href="#record">Institutional record</a>
+  <a href="#audit">Audit</a>
+</nav>
+
+<div class="doc">
+  <a class="back" href="index.html">&larr; Back to project</a>
+
+  <section class="page cover" id="cover">
+    <div class="kicker">Genotwin · Board Briefing Pack · Q3 2026</div>
+    <h1 class="cover-title">SAP SE</h1>
+    <div class="cover-sub">Strategic decision intelligence &mdash; quarterly board record</div>
+    <div class="cover-meta">
+      <div><b>AEI Score</b> 3.42 · Band B · Above-Peer</div>
+      <div><b>Prepared for</b> the Supervisory &amp; Executive Boards</div>
+      <div><b>Issued</b> 28 September 2026 · Düsseldorf</div>
+      <div><b>Record</b> AEI-SAP-Q3-2026 · confidential</div>
+    </div>
+  </section>
+
+  <section class="page" id="letter">
+    <div class="kicker">I · Strategist letter</div>
+    <h2>The quarter in one paragraph</h2>
+    <div class="rule"></div>
+    <div class="letter">
+      <p>This quarter the AI-portfolio fragmentation pattern crossed the threshold where consolidation becomes the higher-value path. The genotype has been signalling this since Q1; in Q3 the cumulative unattributed spend and the peer movement together tip the decision. Two board decisions follow, with €520M of Year-1 value identified and conservatively estimated.</p>
+      <p>The score moved from 3.35 to 3.42 over the quarter, driven by Capital Discipline as the Launchpad review advanced. We expect a further rise only if Decision 1 is executed before the FY close; absent it, the trajectory flattens.</p>
+      <p>As always: every figure in this pack is read-only from your systems of record, cross-checked against the peer cohort, and traceable to source on the audit page.</p>
+    </div>
+    <div class="sign">Dr. Lena Fischer<small>Lead Strategist · Genotwin</small></div>
+  </section>
+
+  <section class="page" id="trajectory">
+    <div class="kicker">II · Score trajectory</div>
+    <h2>3.35 &rarr; 3.38 &rarr; 3.42</h2>
+    <div class="rule"></div>
+    <div class="traj">
+      <svg class="traj-svg" viewBox="0 0 360 140" xmlns="http://www.w3.org/2000/svg">
+        <line x1="20" y1="120" x2="340" y2="120" stroke="#cabf9d"/>
+        <line x1="20" y1="20" x2="20" y2="120" stroke="#cabf9d"/>
+        <polyline points="60,86 180,74 300,62" fill="none" stroke="#9a7b2e" stroke-width="2"/>
+        <circle cx="60" cy="86" r="4" fill="#9a7b2e"/><circle cx="180" cy="74" r="4" fill="#9a7b2e"/><circle cx="300" cy="62" r="5" fill="#7a2e2e"/>
+        <text x="60" y="108" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b5d3a">Q1</text>
+        <text x="180" y="108" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b5d3a">Q2</text>
+        <text x="300" y="108" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b5d3a">Q3</text>
+        <text x="60" y="78" text-anchor="middle" font-family="Fraunces" font-size="12" fill="#1a1610">3.35</text>
+        <text x="180" y="66" text-anchor="middle" font-family="Fraunces" font-size="12" fill="#1a1610">3.38</text>
+        <text x="300" y="52" text-anchor="middle" font-family="Fraunces" font-size="13" fill="#7a2e2e">3.42</text>
+      </svg>
+      <div class="traj-now">3.42<small>Band B · this quarter</small></div>
+    </div>
+    <p>Rising, peer-relative. The Capital Discipline dimension carried the quarter as the Launchpad consolidation review advanced from flagged to board-ready.</p>
+  </section>
+
+  <section class="page" id="d1">
+    <div class="kicker">III · Board decision 1</div>
+    <div class="decision">
+      <div class="decision-tag">For decision · record AEI-SAP-DR-2026-027</div>
+      <div class="decision-name">CONSOLIDATE <em>the AI portfolio</em></div>
+      <div class="dgrid"><div class="dcell"><div class="dcell-v">€60M</div><div class="dcell-l">Year-1 release</div></div><div class="dcell"><div class="dcell-v">€2.1B</div><div class="dcell-l">Value at stake</div></div><div class="dcell"><div class="dcell-v">0.78</div><div class="dcell-l">Confidence</div></div></div>
+      <p style="margin:0">Sunset the AI Launchpad track, absorb its differentiated capability into Joule, and resequence the Industry Cloud AI roadmap. Sunset path sits within Executive Board authority; legal timeline 90 days; no shareholder vote required.</p>
+    </div>
+    <ul class="timeline">
+      <li><span class="date">Q1 2026</span><span>Fragmentation first flagged · 14 initiatives, 4 with overlapping IP claims.</span></li>
+      <li><span class="date">Q2 2026</span><span>Launchpad identified as lowest-ROI bucket · €112M unattributed to revenue.</span></li>
+      <li><span class="date">Q3 2026</span><span>Three peer consolidations confirmed · decision moves to board-ready.</span></li>
+    </ul>
+  </section>
+
+  <section class="page" id="d2">
+    <div class="kicker">IV · Board decision 2</div>
+    <div class="decision">
+      <div class="decision-tag">For decision · record AEI-SAP-DR-2026-031</div>
+      <div class="decision-name">ACQUIRE <em>customer-success capability</em></div>
+      <div class="dgrid"><div class="dcell"><div class="dcell-v">€720M</div><div class="dcell-l">Indicative deal</div></div><div class="dcell"><div class="dcell-v">+1.4pt</div><div class="dcell-l">Net-retention lift</div></div><div class="dcell"><div class="dcell-v">0.66</div><div class="dcell-l">Confidence</div></div></div>
+      <p style="margin:0">A bolt-on to close the post-sale success gap flagged by three cohort peers. The net-retention delta versus peers traces to post-sale, not product. Deal size sits within the standing M&amp;A mandate; board ratification only.</p>
+    </div>
+    <p>Sequencing note: Decision 1 should precede Decision 2 — the capital released by the Launchpad sunset substantially de-risks the acquisition envelope.</p>
+  </section>
+
+  <section class="page" id="blindspots">
+    <div class="kicker">V · Blind-spot status</div>
+    <h2>Three spots · dated &amp; valued</h2>
+    <div class="rule"></div>
+    <div class="bs">
+      <span class="bs-status st-active">Active · decision pending</span>
+      <div class="bs-head"><div class="bs-title">AI portfolio fragmentation</div><div class="bs-val">€2.1B at stake</div></div>
+      <p style="margin:0">Fourteen initiatives competing for one budget owner. Addressed by Decision 1.</p>
+    </div>
+    <div class="bs">
+      <span class="bs-status st-watch">Watch · widening</span>
+      <div class="bs-head"><div class="bs-title">Industry Cloud dilution</div><div class="bs-val">€680M</div></div>
+      <p style="margin:0">Vertical sprawl weakening the core platform narrative; analyst fatigue rising.</p>
+    </div>
+    <div class="bs">
+      <span class="bs-status st-improving">Improving · absorbing</span>
+      <div class="bs-head"><div class="bs-title">Acquisition integration drag</div><div class="bs-val">€3.6B exposure</div></div>
+      <p style="margin:0">Absorption velocity improved two quarters running; now near peer benchmark.</p>
+    </div>
+  </section>
+
+  <section class="page" id="peers">
+    <div class="kicker">VI · Peer movement</div>
+    <h2>Where the cohort moved</h2>
+    <div class="rule"></div>
+    <table>
+      <thead><tr><th>Cohort member</th><th style="text-align:right">Score</th><th>Quarter move</th></tr></thead>
+      <tbody>
+        <tr><td><b>SAP SE</b></td><td class="n">3.42</td><td class="up">▲ +0.07</td></tr>
+        <tr><td>Peer A</td><td class="n">3.44</td><td class="up">▲ +0.02</td></tr>
+        <tr><td>Peer B (Oracle-class)</td><td class="n">3.20</td><td class="up">▲ +0.05 · consolidation booked</td></tr>
+        <tr><td>Peer C</td><td class="n">3.05</td><td class="down">▼ −0.03</td></tr>
+      </tbody>
+    </table>
+    <p>The cohort is consolidating around AI portfolios. SAP closing the gap to Peer A this quarter; Decision 1 would put it level or ahead.</p>
+  </section>
+
+  <section class="page" id="questions">
+    <div class="kicker">VII · For the board</div>
+    <h2>Four open questions</h2>
+    <div class="rule"></div>
+    <ol class="q">
+      <li>Will the board ratify the Launchpad sunset before FY close, or defer one quarter?</li>
+      <li>Is the €720M customer-success envelope within appetite given the Launchpad release?</li>
+      <li>Should the Industry Cloud dilution be addressed now, or held until the consolidation lands?</li>
+      <li>What governance does the board want over the next two AEI-logged decisions?</li>
+    </ol>
+  </section>
+
+  <section class="page" id="record">
+    <div class="kicker">VIII · Institutional record</div>
+    <h2>Eight decisions logged this quarter</h2>
+    <div class="rule"></div>
+    <div class="record">
+      <div class="record-row"><span class="record-id">AEI-SAP-DR-2026-024</span><span class="record-d">Industry Cloud roadmap review · logged</span></div>
+      <div class="record-row"><span class="record-id">AEI-SAP-DR-2026-025</span><span class="record-d">Joule resourcing confirmation · logged</span></div>
+      <div class="record-row"><span class="record-id">AEI-SAP-DR-2026-026</span><span class="record-d">Capital reallocation framing · logged</span></div>
+      <div class="record-row"><span class="record-id">AEI-SAP-DR-2026-027</span><span class="record-d">CONSOLIDATE the AI portfolio · for decision</span></div>
+      <div class="record-row"><span class="record-id">AEI-SAP-DR-2026-028</span><span class="record-d">Peer-cohort reconstruction review · logged</span></div>
+      <div class="record-row"><span class="record-id">AEI-SAP-DR-2026-029</span><span class="record-d">RESEQUENCE Industry Cloud · logged</span></div>
+      <div class="record-row"><span class="record-id">AEI-SAP-DR-2026-030</span><span class="record-d">Integration-velocity checkpoint · logged</span></div>
+      <div class="record-row"><span class="record-id">AEI-SAP-DR-2026-031</span><span class="record-d">ACQUIRE customer-success · for decision</span></div>
+    </div>
+  </section>
+
+  <section class="page" id="audit">
+    <div class="kicker">IX · Audit &amp; reproducibility</div>
+    <h2>How to check this pack</h2>
+    <div class="rule"></div>
+    <div class="audit">
+      <b>Sources:</b> read-only from S/4HANA, Planview, Anaplan, Workday Adaptive + weekly public crawl.<br/>
+      <b>Cadence:</b> genotype refreshed weekly · this pack cut 28 Sep 2026.<br/>
+      <b>Engine:</b> 14-agent ensemble · 6-dimension rubric v1.0 · confidence intervals per decision.<br/>
+      <b>Peer cohort:</b> 6 members · construction method in the Score Methodology.<br/>
+      <b>Every figure</b> traces to a dated source record; reproducibility specification available on request.
+    </div>
+    <div class="rule"></div>
+    <p style="font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)">Genotwin GmbH · confidential board material · not for distribution</p>
+  </section>
+
+  <a class="back" href="index.html">&larr; Back to project</a>
+</div>
+
+<script>
+  const prog=document.getElementById('progress');
+  function upd(){const h=document.documentElement;const sc=(h.scrollTop)/(h.scrollHeight-h.clientHeight);prog.style.width=(sc*100)+'%';}
+  document.addEventListener('scroll',upd,{passive:true});upd();
+  document.querySelectorAll('.toc a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});}));
+</script>
+</body>
+</html>
