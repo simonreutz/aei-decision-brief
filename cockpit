@@ -1,0 +1,1850 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Genotwin Cockpit · AEI on AEI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ---------- tokens ---------- */
+  :root {
+    --bg: #0c0e1a;
+    --bg-2: #11142a;
+    --surface: #151829;
+    --surface-2: #1a1e34;
+    --border: #252a44;
+    --border-soft: #1d2138;
+    --gold: #c9a44c;
+    --gold-soft: #8a7333;
+    --gold-glow: rgba(201,164,76,.18);
+    --oxblood: #7a2e2e;
+    --oxblood-soft: #5a2222;
+    --burnt: #c97a3a;
+    --moss: #6b8e5a;
+    --bone: #e8e3d5;
+    --bone-2: #c8c2b1;
+    --mute: #7a8099;
+    --mute-2: #565b76;
+    --serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  /* ---------- reset / base ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--bone);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--gold); color: var(--bg); }
+
+  /* ---------- ambient background texture ---------- */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,164,76,.06), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(122,46,46,.05), transparent 60%);
+    z-index: 0;
+  }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(12,14,26,.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .nav-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .brand {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--bone);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-mark {
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    position: relative;
+    display: inline-block;
+  }
+  .brand-mark::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+  .brand-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-left: 14px;
+    padding-left: 14px;
+    border-left: 1px solid var(--border);
+  }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .nav-links a {
+    color: inherit;
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ---------- containers ---------- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  .wrap-narrow { max-width: 880px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  section { padding: 110px 0; position: relative; }
+  section + section { border-top: 1px solid var(--border-soft); }
+
+  /* ---------- eyebrow / section heading ---------- */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--gold);
+  }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; letter-spacing: -0.02em; }
+  h1 { font-size: clamp(40px, 6vw, 72px); line-height: 1.04; }
+  h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.08; }
+  h3 { font-size: 22px; line-height: 1.25; }
+  p { color: var(--bone-2); font-size: 16px; }
+
+  /* ---------- HERO ---------- */
+  .hero { padding-top: 80px; padding-bottom: 60px; }
+  .hero-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 56px;
+  }
+  .hero-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--mute);
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+  .hero-meta strong { color: var(--bone); font-weight: 500; }
+  .hero h1 { max-width: 16ch; margin-bottom: 32px; }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 300;
+  }
+  .hero-lede {
+    font-family: var(--serif);
+    font-size: clamp(18px, 1.8vw, 22px);
+    line-height: 1.5;
+    color: var(--bone-2);
+    max-width: 64ch;
+    font-weight: 300;
+    margin-bottom: 64px;
+  }
+
+  /* counter row */
+  .counters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .counter {
+    padding: 24px 28px;
+    border-right: 1px solid var(--border-soft);
+  }
+  .counter:last-child { border-right: none; }
+  .counter-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin-bottom: 8px;
+  }
+  .counter-value {
+    font-family: var(--serif);
+    font-size: 34px;
+    font-weight: 400;
+    color: var(--bone);
+    letter-spacing: -0.02em;
+  }
+  .counter-suffix {
+    font-size: 14px;
+    color: var(--mute);
+    font-family: var(--sans);
+    margin-left: 4px;
+  }
+
+  /* ---------- QUADRANT ---------- */
+  .quadrant-wrap {
+    margin-top: 80px;
+    padding: 48px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    position: relative;
+  }
+  .quadrant-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 32px;
+  }
+  .quadrant-title {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--bone);
+  }
+  .quadrant-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- AEI SCORE: Genotwin ---------- */
+  .score-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 56px;
+    align-items: start;
+    margin-top: 56px;
+  }
+  .score-panel {
+    padding: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .score-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .score-record {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .score-value-row {
+    display: flex; align-items: baseline; gap: 16px;
+    margin: 18px 0 6px;
+  }
+  .score-value {
+    font-family: var(--serif);
+    font-size: 84px;
+    font-weight: 300;
+    color: var(--bone);
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+  }
+  .score-band {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--burnt);
+    letter-spacing: 0.06em;
+  }
+  .score-band-label { color: var(--mute); margin-right: 8px; }
+  .score-context {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--bone-2);
+    margin-top: 10px;
+    margin-bottom: 36px;
+    max-width: 50ch;
+    line-height: 1.5;
+  }
+
+  /* sequence strip — the signature element */
+  .sequence-strip {
+    margin-top: 24px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .sequence-strip-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* dimension list (right panel) */
+  .dims {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .dims li {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: center;
+  }
+  .dims li:last-child { border-bottom: none; }
+  .dim-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mute);
+  }
+  .dim-name {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--bone);
+  }
+  .dim-name small {
+    display: block;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--mute);
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+  .dim-score {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--gold);
+  }
+  .dim-score.low { color: var(--burnt); }
+  .dim-score.ok { color: var(--moss); }
+
+  /* phenotypes */
+  .phenotypes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 64px;
+  }
+  .pheno {
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--oxblood);
+    position: relative;
+    transition: transform .25s ease, border-color .25s ease;
+  }
+  .pheno:hover {
+    transform: translateY(-2px);
+    border-top-color: var(--gold);
+  }
+  .pheno-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--oxblood);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .pheno-name {
+    font-family: var(--serif);
+    font-size: 26px;
+    color: var(--bone);
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  .pheno-name em {
+    color: var(--gold);
+    font-style: italic;
+    font-weight: 300;
+  }
+  .pheno-body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--bone-2);
+    margin-bottom: 16px;
+  }
+  .pheno-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 14px;
+  }
+
+  /* blind spots */
+  .blindspots {
+    margin-top: 64px;
+  }
+  .blindspots h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--mute);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .bs-row {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 24px;
+    padding: 22px 0;
+    border-top: 1px solid var(--border-soft);
+    align-items: center;
+  }
+  .bs-row:last-child { border-bottom: 1px solid var(--border-soft); }
+  .bs-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--burnt);
+    letter-spacing: 0.06em;
+  }
+  .bs-content { display: flex; flex-direction: column; gap: 4px; }
+  .bs-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--bone);
+  }
+  .bs-desc {
+    font-size: 13px;
+    color: var(--mute);
+  }
+  .bs-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--burnt);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* ---------- THRESHOLD ---------- */
+  .threshold {
+    text-align: center;
+    padding: 140px 0;
+    background:
+      linear-gradient(180deg, transparent 0%, var(--bg-2) 50%, transparent 100%);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .threshold-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .threshold h2 {
+    max-width: 22ch;
+    margin: 0 auto 24px;
+    font-style: italic;
+    font-weight: 300;
+  }
+  .threshold-sub {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--bone-2);
+    max-width: 56ch;
+    margin: 0 auto 48px;
+    line-height: 1.55;
+  }
+  .threshold-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 18px 36px;
+    cursor: pointer;
+    transition: all .3s;
+    border-radius: 0;
+  }
+  .threshold-btn:hover {
+    background: var(--gold);
+    color: var(--bg);
+    letter-spacing: 0.22em;
+  }
+  .threshold-btn span { margin-left: 12px; transition: transform .3s; display: inline-block; }
+  .threshold-btn:hover span { transform: translateX(6px); }
+
+  /* ---------- CUSTOMER VIEW ---------- */
+  .customer-view {
+    display: none;
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+    padding: 110px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .customer-view.is-open { display: block; }
+  .cv-banner {
+    background: var(--surface);
+    border: 1px solid var(--gold-soft);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 56px;
+    border-left: 3px solid var(--gold);
+  }
+  .cv-banner-text {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .cv-banner-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .cv-banner-msg {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--bone-2);
+    font-style: italic;
+  }
+  .cv-close {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mute);
+    background: none;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cv-close:hover { color: var(--bone); }
+
+  .cv-card-head {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .cv-customer {
+    font-family: var(--serif);
+    font-size: 36px;
+    color: var(--bone);
+    letter-spacing: -0.02em;
+  }
+  .cv-customer small {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .cv-quarter {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .cv-quarter strong { color: var(--gold); display: block; font-size: 22px; font-family: var(--serif); margin-top: 6px; letter-spacing: -0.01em; text-transform: none; }
+
+  .cv-value-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .cv-vc {
+    padding: 32px;
+    border-right: 1px solid var(--border-soft);
+  }
+  .cv-vc:last-child { border-right: none; }
+  .cv-vc-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .cv-vc-value {
+    font-family: var(--serif);
+    font-size: 38px;
+    font-weight: 400;
+    color: var(--gold);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .cv-vc-context {
+    font-size: 13px;
+    color: var(--bone-2);
+    line-height: 1.5;
+  }
+
+  /* sample decision phenotype card */
+  .cv-decision {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px;
+  }
+  .cv-decision-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .cv-decision-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--oxblood);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .cv-decision-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--bone);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .cv-decision-title em {
+    color: var(--gold);
+    font-style: italic;
+    font-weight: 300;
+  }
+  .cv-decision-rec {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cv-decision-body {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--bone-2);
+    margin-bottom: 24px;
+  }
+  .cv-reasoning {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .cv-reasoning-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .cv-agents {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .cv-agent {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    align-items: flex-start;
+  }
+  .cv-agent-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--gold);
+    width: 90px;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+  }
+  .cv-agent-finding {
+    font-size: 13px;
+    color: var(--bone-2);
+    line-height: 1.5;
+  }
+
+  /* ---------- VAULT ---------- */
+  .vault-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    margin-top: 56px;
+  }
+  .vault-tile {
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 28px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: background .2s;
+    cursor: default;
+  }
+  .vault-tile:hover { background: var(--surface); }
+  .vault-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--mute);
+    letter-spacing: 0.1em;
+  }
+  .vault-name {
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--bone);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .vault-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .vault-meta.pdf { color: var(--burnt); }
+  .vault-meta.html { color: var(--moss); }
+
+  /* ---------- MISSION (kanban) ---------- */
+  .mission-board {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    position: relative;
+  }
+  .mission-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 20px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+  }
+  .mission-col.is-active {
+    border-color: var(--gold);
+    background: linear-gradient(180deg, var(--surface) 0%, rgba(201,164,76,.04) 100%);
+  }
+  .mission-col.is-active::before {
+    content: 'ACTIVE';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 9px;
+    background: var(--gold);
+    color: var(--bg);
+    padding: 3px 8px;
+    letter-spacing: 0.16em;
+  }
+  .mission-col-positioner { position: relative; }
+  .mission-block {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .mission-weeks {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gold);
+    margin-bottom: 16px;
+    letter-spacing: 0.06em;
+  }
+  .mission-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--bone);
+    line-height: 1.3;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  .mission-detail {
+    font-size: 13px;
+    color: var(--bone-2);
+    line-height: 1.55;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+  .mission-gate {
+    border-top: 1px solid var(--border-soft);
+    padding-top: 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+  }
+  .mission-gate strong {
+    color: var(--burnt);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- SLOTS ---------- */
+  .slots {
+    margin-top: 56px;
+  }
+  .slot-section + .slot-section { margin-top: 56px; }
+  .slot-header {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--mute);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .slot-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .slot-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .slot {
+    border: 1px dashed var(--border);
+    padding: 28px;
+    min-height: 180px;
+    background: transparent;
+    transition: all .25s;
+    cursor: pointer;
+    position: relative;
+  }
+  .slot:hover {
+    border-color: var(--gold);
+    background: rgba(201,164,76,.03);
+  }
+  .slot-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .slot-status::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--mute);
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .slot-role {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--bone);
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+  .slot-archetype {
+    font-size: 13px;
+    color: var(--mute);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .slot-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 12px;
+  }
+
+  /* ---------- COMMIT ---------- */
+  .commit {
+    background: linear-gradient(180deg, transparent 0%, rgba(201,164,76,.04) 100%);
+    text-align: center;
+    padding: 160px 0 180px;
+    border-top: 1px solid var(--border);
+  }
+  .commit h2 {
+    max-width: 18ch;
+    margin: 0 auto 24px;
+    font-weight: 300;
+  }
+  .commit h2 em { color: var(--gold); font-style: italic; }
+  .commit-sub {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--bone-2);
+    max-width: 52ch;
+    margin: 0 auto 56px;
+    line-height: 1.6;
+  }
+  .commit-btn {
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 22px 56px;
+    cursor: pointer;
+    transition: all .3s;
+    font-weight: 500;
+    border-radius: 0;
+  }
+  .commit-btn:hover {
+    background: var(--bone);
+    letter-spacing: 0.26em;
+  }
+  .commit-detail {
+    margin-top: 32px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- MODAL ---------- */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,10,18,.92);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .modal-backdrop.is-open { display: flex; opacity: 1; }
+  .modal {
+    background: #f4ecd8;
+    color: #2a2418;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: auto;
+    padding: 56px 56px 48px;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,.5);
+    font-family: var(--serif);
+    transform: translateY(20px);
+    transition: transform .4s cubic-bezier(.2,.7,.3,1);
+  }
+  .modal-backdrop.is-open .modal { transform: translateY(0); }
+  .modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--oxblood) 100%);
+  }
+  .modal-stamp {
+    position: absolute;
+    top: 28px;
+    right: 32px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--oxblood);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid var(--oxblood);
+    padding: 6px 10px;
+    transform: rotate(-2deg);
+  }
+  .modal h3 {
+    font-family: var(--serif);
+    font-size: 12px;
+    color: #6b5d3a;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  .modal-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #6b5d3a;
+    letter-spacing: 0.1em;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #c9bf9e;
+  }
+  .modal-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: #1a1610;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    line-height: 1.2;
+  }
+  .modal-body {
+    font-family: var(--serif);
+    font-size: 15px;
+    color: #2a2418;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+  .modal-rec {
+    background: rgba(122,46,46,.07);
+    border-left: 3px solid var(--oxblood);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+  .modal-rec-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--oxblood);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .modal-rec-text {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: #1a1610;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .modal-sig {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #c9bf9e;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #6b5d3a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .modal-sig-block strong {
+    display: block;
+    color: #1a1610;
+    font-family: var(--serif);
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-bottom: 4px;
+  }
+  .modal-close {
+    position: absolute;
+    bottom: -56px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: transparent;
+    color: var(--bone);
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    cursor: pointer;
+  }
+  .modal-close:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    padding: 56px 32px;
+    border-top: 1px solid var(--border-soft);
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--mute-2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  footer span { color: var(--gold); }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .hero-top { flex-direction: column; gap: 24px; }
+    .counters { grid-template-columns: repeat(2, 1fr); }
+    .counter { border-bottom: 1px solid var(--border-soft); }
+    .score-grid { grid-template-columns: 1fr; gap: 32px; }
+    .phenotypes { grid-template-columns: 1fr; }
+    .cv-value-grid { grid-template-columns: 1fr; }
+    .cv-vc { border-right: none; border-bottom: 1px solid var(--border-soft); }
+    .cv-agents { grid-template-columns: 1fr; }
+    .vault-grid { grid-template-columns: repeat(2, 1fr); }
+    .mission-board { grid-template-columns: 1fr; }
+    .slot-grid-2, .slot-grid-3 { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    section { padding: 70px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      Genotwin Cockpit
+      <span class="brand-meta">AEI on AEI · Q3 2026</span>
+    </div>
+    <div class="nav-links">
+      <a href="#score">Score</a>
+      <a href="#threshold">Customer&nbsp;View</a>
+      <a href="#vault">Vault</a>
+      <a href="#mission">Mission</a>
+      <a href="#commit">Commit</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div class="hero-meta">
+        <strong>Genotwin GmbH</strong><br/>
+        Founder briefing &middot; Quarter 3, 2026<br/>
+        Prepared for: Gerrit Bottemöller
+      </div>
+      <div class="hero-meta" style="text-align:right">
+        <strong>Record</strong> AEI-GENOTWIN-Q3-2026<br/>
+        <strong>Issued</strong> 28 June 2026, Düsseldorf<br/>
+        <strong>Authored by</strong> the founding team
+      </div>
+    </div>
+
+    <p class="eyebrow">We are customer zero</p>
+    <h1>Aera owns the operational decisions. <em>The strategic quadrant is empty.</em></h1>
+    <p class="hero-lede">
+      AEI is the persistent intelligence layer for the low-frequency, high-stakes decisions that operational decision-intelligence platforms structurally cannot touch &mdash; capital allocation, M&amp;A, transformation, portfolio sequencing. Gartner just validated the adjacent category. The competitor just demonstrated it is venture-scale. We claim the empty quadrant before anyone else names it.
+    </p>
+
+    <div class="counters">
+      <div class="counter">
+        <div class="counter-label">2032 Target</div>
+        <div class="counter-value" data-counter="350" data-prefix="€" data-suffix="M ARR">€0M</div>
+      </div>
+      <div class="counter">
+        <div class="counter-label">Customers</div>
+        <div class="counter-value" data-counter="800" data-suffix=" listed + PE">0</div>
+      </div>
+      <div class="counter">
+        <div class="counter-label">Avg. Contract</div>
+        <div class="counter-value" data-counter="550" data-prefix="€" data-suffix="K / yr">€0K</div>
+      </div>
+      <div class="counter">
+        <div class="counter-label">Gross Margin</div>
+        <div class="counter-value" data-counter="82" data-suffix="%">0%</div>
+      </div>
+    </div>
+
+    <!-- QUADRANT -->
+    <div class="quadrant-wrap">
+      <div class="quadrant-head">
+        <div class="quadrant-title">The decision-intelligence map</div>
+        <div class="quadrant-sub">Frequency &times; Stakes &middot; Q3 2026</div>
+      </div>
+      <svg viewBox="0 0 800 420" style="width:100%;height:auto;display:block">
+        <defs>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1d2138" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <rect width="800" height="420" fill="url(#grid)" opacity="0.5"/>
+
+        <!-- axes -->
+        <line x1="80" y1="360" x2="760" y2="360" stroke="#252a44" stroke-width="1"/>
+        <line x1="80" y1="40" x2="80" y2="360" stroke="#252a44" stroke-width="1"/>
+        <line x1="420" y1="40" x2="420" y2="360" stroke="#252a44" stroke-width="0.5" stroke-dasharray="2,4"/>
+        <line x1="80" y1="200" x2="760" y2="200" stroke="#252a44" stroke-width="0.5" stroke-dasharray="2,4"/>
+
+        <!-- axis labels -->
+        <text x="420" y="395" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="#7a8099">DECISION FREQUENCY →</text>
+        <text x="40" y="200" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="#7a8099" transform="rotate(-90 40 200)">STAKES →</text>
+
+        <text x="200" y="385" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#565b76">ANNUAL / QUARTERLY</text>
+        <text x="600" y="385" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#565b76">DAILY / WEEKLY</text>
+
+        <!-- Aera bubble (operational quadrant — lower right) -->
+        <circle cx="600" cy="260" r="58" fill="#7a2e2e" fill-opacity="0.18" stroke="#7a2e2e" stroke-width="1"/>
+        <circle cx="600" cy="260" r="6" fill="#7a2e2e"/>
+        <text x="600" y="244" text-anchor="middle" font-family="Fraunces" font-size="16" fill="#e8e3d5">Aera Technology</text>
+        <text x="600" y="294" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#c8c2b1">$97M ARR · Gartner MQ Leader</text>
+        <text x="600" y="308" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#7a8099">OPERATIONAL DECISION INTELLIGENCE</text>
+
+        <!-- AEI bubble (strategic quadrant — upper left, the empty one) -->
+        <circle cx="220" cy="130" r="68" fill="#c9a44c" fill-opacity="0.16" stroke="#c9a44c" stroke-width="1.5" stroke-dasharray="3,3">
+          <animate attributeName="r" values="68;72;68" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="220" cy="130" r="7" fill="#c9a44c"/>
+        <text x="220" y="110" text-anchor="middle" font-family="Fraunces" font-size="18" fill="#e8e3d5">AEI / Genotwin</text>
+        <text x="220" y="160" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#c9a44c">CLAIMING NOW</text>
+        <text x="220" y="174" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#c8c2b1">STRATEGIC DECISION INTELLIGENCE</text>
+
+        <!-- empty quadrants notation -->
+        <text x="600" y="100" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="13" fill="#565b76">— sub-scale tooling —</text>
+        <text x="220" y="320" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="13" fill="#565b76">— consultancies, slideware —</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- SCORE -->
+<section id="score">
+  <div class="wrap">
+    <p class="eyebrow">The meta moment</p>
+    <h2>We scored ourselves on our own rubric.<br/><em style="font-style:italic;color:var(--gold);font-weight:300">The findings are uncomfortable. That is the point.</em></h2>
+
+    <div class="score-grid">
+      <!-- LEFT: the score panel with sequence strip -->
+      <div class="score-panel">
+        <div class="score-head">
+          <div class="score-record">AEI Score &middot; Genotwin GmbH &middot; Q3 2026</div>
+          <div class="score-record">Phase 0 &middot; v1.0</div>
+        </div>
+        <div class="score-value-row">
+          <div class="score-value">2.08</div>
+          <div class="score-band">
+            <span class="score-band-label">Band</span>D &middot; Below-Peer
+          </div>
+        </div>
+        <p class="score-context">
+          A repositioned methodology with two paying customers absent, no founding hires, and no persistence layer is, by our own published rubric, a Band D entity. We will not lie to ourselves to feel better. We will move the score.
+        </p>
+
+        <div class="sequence-strip">
+          <div class="sequence-strip-label">
+            <span>Dimension sequence &middot; Q3 2026</span>
+            <span>Target Q1 2027 →</span>
+          </div>
+
+          <!-- The signature element: sequence strip / chromatograph -->
+          <svg viewBox="0 0 720 160" style="width:100%;height:auto;display:block">
+            <defs>
+              <linearGradient id="seq-cur" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#7a2e2e"/>
+                <stop offset="100%" stop-color="#c97a3a"/>
+              </linearGradient>
+              <linearGradient id="seq-tgt" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#8a7333" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#c9a44c" stop-opacity="0.6"/>
+              </linearGradient>
+            </defs>
+
+            <!-- baseline -->
+            <line x1="20" y1="130" x2="700" y2="130" stroke="#252a44" stroke-width="1"/>
+            <!-- band gridlines -->
+            <line x1="20" y1="105" x2="700" y2="105" stroke="#1d2138" stroke-width="0.5" stroke-dasharray="2,3"/>
+            <line x1="20" y1="80" x2="700" y2="80" stroke="#1d2138" stroke-width="0.5" stroke-dasharray="2,3"/>
+            <line x1="20" y1="55" x2="700" y2="55" stroke="#1d2138" stroke-width="0.5" stroke-dasharray="2,3"/>
+            <line x1="20" y1="30" x2="700" y2="30" stroke="#1d2138" stroke-width="0.5" stroke-dasharray="2,3"/>
+
+            <!-- band labels -->
+            <text x="12" y="133" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#565b76">1</text>
+            <text x="12" y="108" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#565b76">2</text>
+            <text x="12" y="83" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#565b76">3</text>
+            <text x="12" y="58" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#565b76">4</text>
+            <text x="12" y="33" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#565b76">5</text>
+
+            <!-- bars: 6 dimensions. current (orange) + target ghost (gold) -->
+            <!-- D1 Vision : 2.8 current, 4.2 target -->
+            <rect x="60" y="60" width="30" height="20" fill="url(#seq-tgt)" stroke="#c9a44c" stroke-width="0.5"/>
+            <rect x="60" y="95" width="30" height="35" fill="url(#seq-cur)"/>
+            <text x="75" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7a8099">D1</text>
+
+            <!-- D2 Talent : 1.5 current, 4.0 target -->
+            <rect x="170" y="70" width="30" height="10" fill="url(#seq-tgt)" stroke="#c9a44c" stroke-width="0.5"/>
+            <rect x="170" y="112" width="30" height="18" fill="url(#seq-cur)"/>
+            <text x="185" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7a8099">D2</text>
+
+            <!-- D3 Capital : 1.8 current, 4.5 target -->
+            <rect x="280" y="50" width="30" height="5" fill="url(#seq-tgt)" stroke="#c9a44c" stroke-width="0.5"/>
+            <rect x="280" y="107" width="30" height="23" fill="url(#seq-cur)"/>
+            <text x="295" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7a8099">D3</text>
+
+            <!-- D4 Tech : 1.2 current, 3.8 target -->
+            <rect x="390" y="80" width="30" height="15" fill="url(#seq-tgt)" stroke="#c9a44c" stroke-width="0.5"/>
+            <rect x="390" y="118" width="30" height="12" fill="url(#seq-cur)"/>
+            <text x="405" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7a8099">D4</text>
+
+            <!-- D5 Market : 3.4 current, 4.0 target -->
+            <rect x="500" y="70" width="30" height="10" fill="url(#seq-tgt)" stroke="#c9a44c" stroke-width="0.5"/>
+            <rect x="500" y="80" width="30" height="50" fill="url(#seq-cur)"/>
+            <text x="515" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7a8099">D5</text>
+
+            <!-- D6 Discipline : 1.8 current, 4.2 target -->
+            <rect x="610" y="60" width="30" height="13" fill="url(#seq-tgt)" stroke="#c9a44c" stroke-width="0.5"/>
+            <rect x="610" y="107" width="30" height="23" fill="url(#seq-cur)"/>
+            <text x="625" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7a8099">D6</text>
+
+            <!-- target line annotation -->
+            <text x="690" y="48" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#c9a44c" letter-spacing="1">TARGET Q1 '27</text>
+          </svg>
+
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:0.06em;margin-top:8px;text-transform:uppercase">
+            <span>Current 2.08</span><span>Target 4.12</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: dimension list -->
+      <ul class="dims">
+        <li>
+          <span class="dim-num">D1</span>
+          <span class="dim-name">Strategic Vision <small>Category claim sharpness; positioning testability</small></span>
+          <span class="dim-score ok">2.8</span>
+        </li>
+        <li>
+          <span class="dim-num">D2</span>
+          <span class="dim-name">Talent &amp; Team <small>Founding-team completeness; specialist depth</small></span>
+          <span class="dim-score low">1.5</span>
+        </li>
+        <li>
+          <span class="dim-num">D3</span>
+          <span class="dim-name">Capital Discipline <small>Runway, committed ARR, investor readiness</small></span>
+          <span class="dim-score low">1.8</span>
+        </li>
+        <li>
+          <span class="dim-num">D4</span>
+          <span class="dim-name">Technical Substrate <small>Product persistence; data ingestion; defensibility</small></span>
+          <span class="dim-score low">1.2</span>
+        </li>
+        <li>
+          <span class="dim-num">D5</span>
+          <span class="dim-name">Market Conviction <small>Category validation; competitive dynamics</small></span>
+          <span class="dim-score">3.4</span>
+        </li>
+        <li>
+          <span class="dim-num">D6</span>
+          <span class="dim-name">Execution Discipline <small>Artifact density; commitment cadence; velocity</small></span>
+          <span class="dim-score low">1.8</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- blind spots -->
+    <div class="blindspots">
+      <h3>Blind spots &middot; named explicitly, valued conservatively</h3>
+      <div class="bs-row">
+        <div class="bs-id">BS-01</div>
+        <div class="bs-content">
+          <div class="bs-title">No founding engineer or GTM hire</div>
+          <div class="bs-desc">Two consultants with excellent artifacts is not a company. Without founding hires, the persistence layer cannot be built and the first three customers cannot be closed.</div>
+        </div>
+        <div class="bs-value">€0 → €100M+ ARR ceiling</div>
+      </div>
+      <div class="bs-row">
+        <div class="bs-id">BS-02</div>
+        <div class="bs-content">
+          <div class="bs-title">No persistence layer &mdash; methodology, not product</div>
+          <div class="bs-desc">Without continuous data ingestion and a customer genotype in Postgres, AEI remains a high-quality diagnostic. The category claim requires evidence of continuous instrumentation between week 1 and week 6.</div>
+        </div>
+        <div class="bs-value">Decides venture vs. consultancy fate</div>
+      </div>
+      <div class="bs-row">
+        <div class="bs-id">BS-03</div>
+        <div class="bs-content">
+          <div class="bs-title">Naming &amp; positioning collision with AIBI</div>
+          <div class="bs-desc">Dr. Kumar's parallel Capgemini initiative has commercial scaffolding on a thinner product. Unresolved, this becomes either a category-defining alliance or a structural drag on AEI's identity.</div>
+        </div>
+        <div class="bs-value">Alliance value: positioning + speed</div>
+      </div>
+    </div>
+
+    <!-- phenotypes -->
+    <div class="phenotypes">
+      <div class="pheno">
+        <div class="pheno-tag">Decision Phenotype &middot; 01</div>
+        <div class="pheno-name">RAISE <em>&euro;3&ndash;5M pre-seed</em></div>
+        <div class="pheno-body">Earlybird Digital East &middot; HV Capital &middot; Project A &middot; Cherry Ventures. 18 months runway, 6&ndash;8 person team. Three informal conversations start in month one, not week ten.</div>
+        <div class="pheno-meta">Gate: term sheet or termination &middot; Week 10</div>
+      </div>
+      <div class="pheno">
+        <div class="pheno-tag">Decision Phenotype &middot; 02</div>
+        <div class="pheno-name">HIRE <em>founding crew</em></div>
+        <div class="pheno-body">Founding engineer (ex-Palantir / Celonis / Personio, 3&ndash;8% equity) and founding GTM (ex-Celonis / Personio enterprise SaaS, 2&ndash;4% equity). Give up the equity without flinching.</div>
+        <div class="pheno-meta">Gate: signed offers &middot; Week 4</div>
+      </div>
+      <div class="pheno">
+        <div class="pheno-tag">Decision Phenotype &middot; 03</div>
+        <div class="pheno-name">BUILD <em>the persistence layer</em></div>
+        <div class="pheno-body">One customer genotype in Postgres, 3&ndash;5 public data sources ingesting weekly. The Score must demonstrably evolve between week 1 and week 6. This is the thing that turns consulting into platform.</div>
+        <div class="pheno-meta">Gate: live evolution shown &middot; Week 6</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THRESHOLD -->
+<section id="threshold" class="threshold">
+  <div class="wrap-narrow">
+    <div class="threshold-eyebrow">— Cross the threshold —</div>
+    <h2>You have seen what we see. Now see <em>what the customer sees.</em></h2>
+    <p class="threshold-sub">
+      Everything above this line is the founder cockpit &mdash; the meta layer, applied to Genotwin itself. Below this line is the customer-facing product surface, shown for a single quarter of a single customer (SAP SE, Q3 2026). Same architecture. Same rubric. Different audience.
+    </p>
+    <button class="threshold-btn" id="open-customer-view">
+      Open the customer view <span>→</span>
+    </button>
+  </div>
+</section>
+
+<!-- CUSTOMER VIEW (hidden until threshold clicked) -->
+<section class="customer-view" id="customer-view">
+  <div class="wrap">
+    <div class="cv-banner">
+      <div class="cv-banner-text">
+        <span class="cv-banner-tag">▸ Customer Surface</span>
+        <span class="cv-banner-msg">This is the SAP Board Briefing Pack, Q3 2026 &mdash; one page of one quarter.</span>
+      </div>
+      <button class="cv-close" id="close-customer-view">← Return to cockpit</button>
+    </div>
+
+    <div class="cv-card-head">
+      <div>
+        <div class="cv-customer">SAP SE
+          <small>AEI Score · Q3 2026 · v3.2</small>
+        </div>
+      </div>
+      <div class="cv-quarter">
+        Score trajectory
+        <strong>3.35 → 3.38 → 3.42</strong>
+      </div>
+    </div>
+
+    <!-- Value cards: CFO-first framing (memory rule) -->
+    <div class="cv-value-grid">
+      <div class="cv-vc">
+        <div class="cv-vc-label">Year-1 Value Identified</div>
+        <div class="cv-vc-value">€520M</div>
+        <div class="cv-vc-context">Across three blind spots; CFO-verifiable methodology; lower-bound estimate.</div>
+      </div>
+      <div class="cv-vc">
+        <div class="cv-vc-label">Decisions Logged</div>
+        <div class="cv-vc-value">8</div>
+        <div class="cv-vc-context">AEI-SAP-DR-2026-024 through 031. Each with reasoning trail and dated event timeline.</div>
+      </div>
+      <div class="cv-vc">
+        <div class="cv-vc-label">Open Board Questions</div>
+        <div class="cv-vc-value">4</div>
+        <div class="cv-vc-context">Surfaced for the Q4 board cycle. Includes the €60M AI Launchpad sunset call.</div>
+      </div>
+    </div>
+
+    <!-- Sample decision phenotype card -->
+    <div class="cv-decision">
+      <div class="cv-decision-head">
+        <div>
+          <div class="cv-decision-tag">Decision Phenotype &middot; Featured</div>
+          <div class="cv-decision-title">CONSOLIDATE <em>the AI portfolio</em></div>
+          <div class="cv-decision-rec">Record AEI-SAP-DR-2026-027 &middot; Confidence 0.78</div>
+        </div>
+        <div style="text-align:right">
+          <div class="cv-vc-label">Value at stake</div>
+          <div class="cv-vc-value" style="font-size:24px">€2.1B</div>
+        </div>
+      </div>
+      <div class="cv-decision-body">
+        Fourteen named AI-product initiatives across BTP, Joule, S/4HANA Cloud, and Industry Cloud are competing for the same enterprise budget owner. The portfolio fragmentation pattern matches three peer cohort cases that resolved by consolidation. Recommendation: sunset the AI Launchpad track (€60M Year-1 cost release), absorb its differentiated capabilities into Joule, and resequence the Industry Cloud AI roadmap.
+      </div>
+      <div class="cv-reasoning">
+        <div class="cv-reasoning-label">Reasoning trail &middot; 14-agent ensemble &middot; 6 of 14 shown</div>
+        <div class="cv-agents">
+          <div class="cv-agent">
+            <div class="cv-agent-name">PORTFOLIO</div>
+            <div class="cv-agent-finding">14 active initiatives, 4 with overlapping IP claims. Fragmentation Z-score 2.6 above peer median.</div>
+          </div>
+          <div class="cv-agent">
+            <div class="cv-agent-name">CAPITAL</div>
+            <div class="cv-agent-finding">€680M cumulative spend; €112M unattributed to revenue. Lowest ROI bucket: AI Launchpad.</div>
+          </div>
+          <div class="cv-agent">
+            <div class="cv-agent-name">PEER</div>
+            <div class="cv-agent-finding">Three cohort members (Oracle, IBM, Microsoft) executed analogous consolidations 2023&ndash;2025.</div>
+          </div>
+          <div class="cv-agent">
+            <div class="cv-agent-name">TALENT</div>
+            <div class="cv-agent-finding">Key Launchpad leads have Joule-compatible roadmap experience &mdash; absorption viable.</div>
+          </div>
+          <div class="cv-agent">
+            <div class="cv-agent-name">MARKET</div>
+            <div class="cv-agent-finding">Analyst sentiment fatigued on multi-track AI narrative; Joule consolidation rated favorably.</div>
+          </div>
+          <div class="cv-agent">
+            <div class="cv-agent-name">GOVERNANCE</div>
+            <div class="cv-agent-finding">Sunset path within EB authority; no shareholder vote required; legal timeline 90 days.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:0.12em;text-transform:uppercase;margin-top:48px">
+      &mdash; one of 13 pages of the full quarterly briefing &mdash;
+    </p>
+  </div>
+</section>
+
+<!-- VAULT -->
+<section id="vault">
+  <div class="wrap">
+    <p class="eyebrow">Weekend velocity &middot; eight artifacts shipped</p>
+    <h2>The product surface, in full.</h2>
+    <p style="max-width:60ch;margin-top:24px;color:var(--bone-2)">Every tile is a real file in <code style="font-family:var(--mono);font-size:13px;color:var(--gold)">/outputs/</code>. Three PDFs, five HTML surfaces, one competitive intelligence brief. All produced 26&ndash;28 June 2026.</p>
+
+    <div class="vault-grid">
+      <div class="vault-tile">
+        <div>
+          <div class="vault-num">01</div>
+          <div class="vault-name" style="margin-top:14px">AEI Score Methodology</div>
+        </div>
+        <div class="vault-meta pdf">PDF · 11pp · neutral framework</div>
+      </div>
+      <div class="vault-tile">
+        <div>
+          <div class="vault-num">02</div>
+          <div class="vault-name" style="margin-top:14px">AEI Score &middot; SAP SE</div>
+        </div>
+        <div class="vault-meta pdf">PDF + HTML · Band B · 3.35</div>
+      </div>
+      <div class="vault-tile">
+        <div>
+          <div class="vault-num">03</div>
+          <div class="vault-name" style="margin-top:14px">AEI Score &middot; Nordhaven</div>
+        </div>
+        <div class="vault-meta pdf">PDF + HTML · Band C · 2.95</div>
+      </div>
+      <div class="vault-tile">
+        <div>
+          <div class="vault-num">04</div>
+          <div class="vault-name" style="margin-top:14px">AEI Workbench &middot; SAP</div>
+        </div>
+        <div class="vault-meta html">HTML · interactive · 34-node graph</div>
+      </div>
+      <div class="vault-tile">
+        <div>
+          <div class="vault-num">05</div>
+          <div class="vault-name" style="margin-top:14px">AEI Workbench &middot; Nordhaven</div>
+        </div>
+        <div class="vault-meta html">HTML · same architecture</div>
+      </div>
+      <div class="vault-tile">
+        <div>
+          <div class="vault-num">06</div>
+          <div class="vault-name" style="margin-top:14px">AEI App &middot; 20-company cohort</div>
+        </div>
+        <div class="vault-meta html">HTML · search · lead-gen routing</div>
+      </div>
+      <div class="vault-tile">
+        <div>
+          <div class="vault-num">07</div>
+          <div class="vault-name" style="margin-top:14px">Wakeline Competitive Brief</div>
+        </div>
+        <div class="vault-meta pdf">PDF · 5pp · ecosystem-mapped</div>
+      </div>
+      <div class="vault-tile">
+        <div>
+          <div class="vault-num">08</div>
+          <div class="vault-name" style="margin-top:14px">SAP Board Briefing &middot; Q3 2026</div>
+        </div>
+        <div class="vault-meta pdf">PDF + HTML · 13pp · primary GTM</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section id="mission">
+  <div class="wrap">
+    <p class="eyebrow">Ten weeks &middot; five blocks &middot; five gates</p>
+    <h2>From two consultants with good artifacts<br/>to a funded company with three paying customers.</h2>
+
+    <div class="mission-board">
+      <div class="mission-col">
+        <div class="mission-block">Block 01</div>
+        <div class="mission-weeks">Weeks 1—2</div>
+        <div class="mission-title">Lock the category claim</div>
+        <div class="mission-detail">Single 6-slide deck framing "persistent strategic decision intelligence" as the category. Test with three sophisticated outsiders.</div>
+        <div class="mission-gate">
+          <strong>Gate</strong>
+          If 2 of 3 say "I don't understand what's new," iterate before proceeding.
+        </div>
+      </div>
+
+      <div class="mission-col-positioner">
+        <div class="mission-col is-active">
+          <div class="mission-block">Block 02</div>
+          <div class="mission-weeks">Weeks 2—4</div>
+          <div class="mission-title">Two founding hires</div>
+          <div class="mission-detail">Founding engineer (3&ndash;8% equity) and founding GTM (2&ndash;4% equity). Without them, AEI remains two consultants with good artifacts.</div>
+          <div class="mission-gate">
+            <strong>Gate</strong>
+            Signed offers by week 4. The highest-leverage block in the plan.
+          </div>
+        </div>
+      </div>
+
+      <div class="mission-col">
+        <div class="mission-block">Block 03</div>
+        <div class="mission-weeks">Weeks 3—6</div>
+        <div class="mission-title">Build the persistence layer</div>
+        <div class="mission-detail">One customer genotype in Postgres. Weekly ingestion from 3&ndash;5 public sources. Demonstrable Score evolution.</div>
+        <div class="mission-gate">
+          <strong>Gate</strong>
+          Live week-1 vs week-6 Score delta shown to a paying customer.
+        </div>
+      </div>
+
+      <div class="mission-col">
+        <div class="mission-block">Block 04</div>
+        <div class="mission-weeks">Weeks 4—8</div>
+        <div class="mission-title">Sign three paying customers</div>
+        <div class="mission-detail">€120K/yr founding pricing, 60% off list, 6-month minimum. Targets: 1 mid-cap industrial, 1 mid-cap enterprise software, 1 PE portco.</div>
+        <div class="mission-gate">
+          <strong>Gate</strong>
+          ~€360K committed ARR before raising.
+        </div>
+      </div>
+
+      <div class="mission-col">
+        <div class="mission-block">Block 05</div>
+        <div class="mission-weeks">Weeks 8—10</div>
+        <div class="mission-title">Raise €3—5M pre-seed</div>
+        <div class="mission-detail">Earlybird Digital East &middot; HV Capital &middot; Project A &middot; Cherry Ventures. 18 months runway, 6&ndash;8 person team.</div>
+        <div class="mission-gate">
+          <strong>Gate</strong>
+          Term sheet or termination data by week 10.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLOTS -->
+<section id="slots">
+  <div class="wrap">
+    <p class="eyebrow">Open positions &middot; open seats</p>
+    <h2>Five empty slots. Fill them by end of August.</h2>
+
+    <div class="slots">
+      <div class="slot-section">
+        <div class="slot-header">
+          <span>Founding crew &middot; equity-bearing</span>
+          <span>Block 02 &middot; Weeks 2—4</span>
+        </div>
+        <div class="slot-grid-2">
+          <div class="slot">
+            <div class="slot-status">Open · seat 01</div>
+            <div class="slot-role">Founding Engineer</div>
+            <div class="slot-archetype">Ex-Palantir Forward Deployed, Celonis platform, or Personio early. Postgres + Python + customer-facing instinct. Will build the persistence layer.</div>
+            <div class="slot-meta">3—8% equity · Düsseldorf or remote EU</div>
+          </div>
+          <div class="slot">
+            <div class="slot-status">Open · seat 02</div>
+            <div class="slot-role">Founding GTM</div>
+            <div class="slot-archetype">Ex-Celonis or Personio enterprise SaaS sales. Has sold €100K+ ACV to mid-cap European industrials and DACH enterprise software. Knows the buyer.</div>
+            <div class="slot-meta">2—4% equity · Düsseldorf based</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slot-section">
+        <div class="slot-header">
+          <span>Founding customers &middot; €120K / yr · 60% off list</span>
+          <span>Block 04 &middot; Weeks 4—8</span>
+        </div>
+        <div class="slot-grid-3">
+          <div class="slot">
+            <div class="slot-status">Open · target 01</div>
+            <div class="slot-role">Mid-cap industrial</div>
+            <div class="slot-archetype">Profile match: Brenntag, KION, Symrise. Active portfolio reshape underway. CFO + Chief Strategy buyer.</div>
+            <div class="slot-meta">€120K · 6-month min · paid quarterly</div>
+          </div>
+          <div class="slot">
+            <div class="slot-status">Open · target 02</div>
+            <div class="slot-role">Mid-cap enterprise software</div>
+            <div class="slot-archetype">Profile match: TeamViewer, Software AG, Nemetschek. AI-integration capital allocation pressure. Board cadence aligned.</div>
+            <div class="slot-meta">€120K · 6-month min · paid quarterly</div>
+          </div>
+          <div class="slot">
+            <div class="slot-status">Open · target 03</div>
+            <div class="slot-role">PE portfolio company</div>
+            <div class="slot-archetype">Mid-cap PE holding in year 2&ndash;3 of hold. Buyer is the PE partner, not the portco CEO. Strongest reference flywheel.</div>
+            <div class="slot-meta">€120K · 6-month min · paid quarterly</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMIT -->
+<section id="commit" class="commit">
+  <div class="wrap-narrow">
+    <p class="eyebrow" style="display:inline-flex;justify-content:center;margin-left:auto;margin-right:auto">The ritual</p>
+    <h2>One button. <em>One decision.</em><br/>Run the 10-week plan.</h2>
+    <p class="commit-sub">
+      Clicking below timestamps the decision and logs it as <span style="font-family:var(--mono);color:var(--gold)">AEI-GENOTWIN-DR-2026-001</span> in the institutional record &mdash; the first entry in our own decision corpus. Same format we ship to SAP. Same format we will ship to every customer.
+    </p>
+    <button class="commit-btn" id="commit-btn">Run the 10-week plan</button>
+    <div class="commit-detail">Reversible &middot; logged &middot; auditable</div>
+  </div>
+</section>
+
+<footer>
+  Genotwin Cockpit · AEI on AEI · Q3 2026 · Built in a weekend · <span>Customer Zero</span>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <div class="modal-stamp">Institutional record</div>
+    <h3>Genotwin GmbH &middot; Decision Record</h3>
+    <div class="modal-id" id="modal-id">AEI-GENOTWIN-DR-2026-001 &middot; Issued <span id="modal-timestamp">—</span></div>
+    <div class="modal-title">Commitment to the 10-week kick-off plan</div>
+    <div class="modal-body">
+      Founding team commits to the five-block, ten-week kick-off plan as the binding execution path for Q3 2026. The plan is logged into the AEI institutional record under the same governance format used for customer briefings. The commitment is reversible, but the reversal will itself be logged. This is how we hold ourselves to the standard we sell.
+    </div>
+    <div class="modal-rec">
+      <div class="modal-rec-label">Recommended phenotype</div>
+      <div class="modal-rec-text">RUN. The founding hires (Block 02) are the highest-leverage commitment in the plan and the gate condition for everything else. Start the engineer search this week.</div>
+    </div>
+    <div class="modal-sig">
+      <div class="modal-sig-block">
+        <strong>Gerrit Bottemöller</strong>
+        Co-founder &middot; Genotwin GmbH
+      </div>
+      <div class="modal-sig-block" style="text-align:right">
+        <strong>Max</strong>
+        Co-founder &middot; Genotwin GmbH
+      </div>
+    </div>
+    <button class="modal-close" id="modal-close">Close record</button>
+  </div>
+</div>
+
+<script>
+  // -------- counter animation --------
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.counter);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const duration = 1600;
+    const start = performance.now();
+    function tick(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const v = Math.floor(target * eased);
+      el.textContent = prefix + v + suffix;
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = prefix + target + suffix;
+    }
+    requestAnimationFrame(tick);
+  }
+  const counters = document.querySelectorAll('[data-counter]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCounter(e.target);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  counters.forEach(c => io.observe(c));
+
+  // -------- threshold reveal --------
+  const openBtn = document.getElementById('open-customer-view');
+  const closeBtn = document.getElementById('close-customer-view');
+  const customerView = document.getElementById('customer-view');
+  openBtn.addEventListener('click', () => {
+    customerView.classList.add('is-open');
+    setTimeout(() => customerView.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+  });
+  closeBtn.addEventListener('click', () => {
+    document.getElementById('threshold').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => customerView.classList.remove('is-open'), 600);
+  });
+
+  // -------- commit modal --------
+  const commitBtn = document.getElementById('commit-btn');
+  const modal = document.getElementById('modal-backdrop');
+  const modalClose = document.getElementById('modal-close');
+  const modalTs = document.getElementById('modal-timestamp');
+  commitBtn.addEventListener('click', () => {
+    const now = new Date();
+    const opts = { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' };
+    modalTs.textContent = now.toLocaleString('en-GB', opts) + ' CET';
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  });
+  function closeModal() {
+    modal.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>
