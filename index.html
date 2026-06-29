@@ -325,19 +325,130 @@
   .altitude-inner{flex-wrap:wrap;gap:14px}
 }
 
+/* ============ INTRO · FOR GERRIT ============ */
+#view-intro{display:none}
+#view-intro.show{display:block}
+.intro{max-width:1060px;margin:0 auto;padding:0 28px}
+.intro-hero{padding:74px 0 30px;text-align:center;position:relative}
+.intro-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;display:inline-flex;align-items:center;gap:12px}
+.intro-eyebrow::before,.intro-eyebrow::after{content:'';width:30px;height:1px;background:var(--gold-soft)}
+.intro-h1{font-family:var(--serif);font-weight:300;font-size:clamp(40px,6.5vw,76px);line-height:1.02;letter-spacing:-.03em;color:var(--bone);margin:0 0 26px}
+.intro-h1 em{font-style:italic;color:var(--gold)}
+.intro-lede{font-family:var(--serif);font-weight:300;font-size:clamp(16px,1.9vw,21px);line-height:1.55;color:var(--bone-2);max-width:60ch;margin:0 auto 40px}
+.intro-cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.icta{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:17px 30px;cursor:pointer;border:1px solid var(--gold);background:var(--gold);color:var(--bg);font-weight:500;transition:all .25s}
+.icta:hover{background:var(--bone);border-color:var(--bone);letter-spacing:.18em}
+.icta span{margin-left:9px;display:inline-block;transition:transform .25s}
+.icta:hover span{transform:translateX(5px)}
+.icta.ghost{background:transparent;color:var(--gold)}
+.icta.ghost:hover{background:transparent;color:var(--bone);border-color:var(--bone)}
+
+.intro-sec{padding:64px 0;border-top:1px solid var(--border-soft)}
+.intro-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:26px;display:flex;align-items:center;gap:13px}
+.intro-kicker::before{content:'';width:26px;height:1px;background:var(--gold-soft)}
+.intro-kicker .step-no{color:var(--gold)}
+
+.oneliner{font-family:var(--serif);font-weight:300;font-size:clamp(24px,3.4vw,40px);line-height:1.25;letter-spacing:-.02em;color:var(--bone);max-width:24ch}
+.oneliner em{font-style:italic;color:var(--gold)}
+.oneliner-note{font-size:15px;color:var(--bone-2);line-height:1.6;max-width:62ch;margin-top:24px}
+.oneliner-note b{color:var(--bone)}
+
+/* clickable view cards */
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.icard{border:1px solid var(--border);border-top:2px solid var(--gold-soft);padding:30px 26px;background:var(--surface);cursor:pointer;transition:transform .25s,border-color .25s;display:flex;flex-direction:column;min-height:210px}
+.icard.flat{cursor:default;border-top-color:var(--border)}
+.icard:not(.flat):hover{transform:translateY(-3px);border-top-color:var(--gold)}
+.icard-num{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.icard-title{font-family:var(--serif);font-size:23px;color:var(--bone);letter-spacing:-.02em;margin-bottom:12px}
+.icard-text{font-size:14px;color:var(--bone-2);line-height:1.55;flex:1}
+.icard-go{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-top:18px;border-top:1px solid var(--border-soft);padding-top:14px}
+.icard.flat .icard-go{color:var(--mute)}
+
+/* steps */
+.steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.step{border:1px solid var(--border);padding:26px 22px;background:var(--surface);position:relative}
+.step-big{font-family:var(--serif);font-size:38px;font-weight:300;color:var(--gold-soft);line-height:1;margin-bottom:14px}
+.step-title{font-family:var(--serif);font-size:18px;color:var(--bone);letter-spacing:-.01em;margin-bottom:9px}
+.step-text{font-size:13px;color:var(--bone-2);line-height:1.5}
+
+/* suite */
+.suite{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--border);border-left:1px solid var(--border)}
+.suite-tile{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px;min-height:120px;display:flex;flex-direction:column;justify-content:space-between;transition:background .2s}
+.suite-tile.link{cursor:pointer}
+.suite-tile.link:hover{background:var(--surface)}
+.suite-name{font-family:var(--serif);font-size:18px;color:var(--bone);line-height:1.2;letter-spacing:-.01em}
+.suite-meta{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:12px}
+.suite-meta.live{color:var(--moss)}
+.suite-tag{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--bone-2);text-align:center;margin-top:26px}
+
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:8px}
+.phase{border:1px solid var(--border);border-left:none;padding:26px 22px;background:var(--surface);position:relative}
+.phase:first-child{border-left:1px solid var(--border)}
+.phase.now{background:linear-gradient(180deg,rgba(201,164,76,.06),transparent);border-top:2px solid var(--gold)}
+.phase-when{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.phase-name{font-family:var(--serif);font-size:21px;color:var(--bone);letter-spacing:-.01em;margin-bottom:12px}
+.phase-text{font-size:13px;color:var(--bone-2);line-height:1.5}
+.phase-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;background:var(--gold);color:var(--bg);padding:3px 9px;white-space:nowrap}
+
+/* gtm */
+.gtm-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.gtm-box{border:1px solid var(--border);padding:26px;background:var(--surface)}
+.gtm-box.full{grid-column:1/-1}
+.gtm-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.gtm-h{font-family:var(--serif);font-size:20px;color:var(--bone);letter-spacing:-.01em;margin-bottom:8px}
+.gtm-text{font-size:14px;color:var(--bone-2);line-height:1.55}
+.ladder{display:flex;gap:10px;margin-top:6px}
+.rung{flex:1;border:1px solid var(--border);border-bottom:2px solid var(--gold-soft);padding:16px;text-align:center}
+.rung:last-child{border-bottom-color:var(--gold)}
+.rung-v{font-family:var(--serif);font-size:22px;color:var(--gold);line-height:1}
+.rung-l{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-top:8px}
+.verticals{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.vchip{border:1px solid var(--border);padding:12px 14px;font-size:13px;color:var(--bone-2);font-family:var(--serif)}
+.vchip b{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-top:4px;font-weight:400}
+
+/* target numbers */
+.target-row{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--border)}
+.tcell{padding:26px 18px;border-right:1px solid var(--border-soft);text-align:center}
+.tcell:last-child{border-right:none}
+.tcell-v{font-family:var(--serif);font-size:clamp(26px,3vw,34px);font-weight:300;color:var(--gold);line-height:1;letter-spacing:-.02em}
+.tcell-l{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);margin-top:10px}
+
+/* ask */
+.ask-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--border-soft)}
+.ask-item{display:grid;grid-template-columns:40px 1fr auto;gap:20px;padding:18px 0;border-bottom:1px solid var(--border-soft);align-items:center}
+.ask-no{font-family:var(--mono);font-size:13px;color:var(--gold)}
+.ask-name{font-family:var(--serif);font-size:18px;color:var(--bone)}
+.ask-when{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);white-space:nowrap}
+.ask-item.hot .ask-name{color:var(--gold)}
+.ask-call{border:1px solid var(--gold-soft);border-left:2px solid var(--gold);background:rgba(201,164,76,.05);padding:22px 26px;margin-top:28px}
+.ask-call-label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.ask-call-text{font-family:var(--serif);font-size:17px;color:var(--bone);line-height:1.55;font-style:italic}
+.intro-end{text-align:center;padding:60px 0 90px}
+
+@media(max-width:820px){
+  .cards3,.steps4,.suite,.road,.gtm-grid,.verticals{grid-template-columns:1fr}
+  .target-row{grid-template-columns:repeat(2,1fr)}
+  .tcell{border-bottom:1px solid var(--border-soft)}
+  .phase,.suite-tile{border-left:1px solid var(--border)}
+  .ladder{flex-direction:column}
+  .ask-item{grid-template-columns:30px 1fr;}.ask-when{grid-column:2}
+}
+
 </style>
 </head>
 <body>
 
 <nav class="altitude-nav">
   <div class="altitude-inner">
-    <div class="al-brand"><span class="al-mark"></span> AEI Decision Brief
-      <span class="al-meta">Capgemini SE · Q3 2026</span>
+    <div class="al-brand"><span class="al-mark"></span> AEI · Project Intro
+      <span class="al-meta">For Gerrit · Capgemini demo</span>
     </div>
     <div style="display:flex;align-items:center;gap:12px">
       <button class="play-btn" id="play-btn">▸ 60-second brief</button>
       <div class="al-toggle">
-        <button class="al-tab active" data-view="board">Boardroom</button>
+        <button class="al-tab active" data-view="intro">Intro</button>
+        <button class="al-tab" data-view="board">Boardroom</button>
         <button class="al-tab" data-view="engine">Engine</button>
       </div>
     </div>
@@ -345,6 +456,159 @@
 </nav>
 
 <div id="view-board"></div>
+<div id="view-intro">
+  <div class="intro">
+
+    <div class="intro-hero">
+      <div class="intro-eyebrow">For Gerrit · the project, start to finish</div>
+      <h1 class="intro-h1">AEI, <em>made real</em><br/>over a weekend.</h1>
+      <p class="intro-lede">Everything you imagined the idea could be &mdash; the score, the workbench, the architecture, the board pack &mdash; now exists and runs. This page walks you through what it is, how it works, where it goes, and how we sell it. Ten minutes, then you decide.</p>
+      <div class="intro-cta-row">
+        <button class="icta" data-go="board">See the decision brief <span>&rarr;</span></button>
+        <button class="icta ghost" data-go="play">Watch the 60-second story</button>
+      </div>
+    </div>
+
+    <!-- ONE SENTENCE -->
+    <div class="intro-sec">
+      <div class="intro-kicker">In one sentence</div>
+      <div class="oneliner">AEI is a persistent intelligence layer for the highest-stakes decisions a company makes &mdash; capital, M&amp;A, transformation, portfolio. <em>The Bloomberg Terminal for strategic decisions.</em></div>
+      <p class="oneliner-note">Aera Technology just proved that <b>operational</b> decision intelligence is venture-scale &mdash; named a Gartner Leader in January 2026. But the <b>strategic</b> quadrant &mdash; the quarterly, board-level decisions &mdash; is still empty. AEI claims it before it gets named. That timing is the whole bet.</p>
+    </div>
+
+    <!-- WHAT YOU'RE LOOKING AT -->
+    <div class="intro-sec">
+      <div class="intro-kicker">What you&rsquo;re looking at</div>
+      <div class="cards3">
+        <div class="icard" data-go="board">
+          <div class="icard-num">01 · the answer</div>
+          <div class="icard-title">Decision Brief</div>
+          <div class="icard-text">The one screen a board sees: the &euro; number, the recommended call, and the proof behind it. No clicking required to get the point.</div>
+          <div class="icard-go">Open it &rarr;</div>
+        </div>
+        <div class="icard" data-go="engine">
+          <div class="icard-num">02 · the machine</div>
+          <div class="icard-title">Architecture Engine</div>
+          <div class="icard-text">How it works: 19 stages from raw data to bound decision. Every box is a live dashboard with its own decision support. The credibility layer.</div>
+          <div class="icard-go">Open it &rarr;</div>
+        </div>
+        <div class="icard" data-href="workbench.html">
+          <div class="icard-num">03 · the product</div>
+          <div class="icard-title">Live Workbench</div>
+          <div class="icard-text">The surface customers log into &mdash; three companies, live simulators, clickable decisions. Opens in a new tab.</div>
+          <div class="icard-go">Open it &rarr;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="intro-sec">
+      <div class="intro-kicker">How it works · in four steps</div>
+      <div class="steps4">
+        <div class="step"><div class="step-big">1</div><div class="step-title">Reads your systems</div><div class="step-text">Read-only, from the tools where strategy actually happens &mdash; ERP, planning, HR, CRM, billing. Nothing re-keyed.</div></div>
+        <div class="step"><div class="step-big">2</div><div class="step-title">Watches the market</div><div class="step-text">Filings, analysts, patents, peers &mdash; the outside view that keeps the score honest and peer-relative.</div></div>
+        <div class="step"><div class="step-big">3</div><div class="step-title">Scores the genotype</div><div class="step-text">A 14-agent engine scores the company across six dimensions, every week, with a confidence level and a reasoning trail.</div></div>
+        <div class="step"><div class="step-big">4</div><div class="step-title">Ships bound decisions</div><div class="step-text">STOP / RESEQUENCE / ACQUIRE &mdash; each with a &euro; value and an audit trail &mdash; delivered into the board&rsquo;s own cadence.</div></div>
+      </div>
+    </div>
+
+    <!-- THE SUITE -->
+    <div class="intro-sec">
+      <div class="intro-kicker">What we built this weekend</div>
+      <div class="suite">
+        <div class="suite-tile link" data-href="cockpit.html"><div class="suite-name">Genotwin Founder Cockpit</div><div class="suite-meta">AEI applied to ourselves</div></div>
+        <div class="suite-tile link" data-href="workbench.html"><div class="suite-name">AEI Workbench MVP</div><div class="suite-meta live">Live · 3 companies</div></div>
+        <div class="suite-tile link" data-go="engine"><div class="suite-name">Architecture Engine</div><div class="suite-meta">SAP &amp; Capgemini</div></div>
+        <div class="suite-tile link" data-go="board"><div class="suite-name">Capgemini Decision Brief</div><div class="suite-meta live">In this file</div></div>
+        <div class="suite-tile link" data-href="board-briefing.html"><div class="suite-name">SAP Board Briefing Pack</div><div class="suite-meta">Bound · the GTM artifact</div></div>
+        <div class="suite-tile link" data-href="methodology.html"><div class="suite-name">AEI Score Methodology</div><div class="suite-meta">The neutral framework</div></div>
+      </div>
+      <div class="suite-tag">Six shippable artifacts. No slides &mdash; working software.</div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div class="intro-sec">
+      <div class="intro-kicker">Product roadmap</div>
+      <div class="road">
+        <div class="phase now"><div class="phase-badge">You are here</div><div class="phase-when">Now</div><div class="phase-name">Proof</div><div class="phase-text">Methodology, design language and the artifact suite. Done. A high-quality consulting product with real revenue potential &mdash; but not yet venture-scale.</div></div>
+        <div class="phase"><div class="phase-when">Weeks 1&ndash;10</div><div class="phase-name">Persistence</div><div class="phase-text">Lock the category claim, two founding hires, the persistence layer (one genotype in Postgres, weekly ingestion, a score that visibly moves), three paying customers, a &euro;3&ndash;5M pre-seed.</div></div>
+        <div class="phase"><div class="phase-when">Year 1&ndash;2</div><div class="phase-name">Telemetry layer</div><div class="phase-text">Integrate into the customer&rsquo;s decision infrastructure. A continuous instrument, not a quarterly diagnostic. This is the step that turns consulting into platform &mdash; &euro;100M+ ARR path.</div></div>
+        <div class="phase"><div class="phase-when">Year 3&ndash;6</div><div class="phase-name">Category leader</div><div class="phase-text">~800 customers, the Gartner Magic Quadrant for strategic decision intelligence with our name as Leader, and an IPO or strategic exit.</div></div>
+      </div>
+    </div>
+
+    <!-- GTM -->
+    <div class="intro-sec">
+      <div class="intro-kicker">How we sell it · go-to-market</div>
+      <div class="gtm-grid">
+        <div class="gtm-box">
+          <div class="gtm-label">The wedge</div>
+          <div class="gtm-h">The Board Briefing Pack</div>
+          <div class="gtm-text">A bound quarterly pack, shipped to each board member. Tangible, board-level, and hard to cancel &mdash; the single artifact that sells the subscription.</div>
+        </div>
+        <div class="gtm-box">
+          <div class="gtm-label">Who buys</div>
+          <div class="gtm-h">Listed companies &amp; PE portfolios</div>
+          <div class="gtm-text">Buyers are the CFO, the Chief Strategy Officer and the board &mdash; the people who own the decisions AEI instruments.</div>
+        </div>
+        <div class="gtm-box full">
+          <div class="gtm-label">Pricing ladder</div>
+          <div class="ladder">
+            <div class="rung"><div class="rung-v">&euro;120K</div><div class="rung-l">Founding · 60% off</div></div>
+            <div class="rung"><div class="rung-v">&euro;300&ndash;800K</div><div class="rung-l">List · per year</div></div>
+            <div class="rung"><div class="rung-v">&euro;1&ndash;3M</div><div class="rung-l">PE portfolio license</div></div>
+          </div>
+          <div class="gtm-text" style="margin-top:16px">The motion: three founding customers (~&euro;360K committed ARR) &rarr; pre-seed &rarr; scale toward 800.</div>
+        </div>
+        <div class="gtm-box full">
+          <div class="gtm-label">Six ways in · TAM &euro;5&ndash;10B</div>
+          <div class="verticals">
+            <div class="vchip">M&amp;A diligence<b>&euro;100&ndash;300K / deal</b></div>
+            <div class="vchip">Activist defense<b>&euro;200&ndash;400K / yr</b></div>
+            <div class="vchip">CEO / CFO transition<b>handover intelligence</b></div>
+            <div class="vchip">PE portfolio cadence<b>&euro;1&ndash;3M / yr</b></div>
+            <div class="vchip">Audit-committee oversight<b>&euro;300&ndash;500K / yr</b></div>
+            <div class="vchip">Sovereign &amp; family office<b>&euro;500K&ndash;1M / yr</b></div>
+          </div>
+          <div class="gtm-text" style="margin-top:16px">Edge: an alliance with AIBI (Dr. Kumar) gives mature commercial packaging on day one &mdash; their scaffolding, our product backbone.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TARGET -->
+    <div class="intro-sec">
+      <div class="intro-kicker">The target picture · 2032</div>
+      <div class="target-row">
+        <div class="tcell"><div class="tcell-v" data-icount="€350M">€0M</div><div class="tcell-l">ARR</div></div>
+        <div class="tcell"><div class="tcell-v" data-icount="800">0</div><div class="tcell-l">Customers</div></div>
+        <div class="tcell"><div class="tcell-v" data-icount="50%">0%</div><div class="tcell-l">YoY growth</div></div>
+        <div class="tcell"><div class="tcell-v" data-icount="82%">0%</div><div class="tcell-l">Gross margin</div></div>
+        <div class="tcell"><div class="tcell-v">€4&ndash;6B</div><div class="tcell-l">IPO or exit</div></div>
+      </div>
+    </div>
+
+    <!-- THE ASK -->
+    <div class="intro-sec">
+      <div class="intro-kicker">The next 10 weeks · the ask</div>
+      <div class="ask-list">
+        <div class="ask-item"><div class="ask-no">01</div><div class="ask-name">Lock the category claim</div><div class="ask-when">Weeks 1&ndash;2</div></div>
+        <div class="ask-item hot"><div class="ask-no">02</div><div class="ask-name">Two founding hires &mdash; the highest-leverage move</div><div class="ask-when">Weeks 2&ndash;4</div></div>
+        <div class="ask-item"><div class="ask-no">03</div><div class="ask-name">Build the persistence layer</div><div class="ask-when">Weeks 3&ndash;6</div></div>
+        <div class="ask-item"><div class="ask-no">04</div><div class="ask-name">Sign three paying customers</div><div class="ask-when">Weeks 4&ndash;8</div></div>
+        <div class="ask-item"><div class="ask-no">05</div><div class="ask-name">Raise &euro;3&ndash;5M pre-seed</div><div class="ask-when">Weeks 8&ndash;10</div></div>
+      </div>
+      <div class="ask-call">
+        <div class="ask-call-label">What it needs from you</div>
+        <div class="ask-call-text">Give up 5&ndash;12% equity to two founding hires without flinching. Three investor conversations in the first month, not at week ten. And stop polishing the artifacts &mdash; they&rsquo;re done. The product already works. The only missing inputs are a second pair of hands on execution and the first paying seat.</div>
+      </div>
+      <div class="intro-end">
+        <button class="icta" data-go="board">See what a customer sees <span>&rarr;</span></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <button id="play-btn-2" style="display:none"></button>
 <div id="view-engine">
 <div class="wrap">
@@ -496,11 +760,26 @@ function animateBoardBars(){document.querySelectorAll('#view-board .ocfill').for
 
 /* ============ VIEW SWITCHING ============ */
 function showView(which){
-  const board=document.getElementById('view-board'),engine=document.getElementById('view-engine');
+  const views={intro:document.getElementById('view-intro'),board:document.getElementById('view-board'),engine:document.getElementById('view-engine')};
   document.querySelectorAll('.al-tab').forEach(t=>t.classList.toggle('active',t.dataset.view===which));
-  if(which==='board'){engine.classList.remove('show');board.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});requestAnimationFrame(()=>{animateBoardNumber();animateBoardBars();});}
-  else{board.classList.remove('show');engine.classList.add('show');window.scrollTo({top:0,behavior:'smooth'});requestAnimationFrame(()=>{if(typeof drawLinks==='function')drawLinks();});}
+  Object.values(views).forEach(v=>{if(v)v.classList.remove('show');});
+  if(views[which])views[which].classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(which==='board')requestAnimationFrame(()=>{animateBoardNumber();animateBoardBars();});
+  if(which==='engine')requestAnimationFrame(()=>{if(typeof drawLinks==='function')drawLinks();});
+  if(which==='intro')requestAnimationFrame(animateIntro);
 }
+function animateIntro(){
+  document.querySelectorAll('#view-intro [data-icount]').forEach(el=>{
+    const raw=el.dataset.icount;const m=raw.match(/^([^\d\-]*)(-?[\d.]+)(.*)$/);if(!m){el.textContent=raw;return;}
+    const pre=m[1],num=parseFloat(m[2]),suf=m[3],dec=(m[2].split('.')[1]||'').length;const dur=1100,t0=performance.now();
+    function tick(now){const t=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-t,3),v=num*e;el.textContent=pre+(dec?v.toFixed(dec):Math.round(v))+suf;if(t<1)requestAnimationFrame(tick);else el.textContent=raw;}
+    requestAnimationFrame(tick);
+  });
+}
+/* wire any element with data-go (intro CTAs + cards) */
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{const g=b.dataset.go;if(g==='play'){startPlay();}else{showView(g);}}));
+document.querySelectorAll('[data-href]').forEach(b=>b.addEventListener('click',()=>window.open(b.dataset.href,'_blank','noopener')));
 document.querySelectorAll('.al-tab').forEach(t=>t.addEventListener('click',()=>showView(t.dataset.view)));
 
 /* ============ PLAY MODE (60-second narrated story) ============ */
@@ -535,7 +814,7 @@ playStage.addEventListener('click',e=>{if(e.target===playStage){playIdx++;if(pla
 
 /* ============ INIT BOARD ============ */
 renderBoard();
-showView('board');
+showView('intro');
 
 
 /* ===== ENGINE (Capgemini 19-stage) ===== */
