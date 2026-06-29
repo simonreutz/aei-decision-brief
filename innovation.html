@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AEI Innovation Edition · Innovation Budget Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0c0e1a;--bg-2:#11142a;--surface:#151829;--surface-2:#1a1e34;--border:#252a44;--border-soft:#1d2138;
+    --gold:#c9a44c;--gold-soft:#8a7333;--gold-glow:rgba(201,164,76,.18);
+    --oxblood:#7a2e2e;--burnt:#c97a3a;--moss:#6b8e5a;--teal:#4a8c8c;
+    --bone:#e8e3d5;--bone-2:#c8c2b1;--mute:#7a8099;--mute-2:#565b76;
+    --paper:#f4ecd8;--paper-ink:#2a2418;--paper-soft:#6b5d3a;--paper-line:#cabf9d;
+    --serif:'Fraunces','Iowan Old Style',Georgia,serif;--sans:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--bone);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--gold);color:var(--bg)}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(201,164,76,.06),transparent 60%),radial-gradient(ellipse 60% 50% at 90% 110%,rgba(74,140,140,.05),transparent 60%)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+  .wrap-n{max-width:880px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+
+  /* NAV */
+  .nav{position:sticky;top:0;z-index:60;background:rgba(12,14,26,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-soft)}
+  .nav-inner{max-width:1280px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .brand{font-family:var(--serif);font-size:16px;font-weight:500;letter-spacing:-.01em;display:flex;align-items:center;gap:11px}
+  .brand-mark{width:20px;height:20px;border:1.5px solid var(--gold);border-radius:50%;position:relative}
+  .brand-mark::after{content:'';position:absolute;inset:4px;background:var(--gold);border-radius:50%;opacity:.7}
+  .brand-meta{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;margin-left:12px;padding-left:12px;border-left:1px solid var(--border)}
+  .back{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);text-decoration:none;border:1px solid var(--border);padding:9px 14px;transition:all .2s}
+  .back:hover{color:var(--gold);border-color:var(--gold)}
+
+  /* HERO */
+  header{padding:60px 0 40px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:12px;margin-bottom:22px}
+  .eyebrow::before{content:'';width:28px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5.2vw,58px);line-height:1.04;letter-spacing:-.03em;margin:0 0 22px;max-width:22ch}
+  h1 em{font-style:italic;color:var(--gold)}
+  .lede{font-family:var(--serif);font-weight:300;font-size:clamp(16px,1.7vw,20px);line-height:1.6;color:var(--bone-2);max-width:64ch}
+  .lede b{color:var(--bone);font-weight:400}
+
+  section{padding:80px 0;border-top:1px solid var(--border-soft);position:relative}
+  h2{font-family:var(--serif);font-weight:300;font-size:clamp(28px,3.6vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 14px}
+  h2 em{font-style:italic;color:var(--gold)}
+  p{color:var(--bone-2);font-size:15.5px;line-height:1.65}
+
+  /* KPI strip (harmonized with suite) */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);margin:30px 0 22px}
+  .kpi{padding:22px;border-right:1px solid var(--border-soft)}
+  .kpi:last-child{border-right:none}
+  .kpi-v{font-family:var(--serif);font-size:32px;font-weight:300;color:var(--gold);line-height:1;letter-spacing:-.02em}
+  .kpi-l{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:11px;display:flex;align-items:center;gap:6px}
+  .kpi-t{font-size:8px}.kpi-t.up{color:var(--moss)}.kpi-t.down{color:var(--burnt)}.kpi-t.flat{color:var(--mute-2)}
+
+  .signal{display:flex;align-items:center;gap:13px;font-family:var(--serif);font-style:italic;font-size:17px;color:var(--bone);padding:16px 20px;background:var(--bg-2);border-left:2px solid var(--gold);margin:22px 0;line-height:1.45}
+  .sig-d{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);flex-shrink:0;animation:breathe 2s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+
+  /* SECTION: HORIZONS */
+  .horizons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--border);margin-top:32px}
+  .hor{padding:28px 26px;border-right:1px solid var(--border-soft);position:relative}
+  .hor:last-child{border-right:none}
+  .hor-no{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .hor-t{font-family:var(--serif);font-size:22px;color:var(--bone);letter-spacing:-.01em;margin-bottom:6px}
+  .hor-d{font-size:13px;color:var(--mute);margin-bottom:18px;font-family:var(--mono);letter-spacing:.02em}
+  .hor-bar{height:8px;background:var(--border);position:relative;overflow:hidden}
+  .hor-fill{height:100%;background:var(--gold);width:0;transition:width 1.4s cubic-bezier(.2,.7,.3,1)}
+  .hor-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--bone-2);margin-top:11px}
+  .hor-row b{color:var(--gold)}
+  .hor-mix{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:14px;padding-top:12px;border-top:1px solid var(--border-soft)}
+  .hor-mix b{color:var(--burnt);font-weight:500}
+  .hor-mix b.ok{color:var(--moss)}
+
+  /* PORTFOLIO — interactive grid */
+  .pf-frame{margin-top:32px;border:1px solid var(--border);background:var(--surface)}
+  .pf-head{padding:18px 22px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+  .pf-h-t{font-family:var(--serif);font-size:18px;color:var(--bone);letter-spacing:-.01em}
+  .pf-h-sub{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--mute);text-transform:uppercase}
+  .pf-legend{display:flex;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--mute);text-transform:uppercase}
+  .pfl{display:flex;align-items:center;gap:7px}
+  .pfl-d{width:9px;height:9px;border-radius:1px}
+  .pfl-d.fund{background:var(--moss)}.pfl-d.scale{background:var(--gold)}.pfl-d.reseq{background:var(--burnt)}.pfl-d.kill{background:var(--oxblood)}
+  .pf-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:0;padding:0}
+  .pf-axis{grid-column:1/-1;display:grid;grid-template-columns:140px 1fr;border-bottom:1px solid var(--border-soft);font-family:var(--mono);font-size:9.5px;color:var(--mute);letter-spacing:.08em;text-transform:uppercase}
+  .pf-axis-l{padding:11px 16px;border-right:1px solid var(--border-soft)}
+  .pf-axis-r{padding:11px 16px;display:flex;justify-content:space-between}
+  .pf-bet{grid-column:1/-1;display:grid;grid-template-columns:140px 1fr 110px 110px 80px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border-soft);cursor:pointer;transition:background .2s}
+  .pf-bet:hover{background:var(--surface-2)}
+  .pf-bet.sel{background:rgba(201,164,76,.06)}
+  .pf-bet:last-of-type{border-bottom:none}
+  .pf-name{font-family:var(--serif);font-size:15px;color:var(--bone);letter-spacing:-.01em}
+  .pf-name small{display:block;font-family:var(--mono);font-size:9px;color:var(--mute);letter-spacing:.06em;margin-top:3px;text-transform:uppercase}
+  .pf-canvas{position:relative;height:34px;background:linear-gradient(90deg,rgba(122,46,46,.05),rgba(201,164,76,.05),rgba(107,142,90,.05));border:1px solid var(--border-soft);margin:0 18px}
+  .pf-dot{position:absolute;width:18px;height:18px;border-radius:50%;top:50%;transform:translate(-50%,-50%);transition:left .9s cubic-bezier(.2,.7,.3,1),background .25s,box-shadow .25s;box-shadow:0 0 0 0 rgba(201,164,76,0)}
+  .pf-dot.fund{background:var(--moss)}.pf-dot.scale{background:var(--gold);box-shadow:0 0 0 4px var(--gold-glow)}.pf-dot.reseq{background:var(--burnt)}.pf-dot.kill{background:var(--oxblood)}
+  .pf-bet.sel .pf-dot{box-shadow:0 0 0 5px rgba(201,164,76,.25)}
+  .pf-spend{font-family:var(--mono);font-size:12px;color:var(--bone);text-align:right}
+  .pf-spend small{display:block;font-size:9px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+  .pf-conf{font-family:var(--mono);font-size:11px;color:var(--bone-2);display:flex;align-items:center;gap:7px;justify-content:flex-end}
+  .pf-conf .ccf{width:36px;height:3px;background:var(--border)}
+  .pf-conf .ccfill{height:100%;background:var(--gold-soft);width:0;transition:width 1s ease}
+  .pf-call{justify-self:end;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border:1px solid;border-radius:1px}
+  .pf-call.fund{color:var(--moss);border-color:var(--moss)}
+  .pf-call.scale{color:var(--gold);border-color:var(--gold)}
+  .pf-call.reseq{color:var(--burnt);border-color:var(--burnt)}
+  .pf-call.kill{color:var(--oxblood);border-color:var(--oxblood)}
+
+  /* PORTFOLIO FOOTER */
+  .pf-foot{padding:18px 22px;border-top:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;background:var(--bg-2)}
+  .pf-total{display:flex;gap:24px;font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.04em}
+  .pf-total strong{color:var(--bone);font-family:var(--serif);font-size:17px;letter-spacing:-.01em;display:block;margin-top:4px;font-weight:400}
+  .pf-total .gold strong{color:var(--gold)}
+  .pf-actions{display:flex;gap:10px}
+  .pfa{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:11px 18px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--bone-2);transition:all .2s}
+  .pfa:hover{color:var(--gold);border-color:var(--gold)}
+  .pfa.primary{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:500}
+  .pfa.primary:hover{background:var(--bone);border-color:var(--bone);color:var(--bg);letter-spacing:.14em}
+
+  /* DETAIL DRAWER */
+  .detail{margin-top:14px;border:1px solid var(--border);padding:24px 26px;background:var(--surface);display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .detail-l h3{font-family:var(--serif);font-size:22px;color:var(--bone);letter-spacing:-.01em;margin:0 0 8px}
+  .detail-l h3 em{font-style:italic;color:var(--gold);font-weight:300}
+  .detail-meta{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--mute);text-transform:uppercase;margin-bottom:14px}
+  .detail-body{font-size:14px;color:var(--bone-2);line-height:1.55;margin-bottom:16px}
+  .detail-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft)}
+  .ds{padding:13px 0;border-right:1px solid var(--border-soft);padding-right:14px}
+  .ds:nth-child(2),.ds:last-child{border-right:none;padding-left:14px;padding-right:0}
+  .ds-v{font-family:var(--serif);font-size:20px;color:var(--gold);line-height:1}
+  .ds-l{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:6px}
+  .agents{margin-top:8px}
+  .agent{display:grid;grid-template-columns:80px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid var(--border-soft);align-items:start}
+  .agent:last-child{border-bottom:none}
+  .agent-n{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.04em;padding-top:2px}
+  .agent-f{font-size:12.5px;color:var(--bone-2);line-height:1.5}
+
+  /* DECISION-SUPPORT DECK */
+  .dsh{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:34px 0 14px;display:flex;align-items:center;gap:10px}
+  .dsh::before{content:'';width:14px;height:1px;background:var(--gold-soft)}
+  .dsupport{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .dcard{border:1px solid var(--border);border-top:2px solid var(--border);padding:18px;cursor:pointer;transition:all .2s;background:var(--surface-2);display:flex;flex-direction:column}
+  .dcard:hover{transform:translateY(-2px);border-color:var(--gold-soft)}
+  .dcard.rec{border-top-color:var(--gold)}
+  .dcard.chosen{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-glow);background:rgba(201,164,76,.05)}
+  .dc-k{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:9px}
+  .dcard.rec .dc-k{color:var(--gold)}
+  .dc-a{font-family:var(--serif);font-size:15px;color:var(--bone);line-height:1.2;margin-bottom:7px;letter-spacing:-.01em}
+  .dc-w{font-size:12px;color:var(--mute);line-height:1.45;flex:1;margin-bottom:13px}
+  .dc-f{border-top:1px solid var(--border-soft);padding-top:11px;display:flex;justify-content:space-between;align-items:center}
+  .dc-imp{font-family:var(--mono);font-size:11px;color:var(--gold)}
+  .dc-conf{font-family:var(--mono);font-size:9.5px;color:var(--mute)}
+
+  /* PORTFOLIO REVIEW (artifact preview) */
+  .review{background:var(--paper);color:var(--paper-ink);padding:46px 50px;font-family:var(--serif);position:relative;margin-top:18px}
+  .review::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--gold),var(--oxblood))}
+  .rv-kicker{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-soft);margin-bottom:14px}
+  .rv-title{font-family:var(--serif);font-size:32px;color:#1a1610;letter-spacing:-.02em;line-height:1.06;margin-bottom:6px;font-weight:300}
+  .rv-sub{font-style:italic;color:var(--paper-soft);font-size:15px;margin-bottom:22px}
+  .rv-rule{height:1px;background:var(--paper-line);margin:18px 0}
+  .rv-let{font-size:15px;line-height:1.75;color:var(--paper-ink);font-style:italic;margin-bottom:18px}
+  .rv-sign{font-family:var(--serif);font-style:italic;font-size:15px;color:#1a1610}
+  .rv-sign small{display:block;font-family:var(--mono);font-style:normal;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--paper-soft);margin-top:3px}
+  .rv-toc{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .rv-toc div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dotted var(--paper-line);font-size:13.5px;color:var(--paper-ink)}
+  .rv-toc div span:last-child{font-family:var(--mono);font-size:10.5px;color:var(--paper-soft)}
+
+  /* HOW-IT-WORKS strip */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+  .step{border:1px solid var(--border);padding:24px 22px;background:var(--surface)}
+  .step-n{font-family:var(--serif);font-size:34px;color:var(--gold-soft);line-height:1;margin-bottom:12px;font-weight:300}
+  .step-t{font-family:var(--serif);font-size:17px;color:var(--bone);letter-spacing:-.01em;margin-bottom:8px}
+  .step-x{font-size:13px;color:var(--bone-2);line-height:1.5}
+
+  /* PRICING */
+  .price{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);margin-top:24px}
+  .pcell{padding:30px 26px;border-right:1px solid var(--border-soft);text-align:center}
+  .pcell:last-child{border-right:none}
+  .pcell.rec{background:linear-gradient(180deg,rgba(201,164,76,.05),transparent);border-top:2px solid var(--gold)}
+  .pcell-tag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:14px}
+  .pcell.rec .pcell-tag{color:var(--gold)}
+  .pcell-v{font-family:var(--serif);font-size:32px;color:var(--gold);font-weight:300;line-height:1;letter-spacing:-.02em;margin-bottom:8px}
+  .pcell-l{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--bone-2);margin-bottom:14px}
+  .pcell-d{font-size:13px;color:var(--mute);line-height:1.5}
+
+  footer{padding:50px 28px;border-top:1px solid var(--border-soft);text-align:center;font-family:var(--mono);font-size:10px;color:var(--mute-2);letter-spacing:.12em;text-transform:uppercase;margin-top:30px}
+  footer span{color:var(--gold)}
+
+  @media(max-width:820px){
+    .kpis,.horizons,.steps,.price,.dsupport,.detail,.rv-toc{grid-template-columns:1fr}
+    .kpi,.hor,.pcell{border-right:none;border-bottom:1px solid var(--border-soft)}
+    .pf-bet{grid-template-columns:1fr;gap:10px}.pf-canvas{margin:0}
+    .pf-foot{flex-direction:column;align-items:stretch}.pf-actions{justify-content:stretch}.pfa{flex:1}
+    section{padding:54px 0}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="brand-mark"></span>AEI Innovation Edition<span class="brand-meta">Edition for CDO / Head of R&amp;D</span></div>
+    <a href="index.html" class="back">&larr; Back to project</a>
+  </div>
+</nav>
+
+<header class="wrap">
+  <p class="eyebrow">AEI · Innovation Edition · vertical wedge</p>
+  <h1>The innovation budget you're already spending &mdash; <em>scored, ranked, and decided.</em></h1>
+  <p class="lede">Most enterprises spend <b>2&ndash;5% of revenue</b> on innovation across dozens of bets, with little discipline between fund, scale, resequence and kill. AEI Innovation Edition is the same engine behind our strategic-decision platform, packaged for the <b>Chief Innovation Officer, Head of R&amp;D and CDO</b> &mdash; with a monthly Innovation Portfolio Review as the lead artifact.</p>
+</header>
+
+<!-- KPI strip -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Capgemini SE · innovation portfolio · Q3 2026</p>
+    <h2>The portfolio, <em>at a glance.</em></h2>
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-v" data-c="€340M">€0M</div><div class="kpi-l">Annual innovation spend <span class="kpi-t flat">&mdash;</span></div></div>
+      <div class="kpi"><div class="kpi-v" data-c="14">0</div><div class="kpi-l">Active bets <span class="kpi-t flat">&mdash;</span></div></div>
+      <div class="kpi"><div class="kpi-v" data-c="€84M">€0M</div><div class="kpi-l">Unattributed to outcome <span class="kpi-t down">&#9660;</span></div></div>
+      <div class="kpi"><div class="kpi-v" data-c="18%">0%</div><div class="kpi-l">Kill rate (peer 31%) <span class="kpi-t down">&#9660;</span></div></div>
+    </div>
+    <div class="signal"><span class="sig-d"></span>&euro;84M of innovation spend cannot be tied to a measurable outcome &mdash; and the kill rate is well below peer median.</div>
+  </div>
+</section>
+
+<!-- HORIZONS -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Horizon mix &middot; H1 / H2 / H3</p>
+    <h2>Where the budget actually sits.</h2>
+    <p style="max-width:62ch">McKinsey&rsquo;s three horizons of innovation, applied to the live portfolio. A healthy mix for a services firm at this scale is roughly 70/20/10. Capgemini is over-weighted in H1 efficiency plays and under-investing in H3 model-shift bets &mdash; the exact frontier that AI is reshaping.</p>
+    <div class="horizons">
+      <div class="hor">
+        <div class="hor-no">Horizon 1</div>
+        <div class="hor-t">Core extension</div>
+        <div class="hor-d">Defending today's business</div>
+        <div class="hor-bar"><div class="hor-fill" data-w="82" style="background:var(--moss)"></div></div>
+        <div class="hor-row"><span>&euro;278M</span><b>82%</b></div>
+        <div class="hor-mix">Target 70% &middot; <b>over-weighted</b></div>
+      </div>
+      <div class="hor">
+        <div class="hor-no">Horizon 2</div>
+        <div class="hor-t">Adjacencies</div>
+        <div class="hor-d">Building tomorrow's revenue</div>
+        <div class="hor-bar"><div class="hor-fill" data-w="14" style="background:var(--gold)"></div></div>
+        <div class="hor-row"><span>&euro;48M</span><b>14%</b></div>
+        <div class="hor-mix">Target 20% &middot; <b>thin</b></div>
+      </div>
+      <div class="hor">
+        <div class="hor-no">Horizon 3</div>
+        <div class="hor-t">Model-shift bets</div>
+        <div class="hor-d">Inventing the next model</div>
+        <div class="hor-bar"><div class="hor-fill" data-w="4" style="background:var(--oxblood)"></div></div>
+        <div class="hor-row"><span>&euro;14M</span><b>4%</b></div>
+        <div class="hor-mix">Target 10% &middot; <b>critical gap</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">The portfolio &middot; 14 bets &middot; one screen</p>
+    <h2>Every euro, <em>plotted on the kill&ndash;to&ndash;scale axis.</em></h2>
+    <p style="max-width:64ch">Each bet is placed by AEI on a left-to-right axis from <b>kill</b> (low confidence, low strategic fit) to <b>scale</b> (high confidence, strong fit). Spend, confidence and the recommended call are computed weekly. Click any bet to inspect the reasoning trail; click <b>Apply AEI recommendations</b> to see the redistributed portfolio.</p>
+
+    <div class="pf-frame">
+      <div class="pf-head">
+        <div>
+          <div class="pf-h-t">Capgemini Innovation Portfolio &middot; Q3 2026</div>
+          <div class="pf-h-sub">Total &euro;340M &middot; 14 bets &middot; updated weekly</div>
+        </div>
+        <div class="pf-legend">
+          <span class="pfl"><span class="pfl-d kill"></span>Kill</span>
+          <span class="pfl"><span class="pfl-d reseq"></span>Resequence</span>
+          <span class="pfl"><span class="pfl-d fund"></span>Fund</span>
+          <span class="pfl"><span class="pfl-d scale"></span>Scale</span>
+        </div>
+      </div>
+      <div class="pf-grid">
+        <div class="pf-axis"><div class="pf-axis-l">Bet</div><div class="pf-axis-r"><span>&larr; Kill</span><span>Resequence</span><span>Fund</span><span>Scale &rarr;</span></div></div>
+        <div id="pf-rows"></div>
+      </div>
+      <div class="pf-foot">
+        <div class="pf-total">
+          <div><span>Recommended Year-1 release</span><strong class="gold">&euro;84M</strong></div>
+          <div><span>Reallocated toward H3</span><strong>&euro;46M</strong></div>
+          <div><span>Net portfolio &euro;</span><strong>&euro;340M (unchanged)</strong></div>
+        </div>
+        <div class="pf-actions">
+          <button class="pfa" id="pf-reset">Reset</button>
+          <button class="pfa primary" id="pf-apply">Apply AEI recommendations</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- detail drawer -->
+    <div class="detail" id="pf-detail" style="display:none">
+      <div class="detail-l">
+        <h3 id="d-name">Bet</h3>
+        <div class="detail-meta" id="d-meta">type &middot; horizon &middot; record</div>
+        <div class="detail-body" id="d-body">desc</div>
+        <div class="detail-stats">
+          <div class="ds"><div class="ds-v" id="d-spend">&euro;0M</div><div class="ds-l">Annual spend</div></div>
+          <div class="ds"><div class="ds-v" id="d-conf">0.00</div><div class="ds-l">AEI confidence</div></div>
+          <div class="ds"><div class="ds-v" id="d-val">&euro;0M</div><div class="ds-l">Year-1 impact of call</div></div>
+          <div class="ds"><div class="ds-v" id="d-call">&mdash;</div><div class="ds-l">Recommended call</div></div>
+        </div>
+      </div>
+      <div class="detail-r">
+        <div class="dsh" style="margin-top:0">Reasoning trail &middot; 5 of 14 agents</div>
+        <div class="agents" id="d-agents"></div>
+        <div class="dsh">Decision support &middot; alternatives</div>
+        <div class="dsupport" id="d-dsupport" style="grid-template-columns:1fr"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- THE ARTIFACT -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">The lead artifact</p>
+    <h2>Monthly Innovation Portfolio Review.</h2>
+    <p style="max-width:60ch">The Innovation Edition replaces the bound quarterly Board Briefing with a monthly Portfolio Review &mdash; faster cadence, line-owner audience, same artifact discipline. Bound and delivered to the Chief Innovation Officer, Head of R&amp;D, and the relevant business-line heads.</p>
+
+    <div class="review">
+      <div class="rv-kicker">Genotwin &middot; Innovation Portfolio Review &middot; September 2026</div>
+      <h2 class="rv-title">Capgemini SE</h2>
+      <div class="rv-sub">Monthly innovation budget intelligence &middot; for the Chief Innovation Officer</div>
+      <div class="rv-rule"></div>
+      <p class="rv-let">"This month the portfolio crossed two thresholds: H3 model-shift investment fell below 4% (peer median 10%), and unattributed spend reached &euro;84M. Four bets are put forward for decision &mdash; one Scale, one Kill, two Resequence &mdash; with &euro;84M of Year-1 reallocatable capital identified and conservatively estimated."</p>
+      <div class="rv-sign">Dr. Lena Fischer<small>Lead Strategist &middot; Genotwin</small></div>
+      <div class="rv-rule"></div>
+      <div class="rv-toc">
+        <div><span>I &middot; Portfolio at a glance</span><span>1 page</span></div>
+        <div><span>II &middot; Horizon mix &amp; gap</span><span>1 page</span></div>
+        <div><span>III &middot; Four bets for decision</span><span>4 pages</span></div>
+        <div><span>IV &middot; Reasoning trails</span><span>3 pages</span></div>
+        <div><span>V &middot; Peer benchmark</span><span>1 page</span></div>
+        <div><span>VI &middot; Audit &amp; reproducibility</span><span>1 page</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">How the innovation engine works &middot; four steps</p>
+    <h2>Same machine, <em>tuned for innovation.</em></h2>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-t">Reads your stage gates</div><div class="step-x">Read-only from Planview, Jira, Aha!, the innovation funnel and your time-tracking. Nothing re-keyed.</div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-t">Watches the bet</div><div class="step-x">Patents, hiring, product telemetry and customer signals tracked per initiative &mdash; momentum becomes measurable.</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-t">Scores each bet</div><div class="step-x">14 agents reason across confidence, strategic fit, peer signal, capital efficiency and stage-gate health.</div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-t">Ships the calls</div><div class="step-x">Fund / Scale / Resequence / Kill &mdash; each with a &euro; value, a confidence, a reasoning trail, and a logged record.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">How we sell it</p>
+    <h2>The wedge motion.</h2>
+    <p style="max-width:60ch">The Innovation Edition is the easier door &mdash; a line-owner buyer (CDO / Head of R&amp;D), faster cycle, lower entry &mdash; that opens the path to the full strategic platform. Land here, expand to the board.</p>
+    <div class="price">
+      <div class="pcell">
+        <div class="pcell-tag">Pilot</div>
+        <div class="pcell-v">&euro;60K</div>
+        <div class="pcell-l">3-month pilot</div>
+        <div class="pcell-d">One business line, one portfolio review delivered. Get-to-know-us pricing for the first 5 customers.</div>
+      </div>
+      <div class="pcell rec">
+        <div class="pcell-tag">&#9733; Recommended &middot; Innovation Edition</div>
+        <div class="pcell-v">&euro;180K</div>
+        <div class="pcell-l">per year</div>
+        <div class="pcell-d">Group-wide portfolio coverage, monthly bound review, the live workbench. Annual contract; quarterly billing.</div>
+      </div>
+      <div class="pcell">
+        <div class="pcell-tag">Expansion</div>
+        <div class="pcell-v">&euro;500K+</div>
+        <div class="pcell-l">strategic add-on</div>
+        <div class="pcell-d">Innovation Edition + the full strategic platform (board cadence, quarterly briefing pack). Earned, not pitched.</div>
+      </div>
+    </div>
+    <p style="max-width:64ch;margin-top:24px;font-family:var(--serif);font-style:italic;color:var(--bone-2)">The route is the same one Tableau took into Salesforce &mdash; start in a department, climb to the enterprise. The Innovation Edition is the department; the strategic platform is the enterprise.</p>
+  </div>
+</section>
+
+<footer>AEI Innovation Edition &middot; Genotwin GmbH &middot; <span>Innovation budget intelligence &middot; vertical wedge for the CDO buyer</span></footer>
+
+<script>
+/* ============ DATA ============ */
+const BETS=[
+  {id:'launchpad', name:'AI Launchpad', sub:'Internal Gen-AI accelerator', type:'H2', spend:60, conf:.22, fit:.18, pos:.18, recPos:.10, call:'kill', recCall:'kill', recImpact:'€60M release',
+    body:'Lowest ROI in the portfolio. Unattributed to revenue, decaying patent velocity, and the capability is absorbable by Joule. Two cohort peers reversed analogous tracks in 2024–25.',
+    agents:[['PORTFOLIO','Overlaps Joule on 4 of 6 capability claims; no incremental customer signal in 9 months.'],['CAPITAL','€41M YTD with no revenue attribution; lowest ROI bucket in the portfolio.'],['MARKET','Analyst sentiment fragmented; multi-track AI narrative actively unhelpful.'],['PEER','Two peers killed comparable internal accelerators in 2024–25 after AEI-style review.'],['GOVERNANCE','Sunset path within CTO authority; 90-day timeline; no shareholder vote.']],
+    alt:[{r:1,a:'Kill · sunset by FY close',w:'Highest value-adjusted confidence; capability absorbable into Joule.',imp:'€60M Y1',c:.78},{r:0,a:'Resequence · narrow scope to one capability',w:'Preserves optionality; carries the cost.',imp:'€20M Y1',c:.52},{r:0,a:'Fund · hold one more gate',w:'Defers the decision; risk continues.',imp:'€0',c:.36}]},
+
+  {id:'joule', name:'Joule (assistant)', sub:'Core Gen-AI assistant', type:'H2', spend:48, conf:.84, fit:.92, pos:.92, recPos:.96, call:'scale', recCall:'scale', recImpact:'€20M acceleration',
+    body:'Anchor of the AI portfolio. Strong patent velocity, growing customer attach, and the natural absorption target for the Launchpad consolidation. Accelerate funding by Q4.',
+    agents:[['PORTFOLIO','Highest customer-pull signal; attach rate climbing 4 quarters running.'],['CAPITAL','Capital-efficient: revenue per FTE leading the cohort.'],['MARKET','Analyst category fit strongest; recently named in three vendor shortlists.'],['PEER','Comparable peer assets pricing 25–35% premium to traditional T&M.'],['TALENT','Talent retention on the team above firm median; key-person risk low.']],
+    alt:[{r:1,a:'Scale · accelerate to GA across all geos',w:'Strongest single bet; capital-efficient.',imp:'€20M acceleration',c:.84},{r:0,a:'Fund · maintain pace',w:'Safe, but cedes ground to peer momentum.',imp:'€0 vs plan',c:.60},{r:0,a:'Resequence · narrow to enterprise tier',w:'Focuses revenue; loses category breadth.',imp:'€−8M growth',c:.48}]},
+
+  {id:'icloud', name:'Industry Cloud · Retail', sub:'Vertical cloud build', type:'H1', spend:28, conf:.56, fit:.48, pos:.45, recPos:.40, call:'reseq', recCall:'reseq', recImpact:'€10M reallocation',
+    body:'Vertical build with moderate traction. Resequence behind two highest-attach verticals; redirect €10M toward H3.',
+    agents:[['MARKET','Vertical attach rate in the bottom third of the cohort verticals.'],['CAPITAL','Spend running 15% above plan with no incremental customer pull.'],['PORTFOLIO','Duplicates capability in two earlier-stage vertical builds.']],
+    alt:[{r:1,a:'Resequence · defer 12 months',w:'Capital frees toward stronger H3 bets.',imp:'€10M reallocation',c:.69},{r:0,a:'Fund · hold pace',w:'Defends optionality; accepts the drift.',imp:'€0',c:.50},{r:0,a:'Kill',w:'Releases the most capital; loses the vertical.',imp:'€28M · high risk',c:.42}]},
+
+  {id:'iauto', name:'Industry Cloud · Auto', sub:'Vertical cloud build', type:'H1', spend:24, conf:.62, fit:.58, pos:.55, recPos:.55, call:'fund', recCall:'fund', recImpact:'maintain',
+    body:'Holding its own. Attach-rate climbing in two regions; maintain current pace and revisit at next gate.',
+    agents:[['MARKET','Two-region attach growth; pipeline conversion in line with plan.'],['CAPITAL','Tracking budget within 4%; revenue attribution clear.'],['PORTFOLIO','No overlap with neighboring builds.']],
+    alt:[{r:1,a:'Fund · maintain pace',w:'Healthy trajectory; let it compound.',imp:'maintain',c:.68},{r:0,a:'Scale',w:'Premature; signal not strong enough yet.',imp:'+€8M',c:.46},{r:0,a:'Resequence',w:'Lower payoff; momentum lost.',imp:'€−5M growth',c:.40}]},
+
+  {id:'cs', name:'Customer Success Bot', sub:'Post-sale AI agent', type:'H2', spend:22, conf:.71, fit:.78, pos:.78, recPos:.85, call:'scale', recCall:'scale', recImpact:'€14M net-retention lift',
+    body:'Strong post-sale signal. Net-retention lift in two pilots above modelled. Scale to all segments and tie to the customer-success acquisition decision in the strategic brief.',
+    agents:[['MARKET','Net-retention delta vs peers traces to post-sale; closes a known gap.'],['PEER','Three cohort members closed the same gap via comparable assets.'],['CAPITAL','Pilot-to-scale capital efficiency in the top quartile.']],
+    alt:[{r:1,a:'Scale · all segments',w:'Closes the post-sale gap quickly.',imp:'€14M net-retention',c:.74},{r:0,a:'Fund · maintain pilots',w:'Safe, but lets peers close the gap first.',imp:'€0',c:.56},{r:0,a:'Resequence behind acquisition',w:'Lets the M&A decision lead.',imp:'depends on M&A',c:.50}]},
+
+  {id:'gov', name:'Govt AI Practice', sub:'New practice area', type:'H2', spend:16, conf:.41, fit:.52, pos:.42, recPos:.38, call:'reseq', recCall:'reseq', recImpact:'€6M reallocation',
+    body:'Mixed traction. Tighten geographic scope to two countries; redirect freed capital toward H3.',
+    agents:[['MARKET','Win rate in three countries below cohort median.'],['CAPITAL','Spend tracking 12% above plan; deal cycle longer than projected.'],['PORTFOLIO','Capability overlap with the federal-defense build.']],
+    alt:[{r:1,a:'Resequence · two-country focus',w:'Concentrates effort, frees €6M.',imp:'€6M reallocation',c:.62},{r:0,a:'Fund · maintain footprint',w:'Defends optionality; accepts the cost.',imp:'€0',c:.48},{r:0,a:'Kill',w:'Releases capital; loses the practice.',imp:'€16M · practice lost',c:.34}]},
+
+  {id:'edge', name:'Edge AI Hardware', sub:'Embedded AI platform', type:'H3', spend:14, conf:.58, fit:.72, pos:.76, recPos:.84, call:'scale', recCall:'scale', recImpact:'€8M acceleration',
+    body:'Strongest H3 bet. Differentiated, hardware-software synergy with the existing engineering practice, two anchor design wins in 2026.',
+    agents:[['MARKET','Two anchor design wins logged; pipeline coverage strong.'],['CAPITAL','Capital efficiency improving quarter on quarter.'],['TALENT','Hardware-software talent retention above firm median.']],
+    alt:[{r:1,a:'Scale · double the design-win pipeline',w:'The single strongest H3 bet.',imp:'€8M acceleration',c:.71},{r:0,a:'Fund · maintain pace',w:'Solid but conservative.',imp:'€0',c:.58},{r:0,a:'Resequence',w:'Slows the model-shift agenda.',imp:'H3 gap widens',c:.42}]},
+
+  {id:'quant', name:'Quantum Sandbox', sub:'Exploratory partnership', type:'H3', spend:8, conf:.34, fit:.40, pos:.30, recPos:.32, call:'reseq', recCall:'reseq', recImpact:'narrow scope',
+    body:'Early-stage exploratory bet. Maintain the partnership; cap spend at current level; narrow scope to two use-cases.',
+    agents:[['MARKET','No customer signal yet; partnership signal positive.'],['CAPITAL','Spend manageable; cap recommended.'],['PEER','Two peers maintaining comparable footprint at lower spend.']],
+    alt:[{r:1,a:'Resequence · cap & narrow',w:'Keeps optionality without overspending.',imp:'spend capped',c:.59},{r:0,a:'Fund · expand',w:'Premature; signal not there yet.',imp:'+€4M',c:.31},{r:0,a:'Kill',w:'Closes the door on H3 optionality.',imp:'€8M release',c:.36}]},
+
+  {id:'climate', name:'Climate Risk Models', sub:'New analytics product', type:'H2', spend:18, conf:.65, fit:.74, pos:.72, recPos:.74, call:'fund', recCall:'fund', recImpact:'maintain',
+    body:'Healthy growth signal in regulated industries. Maintain pace, revisit at the next gate.',
+    agents:[['MARKET','Regulatory tailwind clear; two large RFPs pending.'],['CAPITAL','Capital efficient; revenue attribution clear.']],
+    alt:[{r:1,a:'Fund · maintain pace',w:'Compounding nicely.',imp:'maintain',c:.66},{r:0,a:'Scale',w:'Worth considering after the next RFP.',imp:'+€6M',c:.52}]},
+
+  {id:'lowcode', name:'Low-Code Platform', sub:'Internal productivity', type:'H1', spend:22, conf:.69, fit:.65, pos:.62, recPos:.62, call:'fund', recCall:'fund', recImpact:'maintain',
+    body:'Solid efficiency story for internal delivery. Continue at pace.',
+    agents:[['CAPITAL','Internal hours saved exceed plan; productivity gain measurable.'],['PORTFOLIO','No overlap with adjacent bets.']],
+    alt:[{r:1,a:'Fund · maintain',w:'Working as intended.',imp:'maintain',c:.69},{r:0,a:'Scale to client work',w:'Worth a pilot in one geography.',imp:'+€8M Y2',c:.54}]},
+
+  {id:'ar', name:'AR/MR Field Service', sub:'Field-service product', type:'H2', spend:12, conf:.38, fit:.34, pos:.28, recPos:.18, call:'kill', recCall:'kill', recImpact:'€12M release',
+    body:'Weak signal. Customer attach below threshold three quarters running; no clear differentiation. Kill and reallocate.',
+    agents:[['MARKET','Attach rate below 4% over three quarters; no improvement trend.'],['CAPITAL','€8M YTD with one paid pilot.'],['PEER','Two peers have already withdrawn from comparable plays.']],
+    alt:[{r:1,a:'Kill · reallocate to H3',w:'Cleanest release in the portfolio.',imp:'€12M release',c:.66},{r:0,a:'Resequence · narrow to one segment',w:'Preserves optionality; carries the cost.',imp:'€4M release',c:.42},{r:0,a:'Fund · hold one more gate',w:'Defers; no signal that gate will close.',imp:'€0',c:.28}]},
+
+  {id:'data', name:'Data Marketplace', sub:'Cross-portfolio data play', type:'H3', spend:6, conf:.46, fit:.58, pos:.52, recPos:.62, call:'fund', recCall:'fund', recImpact:'maintain',
+    body:'Early but interesting. Maintain at current spend and watch the leading indicators.',
+    agents:[['PORTFOLIO','Underpins three other bets; option value high.'],['MARKET','One anchor customer signal; pipeline thin but growing.']],
+    alt:[{r:1,a:'Fund · maintain',w:'Option value high; cost low.',imp:'maintain',c:.61},{r:0,a:'Scale',w:'Premature; pipeline not there yet.',imp:'+€4M',c:.42}]},
+
+  {id:'cyber', name:'Cyber AI Defense', sub:'Practice + product', type:'H1', spend:34, conf:.74, fit:.80, pos:.82, recPos:.84, call:'scale', recCall:'scale', recImpact:'€10M acceleration',
+    body:'Strong, growing market, healthy win rate. Scale to all geos.',
+    agents:[['MARKET','Cyber demand growing; AEI cohort favourable.'],['CAPITAL','Capital-efficient; revenue attribution clear.'],['PEER','Cohort leaders expanding faster than Capgemini.']],
+    alt:[{r:1,a:'Scale · all geos',w:'Demand and economics both strong.',imp:'€10M acceleration',c:.76},{r:0,a:'Fund · maintain pace',w:'Cedes ground to faster peers.',imp:'€0 vs plan',c:.58}]},
+
+  {id:'sust', name:'Sustainability Practice', sub:'Practice area', type:'H1', spend:28, conf:.61, fit:.66, pos:.60, recPos:.60, call:'fund', recCall:'fund', recImpact:'maintain',
+    body:'Maintain. Solid bookings, regulatory tailwind, no pressing decision this quarter.',
+    agents:[['MARKET','Regulatory tailwind sustained.'],['CAPITAL','Tracking plan; revenue attribution clear.']],
+    alt:[{r:1,a:'Fund · maintain pace',w:'Working as intended.',imp:'maintain',c:.64},{r:0,a:'Scale',w:'Worth revisiting next gate.',imp:'+€6M',c:.50}]}
+];
+
+/* ============ RENDER PORTFOLIO ============ */
+const rows=document.getElementById('pf-rows');
+function callLabel(c){return c==='fund'?'Fund':c==='scale'?'Scale':c==='reseq'?'Resequence':'Kill';}
+function renderRows(){
+  rows.innerHTML='';
+  BETS.forEach(b=>{
+    const el=document.createElement('div');el.className='pf-bet';el.dataset.id=b.id;
+    el.innerHTML=`<div class="pf-name">${b.name}<small>${b.sub} · ${b.type}</small></div>
+      <div class="pf-canvas" data-id="${b.id}"><div class="pf-dot ${b.call}" style="left:${b.pos*100}%"></div></div>
+      <div class="pf-spend">€${b.spend}M<small>annual spend</small></div>
+      <div class="pf-conf"><span class="ccf"><span class="ccfill" data-w="${Math.round(b.conf*100)}"></span></span>${b.conf.toFixed(2)}</div>
+      <div class="pf-call ${b.call}">${callLabel(b.call)}</div>`;
+    el.addEventListener('click',()=>openDetail(b.id));
+    rows.appendChild(el);
+  });
+  requestAnimationFrame(()=>{rows.querySelectorAll('.ccfill').forEach(f=>{const w=f.dataset.w+'%';f.style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.width=w;}));});});
+}
+
+/* ============ DETAIL DRAWER ============ */
+const detail=document.getElementById('pf-detail');
+function openDetail(id){
+  const b=BETS.find(x=>x.id===id);if(!b)return;
+  rows.querySelectorAll('.pf-bet').forEach(r=>r.classList.toggle('sel',r.dataset.id===id));
+  document.getElementById('d-name').innerHTML=`${b.name} <em>${callLabel(b.recCall)}</em>`;
+  document.getElementById('d-meta').textContent=`${b.sub} · ${b.type} · record AEI-CAP-INV-${1000+BETS.indexOf(b)}`;
+  document.getElementById('d-body').textContent=b.body;
+  document.getElementById('d-spend').textContent='€'+b.spend+'M';
+  document.getElementById('d-conf').textContent=b.conf.toFixed(2);
+  document.getElementById('d-val').textContent=b.recImpact;
+  document.getElementById('d-call').textContent=callLabel(b.recCall);
+  document.getElementById('d-agents').innerHTML=b.agents.map(a=>`<div class="agent"><div class="agent-n">${a[0]}</div><div class="agent-f">${a[1]}</div></div>`).join('');
+  document.getElementById('d-dsupport').innerHTML=b.alt.map(o=>`<div class="dcard ${o.r?'rec chosen':''}"><div class="dc-k">${o.r?'★ Recommended':'Alternative'}</div><div class="dc-a">${o.a}</div><div class="dc-w">${o.w}</div><div class="dc-f"><span class="dc-imp">${o.imp}</span><span class="dc-conf">conf ${o.c.toFixed(2)}</span></div></div>`).join('');
+  // wire alternative selection within drawer
+  document.querySelectorAll('#d-dsupport .dcard').forEach(c=>c.addEventListener('click',()=>{
+    document.querySelectorAll('#d-dsupport .dcard').forEach(x=>x.classList.remove('chosen'));c.classList.add('chosen');
+  }));
+  detail.style.display='grid';
+  detail.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ============ APPLY / RESET ============ */
+function moveDots(toRec){
+  BETS.forEach(b=>{
+    const target=toRec?b.recPos:b.pos;
+    const callTarget=toRec?b.recCall:b.call;
+    const row=rows.querySelector(`.pf-bet[data-id="${b.id}"]`);if(!row)return;
+    const dot=row.querySelector('.pf-dot');const pill=row.querySelector('.pf-call');
+    dot.style.left=(target*100)+'%';
+    dot.className='pf-dot '+callTarget;
+    pill.className='pf-call '+callTarget;pill.textContent=callLabel(callTarget);
+  });
+}
+document.getElementById('pf-apply').addEventListener('click',()=>moveDots(true));
+document.getElementById('pf-reset').addEventListener('click',()=>moveDots(false));
+
+/* ============ COUNT-UP + BARS ============ */
+function animateCounts(){
+  document.querySelectorAll('[data-c]').forEach(el=>{
+    const raw=el.dataset.c;const m=raw.match(/^([^\d\-]*)(-?[\d.]+)(.*)$/);if(!m){el.textContent=raw;return;}
+    const pre=m[1],num=parseFloat(m[2]),suf=m[3],dec=(m[2].split('.')[1]||'').length;
+    const dur=1000,t0=performance.now();
+    function tick(now){const t=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-t,3),v=num*e;el.textContent=pre+(dec?v.toFixed(dec):Math.round(v))+suf;if(t<1)requestAnimationFrame(tick);else el.textContent=raw;}
+    requestAnimationFrame(tick);
+  });
+}
+function animateBars(){
+  document.querySelectorAll('.hor-fill').forEach(f=>{const w=f.dataset.w+'%';f.style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.width=w;}));});
+}
+
+renderRows();
+requestAnimationFrame(()=>{animateCounts();animateBars();});
+</script>
+</body>
+</html>
