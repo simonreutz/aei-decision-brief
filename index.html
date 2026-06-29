@@ -327,6 +327,10 @@
 
 /* ============ INTRO · FOR GERRIT ============ */
 #view-intro{display:none}
+.pyramid-stage{display:flex;justify-content:center;margin-top:26px;perspective:1000px}
+.pyramid-svg{width:100%;max-width:580px;height:auto;animation:pyFloat 6s ease-in-out infinite;filter:drop-shadow(0 30px 60px rgba(0,0,0,.45)) drop-shadow(0 0 40px rgba(201,164,76,.06))}
+@keyframes pyFloat{0%,100%{transform:translateY(0) rotateX(0deg)}50%{transform:translateY(-10px) rotateX(1.5deg)}}
+@media(prefers-reduced-motion:reduce){.pyramid-svg{animation:none}}
 #view-intro.show{display:block}
 .intro{max-width:1060px;margin:0 auto;padding:0 28px}
 .intro-hero{padding:74px 0 30px;text-align:center;position:relative}
@@ -501,6 +505,76 @@
       </div>
     </div>
 
+    <!-- THE PYRAMID -->
+    <div class="intro-sec">
+      <div class="intro-kicker">The intelligence layer · at a glance</div>
+      <p style="max-width:60ch;color:var(--bone-2);font-size:15.5px;line-height:1.65;margin:0 0 6px">Internal and external signals enter at the base. The intelligence layer fuses them into a persistent <b style="color:var(--bone)">genotype</b> &mdash; the company's strategic DNA &mdash; which the engine resolves into <b style="color:var(--bone)">phenotype</b> decisions at the apex. Wide where the data is; narrow where the call is.</p>
+      <div class="pyramid-stage">
+        <svg class="pyramid-svg" viewBox="0 0 720 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pyramid: data inputs converge through the intelligence layer and genotype into phenotype decisions">
+          <defs>
+            <linearGradient id="pyGold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c9a44c" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#8a7333" stop-opacity="0.5"/>
+            </linearGradient>
+            <linearGradient id="pyBand" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1a1e34"/>
+              <stop offset="100%" stop-color="#151829"/>
+            </linearGradient>
+            <radialGradient id="apexGlow" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#c9a44c" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#c9a44c" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="soft"><feGaussianBlur stdDeviation="0.5"/></filter>
+          </defs>
+
+          <!-- rising data particles (animated) -->
+          <g opacity="0.55">
+            <circle r="2.5" fill="#4a8c8c"><animate attributeName="cy" values="500;120" dur="5s" repeatCount="indefinite"/><animate attributeName="cx" values="150;330" dur="5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0.9;0" dur="5s" repeatCount="indefinite"/></circle>
+            <circle r="2" fill="#c97a3a"><animate attributeName="cy" values="500;150" dur="6.2s" repeatCount="indefinite" begin="-1s"/><animate attributeName="cx" values="560;380" dur="6.2s" repeatCount="indefinite" begin="-1s"/><animate attributeName="opacity" values="0;0.9;0" dur="6.2s" repeatCount="indefinite" begin="-1s"/></circle>
+            <circle r="2.2" fill="#6b8e5a"><animate attributeName="cy" values="500;130" dur="4.6s" repeatCount="indefinite" begin="-2.5s"/><animate attributeName="cx" values="260;345" dur="4.6s" repeatCount="indefinite" begin="-2.5s"/><animate attributeName="opacity" values="0;0.9;0" dur="4.6s" repeatCount="indefinite" begin="-2.5s"/></circle>
+            <circle r="2" fill="#4a8c8c"><animate attributeName="cy" values="500;160" dur="5.8s" repeatCount="indefinite" begin="-3.5s"/><animate attributeName="cx" values="470;370" dur="5.8s" repeatCount="indefinite" begin="-3.5s"/><animate attributeName="opacity" values="0;0.9;0" dur="5.8s" repeatCount="indefinite" begin="-3.5s"/></circle>
+            <circle r="2.4" fill="#c9a44c"><animate attributeName="cy" values="500;110" dur="5.2s" repeatCount="indefinite" begin="-1.8s"/><animate attributeName="cx" values="360;355" dur="5.2s" repeatCount="indefinite" begin="-1.8s"/><animate attributeName="opacity" values="0;1;0" dur="5.2s" repeatCount="indefinite" begin="-1.8s"/></circle>
+          </g>
+
+          <!-- TIER 4 · base — INPUTS (widest) -->
+          <path d="M70,500 L650,500 L566,410 L154,410 Z" fill="url(#pyBand)" stroke="#252a44" stroke-width="1"/>
+          <text x="360" y="448" text-anchor="middle" font-family="JetBrains Mono" font-size="11" letter-spacing="3" fill="#7a8099">DATA &mdash; INTERNAL &amp; EXTERNAL</text>
+          <text x="360" y="470" text-anchor="middle" font-family="Inter" font-size="11" fill="#565b76">ERP · HR · CRM · billing &nbsp;|&nbsp; filings · analysts · patents · peers</text>
+
+          <!-- TIER 3 · INTELLIGENCE LAYER -->
+          <path d="M154,406 L566,406 L498,316 L222,316 Z" fill="url(#pyBand)" stroke="#252a44" stroke-width="1"/>
+          <text x="360" y="356" text-anchor="middle" font-family="JetBrains Mono" font-size="11" letter-spacing="3" fill="#8a93ad">INTELLIGENCE LAYER</text>
+          <text x="360" y="376" text-anchor="middle" font-family="Inter" font-size="11" fill="#565b76">ingest · normalize · 14-agent reasoning</text>
+
+          <!-- TIER 2 · GENOTYPE -->
+          <path d="M222,312 L498,312 L430,222 L290,222 Z" fill="url(#pyBand)" stroke="#3a4063" stroke-width="1"/>
+          <text x="360" y="262" text-anchor="middle" font-family="JetBrains Mono" font-size="11" letter-spacing="3" fill="#c8c2b1">GENOTYPE</text>
+          <text x="360" y="282" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#7a8099">6-dimension strategic DNA · scored weekly</text>
+
+          <!-- TIER 1 · PHENOTYPE apex (narrowest) -->
+          <path d="M290,218 L430,218 L360,118 Z" fill="url(#pyGold)" stroke="#c9a44c" stroke-width="1.5"/>
+          <circle cx="360" cy="170" r="46" fill="url(#apexGlow)"/>
+          <text x="360" y="178" text-anchor="middle" font-family="Fraunces" font-size="15" fill="#0c0e1a" font-weight="500">PHENOTYPE</text>
+          <text x="360" y="196" text-anchor="middle" font-family="JetBrains Mono" font-size="8" letter-spacing="1.5" fill="#0c0e1a">DECISION SUPPORT</text>
+
+          <!-- apex output decisions -->
+          <text x="360" y="98" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="#c9a44c">FUND · SCALE · RESEQUENCE · KILL</text>
+          <line x1="360" y1="108" x2="360" y2="116" stroke="#c9a44c" stroke-width="1"/>
+
+          <!-- side labels: internal (left) / external (right) feeding the base -->
+          <text x="60" y="505" text-anchor="end" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#4a8c8c">INTERNAL &rarr;</text>
+          <text x="660" y="505" text-anchor="start" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#c97a3a">&larr; EXTERNAL</text>
+
+          <!-- upward flow arrow -->
+          <g opacity="0.4">
+            <line x1="690" y1="470" x2="690" y2="150" stroke="#8a7333" stroke-width="1" stroke-dasharray="2,5"/>
+            <path d="M690,140 L686,152 L694,152 Z" fill="#c9a44c"/>
+            <text x="700" y="310" font-family="JetBrains Mono" font-size="8" letter-spacing="1" fill="#7a8099" transform="rotate(90 700 310)">CONVERGENCE</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
     <!-- HOW IT WORKS -->
     <div class="intro-sec">
       <div class="intro-kicker">How it works · in four steps</div>
@@ -521,11 +595,12 @@
         <div class="suite-tile link" data-go="engine"><div class="suite-name">Architecture Engine</div><div class="suite-meta">SAP &amp; Capgemini</div></div>
         <div class="suite-tile link" data-go="board"><div class="suite-name">Capgemini Decision Brief</div><div class="suite-meta live">In this file</div></div>
         <div class="suite-tile link" data-href="innovation.html"><div class="suite-name">AEI Innovation Edition</div><div class="suite-meta live">New · vertical wedge</div></div>
-        <div class="suite-tile link" data-href="cg-internal-brief.html"><div class="suite-name">Internal Brief</div><div class="suite-meta live">New · for CG leadership</div></div>
+        <div class="suite-tile link" data-href="cg-internal-brief.html"><div class="suite-name">Internal Brief</div><div class="suite-meta live">For CG leadership</div></div>
+        <div class="suite-tile link" data-href="sales-deck.html"><div class="suite-name">Client Sales Deck</div><div class="suite-meta live">New · present or read</div></div>
         <div class="suite-tile link" data-href="board-briefing.html"><div class="suite-name">SAP Board Briefing Pack</div><div class="suite-meta">Bound · the GTM artifact</div></div>
         <div class="suite-tile link" data-href="methodology.html"><div class="suite-name">AEI Score Methodology</div><div class="suite-meta">The neutral framework</div></div>
       </div>
-      <div class="suite-tag" style="font-size:14px;color:var(--mute);margin-top:14px;font-style:normal;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;text-align:center">8 shippable artifacts &middot; the Innovation Edition is the new department-level wedge</div>
+      <div class="suite-tag" style="font-size:14px;color:var(--mute);margin-top:14px;font-style:normal;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;text-align:center">9 shippable artifacts &middot; the Innovation Edition is the new department-level wedge</div>
       <div class="suite-tag">Six shippable artifacts. No slides &mdash; working software.</div>
     </div>
 
@@ -573,7 +648,7 @@
             <div class="vchip">Audit-committee oversight<b>&euro;300&ndash;500K / yr</b></div>
             <div class="vchip">Sovereign &amp; family office<b>&euro;500K&ndash;1M / yr</b></div>
           </div>
-          <div class="gtm-text" style="margin-top:16px">Edge: an alliance with AIBI (Dr. Kumar) gives mature commercial packaging on day one &mdash; their scaffolding, our product backbone.</div>
+          <div class="gtm-text" style="margin-top:16px">Edge: AEI ships with mature commercial packaging on day one &mdash; a productized offer ladder, objection playbook and buyer-role value cases already built, not a science project.</div>
         </div>
       </div>
     </div>
