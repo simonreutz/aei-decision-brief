@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AEI Workbench · Live Decision Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0c0e1a; --bg-2:#11142a; --surface:#151829; --surface-2:#1a1e34;
+    --border:#252a44; --border-soft:#1d2138;
+    --gold:#c9a44c; --gold-soft:#8a7333; --gold-glow:rgba(201,164,76,.18);
+    --oxblood:#7a2e2e; --burnt:#c97a3a; --moss:#6b8e5a; --teal:#4a8c8c;
+    --bone:#e8e3d5; --bone-2:#c8c2b1; --mute:#7a8099; --mute-2:#565b76;
+    --serif:'Fraunces','Iowan Old Style',Georgia,serif;
+    --sans:'Inter',-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--bone);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--gold);color:var(--bg)}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,164,76,.06),transparent 60%),
+               radial-gradient(ellipse 60% 40% at 85% 110%,rgba(122,46,46,.05),transparent 60%)}
+
+  .nav{position:sticky;top:0;z-index:100;background:rgba(12,14,26,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-soft)}
+  .nav-inner{max-width:1280px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .brand{font-family:var(--serif);font-size:16px;font-weight:500;letter-spacing:-.01em;display:flex;align-items:center;gap:11px}
+  .brand-mark{width:20px;height:20px;border:1.5px solid var(--gold);border-radius:50%;position:relative}
+  .brand-mark::after{content:'';position:absolute;inset:4px;background:var(--gold);border-radius:50%;opacity:.7}
+  .brand-meta{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;margin-left:12px;padding-left:12px;border-left:1px solid var(--border)}
+  .roster{display:flex;gap:8px;align-items:center}
+  .roster-label{font-family:var(--mono);font-size:9px;color:var(--mute-2);letter-spacing:.14em;text-transform:uppercase;margin-right:6px}
+  .client-chip{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--border);background:transparent;color:var(--bone-2);font-family:var(--mono);font-size:11px;letter-spacing:.04em;cursor:pointer;transition:all .22s;border-radius:1px}
+  .client-chip:hover{border-color:var(--gold-soft);color:var(--bone)}
+  .client-chip.active{border-color:var(--gold);background:rgba(201,164,76,.08);color:var(--bone)}
+  .client-chip .dot{width:6px;height:6px;border-radius:50%}
+  .client-chip .dot.live{background:var(--moss);box-shadow:0 0 8px var(--moss)}
+  .client-chip .dot.pilot{background:var(--burnt);box-shadow:0 0 8px var(--burnt)}
+  .client-chip .dot.signed{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+  .client-chip .tag{font-size:8px;letter-spacing:.1em;color:var(--mute);text-transform:uppercase}
+  .client-chip.ghost{border-style:dashed;color:var(--mute-2)}
+  .client-chip.ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+  .wrap-narrow{max-width:860px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+  section{padding:96px 0;position:relative}
+  section+section{border-top:1px solid var(--border-soft)}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:12px;margin-bottom:24px}
+  .eyebrow::before{content:'';width:28px;height:1px;background:var(--gold)}
+  h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;letter-spacing:-.02em}
+  h1{font-size:clamp(38px,5.6vw,64px);line-height:1.05}
+  h2{font-size:clamp(30px,4.2vw,46px);line-height:1.1}
+  h3{font-size:21px;line-height:1.25}
+  p{color:var(--bone-2);font-size:16px}
+
+  .hero{padding-top:70px;padding-bottom:60px}
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:48px}
+  .hero-meta{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--mute);text-transform:uppercase;line-height:1.9}
+  .hero-meta strong{color:var(--bone);font-weight:500}
+  .hero h1{max-width:17ch;margin-bottom:28px}
+  .hero h1 em{font-style:italic;color:var(--gold);font-weight:300}
+  .hero-lede{font-family:var(--serif);font-size:clamp(17px,1.7vw,21px);line-height:1.5;color:var(--bone-2);max-width:62ch;font-weight:300}
+
+  .wb-switch{display:flex;gap:0;border:1px solid var(--border);width:fit-content;margin-bottom:8px;flex-wrap:wrap}
+  .wb-tab{padding:16px 28px;background:transparent;border:none;border-right:1px solid var(--border);cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--mute);transition:background .25s;display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:200px}
+  .wb-tab:last-child{border-right:none}
+  .wb-tab .name{font-family:var(--serif);font-size:18px;letter-spacing:-.01em;color:var(--bone-2);transition:color .25s}
+  .wb-tab .meta{display:flex;align-items:center;gap:7px;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+  .wb-tab.active{background:rgba(201,164,76,.06)}
+  .wb-tab.active .name{color:var(--bone)}
+  .wb-tab .sdot{width:6px;height:6px;border-radius:50%}
+  .sdot.live{background:var(--moss);box-shadow:0 0 8px var(--moss)}
+  .sdot.pilot{background:var(--burnt);box-shadow:0 0 8px var(--burnt)}
+  .sdot.signed{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+  .wb-tab.locked{display:none}
+  .wb-tab.revealed{animation:tabIn .55s cubic-bezier(.2,.7,.3,1)}
+  @keyframes tabIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+  .wb-stage{transition:opacity .35s ease}
+  .wb-stage.swapping{opacity:0}
+
+  .wb-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--border);padding-bottom:26px;margin:40px 0 34px}
+  .wb-customer{font-family:var(--serif);font-size:40px;color:var(--bone);letter-spacing:-.02em;line-height:1}
+  .wb-customer small{display:block;font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase;margin-top:12px}
+  .wb-score-block{text-align:right}
+  .wb-score-label{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+  .wb-score-val{font-family:var(--serif);font-size:54px;font-weight:300;color:var(--bone);line-height:.9;letter-spacing:-.03em}
+  .wb-score-band{font-family:var(--mono);font-size:11px;color:var(--burnt);letter-spacing:.06em;margin-top:8px}
+  .wb-traj{font-family:var(--mono);font-size:11px;color:var(--moss);margin-top:6px;letter-spacing:.04em}
+
+  .vcards{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:48px}
+  .vcard{padding:30px;border-right:1px solid var(--border-soft)}
+  .vcard:last-child{border-right:none}
+  .vcard-label{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+  .vcard-val{font-family:var(--serif);font-size:40px;font-weight:400;color:var(--gold);letter-spacing:-.02em;line-height:1;margin-bottom:10px}
+  .vcard-ctx{font-size:13px;color:var(--bone-2);line-height:1.5}
+
+  .wb-split{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:48px}
+  .panel{background:var(--surface);border:1px solid var(--border);padding:30px}
+  .panel-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px}
+  .panel-title{font-family:var(--serif);font-size:20px;color:var(--bone);letter-spacing:-.01em}
+  .panel-sub{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.08em;text-transform:uppercase}
+
+  .graph-svg{width:100%;height:auto;display:block;cursor:default}
+  .gnode{cursor:pointer}
+  .gnode circle{transition:all .2s}
+  .gnode:hover circle:first-child{stroke:var(--gold);stroke-width:2}
+  .gnode.sel circle:first-child{stroke:var(--gold);stroke-width:2.5}
+  .graph-readout{margin-top:18px;padding-top:18px;border-top:1px solid var(--border-soft);min-height:54px}
+  .graph-readout-node{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+  .graph-readout-drives{font-size:9px;color:var(--mute);letter-spacing:.08em}
+  .graph-readout-text{font-size:13px;color:var(--bone-2);line-height:1.5}
+  .graph-hint{font-size:12px;color:var(--mute);font-style:italic;font-family:var(--serif)}
+
+  .sim-headline{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+  .sim-bigval{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--gold);letter-spacing:-.03em;line-height:.9;transition:color .15s}
+  .sim-bigval.pulse{color:var(--bone)}
+  .sim-bigval-label{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;text-align:right;line-height:1.6}
+  .sim-bigval-label strong{color:var(--moss);display:block;font-size:13px;font-family:var(--serif);margin-top:4px}
+  .sim-divider{border-top:1px solid var(--border-soft);margin:26px 0 8px}
+  .lever{margin:22px 0}
+  .lever-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .lever-name{font-family:var(--serif);font-size:15px;color:var(--bone)}
+  .lever-pct{font-family:var(--mono);font-size:13px;color:var(--gold)}
+  .lever-stake{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.04em;margin-top:3px}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:3px;background:var(--border);outline:none;cursor:pointer;margin:6px 0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;background:var(--gold);border-radius:50%;cursor:pointer;box-shadow:0 0 0 4px rgba(201,164,76,.15);transition:box-shadow .2s}
+  input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 7px rgba(201,164,76,.22)}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--gold);border:none;border-radius:50%;cursor:pointer}
+  .sim-foot{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:20px;border-top:1px solid var(--border-soft)}
+  .sim-score{font-family:var(--mono);font-size:11px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+  .sim-score strong{color:var(--gold);font-family:var(--serif);font-size:20px;margin-left:8px}
+  .sim-reco-btn{background:transparent;border:1px solid var(--gold-soft);color:var(--gold);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:10px 16px;cursor:pointer;transition:all .25s}
+  .sim-reco-btn:hover{background:var(--gold);color:var(--bg)}
+
+  .decision-filter{display:none;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;margin-bottom:18px;border:1px solid var(--gold-soft);background:rgba(201,164,76,.05)}
+  .decision-filter.on{display:flex;animation:tabIn .35s ease}
+  .decision-filter-txt{font-family:var(--mono);font-size:11px;color:var(--bone-2);letter-spacing:.04em}
+  .decision-filter-txt b{color:var(--gold)}
+  .decision-filter-clear{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:none;border:1px solid var(--gold-soft);padding:8px 14px;cursor:pointer;transition:all .2s}
+  .decision-filter-clear:hover{background:var(--gold);color:var(--bg)}
+  .decisions{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
+  .decision{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--oxblood);padding:26px;cursor:pointer;transition:opacity .35s ease,transform .25s ease,border-color .25s,filter .35s}
+  .decision:hover{transform:translateY(-2px);border-top-color:var(--gold)}
+  .decision.open{border-top-color:var(--gold)}
+  .decision.dimmed{opacity:.26;filter:grayscale(.55)}
+  .decision.lit{border-top-color:var(--gold)}
+  .decision-tag{font-family:var(--mono);font-size:10px;color:var(--oxblood);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+  .decision-name{font-family:var(--serif);font-size:24px;color:var(--bone);letter-spacing:-.02em;margin-bottom:12px}
+  .decision-name em{color:var(--gold);font-style:italic;font-weight:300}
+  .decision-body{font-size:14px;line-height:1.55;color:var(--bone-2);margin-bottom:14px}
+  .decision-foot{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase;border-top:1px solid var(--border-soft);padding-top:14px}
+  .decision-expand{color:var(--gold)}
+  .decision-trail{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .decision.open .decision-trail{max-height:600px}
+  .trail-inner{padding-top:20px;margin-top:18px;border-top:1px solid var(--border-soft)}
+  .trail-label{font-family:var(--mono);font-size:9px;color:var(--mute);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+  .agent{display:flex;gap:12px;padding:9px 0;align-items:flex-start}
+  .agent-name{font-family:var(--mono);font-size:10px;color:var(--gold);width:78px;flex-shrink:0;letter-spacing:.02em;padding-top:2px}
+  .agent-find{font-size:12px;color:var(--bone-2);line-height:1.5}
+
+  .bs-head{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--mute);text-transform:uppercase;margin-bottom:22px}
+  .bs-row{display:grid;grid-template-columns:56px 1fr auto;gap:22px;padding:20px 0;border-top:1px solid var(--border-soft);align-items:center}
+  .bs-row:last-child{border-bottom:1px solid var(--border-soft)}
+  .bs-id{font-family:var(--mono);font-size:11px;color:var(--burnt);letter-spacing:.04em}
+  .bs-title{font-family:var(--serif);font-size:17px;color:var(--bone)}
+  .bs-desc{font-size:12px;color:var(--mute);margin-top:3px}
+  .bs-val{font-family:var(--mono);font-size:12px;color:var(--burnt);text-align:right;white-space:nowrap}
+
+  .room{background:linear-gradient(180deg,var(--bg-2) 0%,var(--bg) 100%)}
+  .seats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+  .seat{border:1px solid var(--border);padding:32px;min-height:240px;display:flex;flex-direction:column;justify-content:space-between;transition:all .3s;position:relative}
+  .seat.filled{background:var(--surface)}
+  .seat.live{border-left:3px solid var(--moss)}
+  .seat.pilot{border-left:3px solid var(--burnt)}
+  .seat.signed{border-left:3px solid var(--gold)}
+  .seat.open{border-style:dashed;cursor:pointer}
+  .seat.open:hover{border-color:var(--gold);background:rgba(201,164,76,.03)}
+  .seat.just-claimed{animation:claimPulse 1.1s ease}
+  @keyframes claimPulse{0%{box-shadow:0 0 0 0 var(--gold-glow)}40%{box-shadow:0 0 0 14px rgba(201,164,76,0)}100%{box-shadow:0 0 0 0 rgba(201,164,76,0)}}
+  .seat-num{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+  .seat-num .sd{width:6px;height:6px;border-radius:50%}
+  .seat-num .sd.live{background:var(--moss)}
+  .seat-num .sd.pilot{background:var(--burnt)}
+  .seat-num .sd.signed{background:var(--gold)}
+  .seat-num .sd.open{background:var(--mute-2)}
+  .seat-name{font-family:var(--serif);font-size:26px;color:var(--bone);letter-spacing:-.02em;margin-bottom:10px}
+  .seat-role{font-size:13px;color:var(--bone-2);line-height:1.5;margin-bottom:18px}
+  .seat-meta{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;border-top:1px solid var(--border-soft);padding-top:14px}
+  .seat.open .seat-name{color:var(--mute)}
+
+  .commit{background:linear-gradient(180deg,transparent,rgba(201,164,76,.04));text-align:center;padding:140px 0 160px}
+  .commit h2{max-width:18ch;margin:0 auto 22px;font-weight:300}
+  .commit h2 em{color:var(--gold);font-style:italic}
+  .commit-sub{font-family:var(--serif);font-size:16px;color:var(--bone-2);max-width:54ch;margin:0 auto 50px;line-height:1.6}
+  .commit-btn{background:var(--gold);color:var(--bg);border:none;font-family:var(--mono);font-size:14px;letter-spacing:.2em;text-transform:uppercase;padding:21px 52px;cursor:pointer;transition:all .3s;font-weight:500}
+  .commit-btn:hover{background:var(--bone);letter-spacing:.26em}
+  .commit-detail{margin-top:30px;font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase}
+
+  .modal-bd{position:fixed;inset:0;background:rgba(8,10,18,.92);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .3s}
+  .modal-bd.open{display:flex;opacity:1}
+  .modal{background:#f4ecd8;color:#2a2418;max-width:580px;width:100%;max-height:90vh;overflow:auto;padding:52px 52px 44px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.5);font-family:var(--serif);transform:translateY(20px);transition:transform .4s cubic-bezier(.2,.7,.3,1)}
+  .modal-bd.open .modal{transform:translateY(0)}
+  .modal::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--gold),var(--oxblood))}
+  .modal-stamp{position:absolute;top:26px;right:30px;font-family:var(--mono);font-size:10px;color:var(--oxblood);letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--oxblood);padding:6px 10px;transform:rotate(-2deg)}
+  .modal h3{font-family:var(--serif);font-size:12px;color:#6b5d3a;letter-spacing:.18em;text-transform:uppercase;font-weight:500;margin-bottom:14px}
+  .modal-id{font-family:var(--mono);font-size:11px;color:#6b5d3a;letter-spacing:.1em;margin-bottom:30px;padding-bottom:22px;border-bottom:1px solid #c9bf9e}
+  .modal-title{font-family:var(--serif);font-size:27px;color:#1a1610;letter-spacing:-.02em;margin-bottom:26px;line-height:1.2}
+  .modal-body{font-size:15px;color:#2a2418;line-height:1.7;margin-bottom:30px}
+  .modal-rec{background:rgba(122,46,46,.07);border-left:3px solid var(--oxblood);padding:18px 22px;margin-bottom:26px}
+  .modal-rec-label{font-family:var(--mono);font-size:10px;color:var(--oxblood);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+  .modal-rec-text{font-size:16px;color:#1a1610;font-style:italic}
+  .modal-sig{margin-top:36px;padding-top:22px;border-top:1px solid #c9bf9e;display:flex;justify-content:space-between;align-items:flex-end;font-family:var(--mono);font-size:10px;color:#6b5d3a;letter-spacing:.08em;text-transform:uppercase}
+  .modal-sig strong{display:block;color:#1a1610;font-family:var(--serif);font-size:16px;font-style:italic;text-transform:none;letter-spacing:0;margin-bottom:4px}
+  .modal-close{position:absolute;bottom:-54px;left:50%;transform:translateX(-50%);background:transparent;color:var(--bone);border:1px solid var(--border);font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:12px 24px;cursor:pointer}
+  .modal-close:hover{color:var(--gold);border-color:var(--gold)}
+
+  .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface-2);border:1px solid var(--gold);color:var(--bone);font-family:var(--mono);font-size:12px;letter-spacing:.04em;padding:14px 24px;z-index:300;opacity:0;transition:all .4s;display:flex;align-items:center;gap:10px;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast .td{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+
+  footer{padding:50px 28px;border-top:1px solid var(--border-soft);text-align:center;font-family:var(--mono);font-size:10px;color:var(--mute-2);letter-spacing:.12em;text-transform:uppercase}
+  footer span{color:var(--gold)}
+
+  @media(max-width:920px){
+    .nav-inner{flex-wrap:wrap}
+    .roster{order:3;width:100%;overflow-x:auto;padding-bottom:4px}
+    .hero-top{flex-direction:column;gap:20px}
+    .wb-split{grid-template-columns:1fr}
+    .decisions{grid-template-columns:1fr}
+    .vcards{grid-template-columns:1fr}
+    .vcard{border-right:none;border-bottom:1px solid var(--border-soft)}
+    .seats{grid-template-columns:1fr}
+    .wb-switch{width:100%}
+    .wb-tab{min-width:0;flex:1}
+    section{padding:64px 0}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="brand-mark"></span> AEI Workbench
+      <span class="brand-meta">Live · Q3 2026</span>
+    </div>
+    <div class="roster">
+      <span class="roster-label">Client roster</span>
+      <button class="client-chip active" data-jump="sap"><span class="dot live"></span>SAP SE <span class="tag">Live</span></button>
+      <button class="client-chip" data-jump="nordhaven"><span class="dot pilot"></span>Nordhaven <span class="tag">Pilot</span></button>
+      <button class="client-chip ghost" id="chip-seat3" data-jump="room">+ Seat 03</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div class="hero-meta"><strong>Genotwin GmbH</strong><br/>AEI · Strategic Decision Intelligence<br/>Prepared for: Gerrit Bottemöller</div>
+      <div class="hero-meta" style="text-align:right"><strong>Live customers</strong><br/>SAP SE · Nordhaven Industries AG<br/>One product surface · One rubric</div>
+    </div>
+    <p class="eyebrow">The product, running</p>
+    <h1>One instrument. <em>Point it at any company.</em><br/>Watch the strategy re-compute.</h1>
+    <p class="hero-lede">
+      Below is not a slide. It is the live AEI Workbench &mdash; the same surface a customer logs into. Switch between an enterprise-software giant, a mid-cap manufacturer, and a PE portfolio company; pull the levers and the Year-1 value and the Score move with you; click a node in the genotype graph and watch it surface the exact decisions it drives. The same instrument, applied to whoever sits in the chair.
+    </p>
+  </div>
+</section>
+
+<section id="workbench">
+  <div class="wrap">
+    <p class="eyebrow">Live workbench</p>
+    <h2 style="margin-bottom:36px">Switch the customer. Everything below re-computes.</h2>
+
+    <div class="wb-switch" id="wb-switch">
+      <button class="wb-tab active" data-customer="sap">
+        <span class="name">SAP SE</span>
+        <span class="meta"><span class="sdot live"></span><span style="color:var(--moss)">Customer Zero · Live</span></span>
+      </button>
+      <button class="wb-tab" data-customer="nordhaven">
+        <span class="name">Nordhaven Industries AG</span>
+        <span class="meta"><span class="sdot pilot"></span><span style="color:var(--burnt)">Manufacturing Pilot</span></span>
+      </button>
+      <button class="wb-tab locked" id="tab-kestrel" data-customer="kestrel">
+        <span class="name">Kestrel Group</span>
+        <span class="meta"><span class="sdot signed"></span><span style="color:var(--gold)">PE Portfolio · Signed</span></span>
+      </button>
+    </div>
+
+    <div class="wb-stage" id="wb-stage"></div>
+  </div>
+</section>
+
+<section id="room" class="room">
+  <div class="wrap">
+    <p class="eyebrow">The room</p>
+    <h2>Two seats taken. <span id="room-headline" style="color:var(--gold);font-style:italic;font-weight:300">One still open.</span></h2>
+    <p style="max-width:60ch;margin-top:22px" id="room-sub">You have just watched the product run for two companies. SAP is live. A manufacturer is in pilot. The third seat is the one we close next &mdash; and the one a co-founder helps fill. Claim it and watch a third company come online.</p>
+    <div class="seats">
+      <div class="seat filled live">
+        <div>
+          <div class="seat-num"><span class="sd live"></span>Seat 01 · Live</div>
+          <div class="seat-name">SAP SE</div>
+          <div class="seat-role">Enterprise software · Band B · €520M Year-1 value identified. Full artifact suite shipped: score, workbench, board briefing pack.</div>
+        </div>
+        <div class="seat-meta">Customer Zero · proof it works</div>
+      </div>
+      <div class="seat filled pilot">
+        <div>
+          <div class="seat-num"><span class="sd pilot"></span>Seat 02 · Pilot</div>
+          <div class="seat-name">Nordhaven Industries AG</div>
+          <div class="seat-role">Mid-cap industrial · Band C · €120M Year-1 value. Manufacturing archetype, same architecture, ready to convert to paying.</div>
+        </div>
+        <div class="seat-meta">First manufacturing seat</div>
+      </div>
+      <div class="seat open" id="seat-open">
+        <div>
+          <div class="seat-num"><span class="sd open"></span>Seat 03 · Open</div>
+          <div class="seat-name">Your first close</div>
+          <div class="seat-role">A PE portfolio company in year 2&ndash;3 of hold &mdash; the strongest reference flywheel. €120K founding price. The seat that turns two pilots into a company.</div>
+        </div>
+        <div class="seat-meta">Claim it &amp; bring it online →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="commit" class="commit">
+  <div class="wrap-narrow">
+    <h2>One button. <em>One decision.</em><br/>Take the first seat together.</h2>
+    <p class="commit-sub">Logged as <span style="font-family:var(--mono);color:var(--gold)">AEI-GENOTWIN-DR-2026-001</span> in our own institutional record &mdash; the same format we ship to every customer. The first entry in our decision corpus is the decision to build the company.</p>
+    <button class="commit-btn" id="commit-btn">Commit to the build</button>
+    <div class="commit-detail">Reversible · logged · auditable</div>
+  </div>
+</section>
+
+<footer>AEI Workbench · Live for SAP, Nordhaven &amp; Kestrel · Q3 2026 · <span>Customer Zero</span></footer>
+
+<div class="modal-bd" id="modal-bd">
+  <div class="modal">
+    <div class="modal-stamp">Institutional record</div>
+    <h3>Genotwin GmbH · Decision Record</h3>
+    <div class="modal-id">AEI-GENOTWIN-DR-2026-001 · Issued <span id="modal-ts">—</span></div>
+    <div class="modal-title">Commitment to build &mdash; and to fill seat three</div>
+    <div class="modal-body">The founding team commits to the AEI build path: take the SAP proof and the Nordhaven pilot to three paying founding customers, hire the founding crew, and raise a pre-seed round. The commitment is logged under the same governance format used for customer briefings. Reversible, but the reversal will itself be logged. This is how we hold ourselves to the standard we sell.</div>
+    <div class="modal-rec">
+      <div class="modal-rec-label">Recommended phenotype</div>
+      <div class="modal-rec-text">RUN. The product already works for three companies. The only missing input is a second founder and a first paying seat. Close both this quarter.</div>
+    </div>
+    <div class="modal-sig">
+      <div><strong>Gerrit Bottemöller</strong>Co-founder · Genotwin GmbH</div>
+      <div style="text-align:right"><strong>Max</strong>Co-founder · Genotwin GmbH</div>
+    </div>
+    <button class="modal-close" id="modal-close">Close record</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="td"></span><span id="toast-msg"></span></div>
+
+<script>
+/* ============ DATA MODEL ============ */
+const CUSTOMERS = {
+  sap: {
+    name:"SAP SE", sector:"Enterprise Software · DAX · €34B revenue",
+    quarter:"AEI Score · Q3 2026 · v3.2",
+    score:3.35, scoreMax:0.40, band:"Band B · Above-Peer", bandColor:"var(--moss)",
+    trajectory:"3.35 → 3.38 → 3.42 ↑",
+    values:[
+      {label:"Year-1 Value Identified", val:"€520M", ctx:"Across three blind spots. CFO-verifiable, lower-bound methodology."},
+      {label:"Decisions Logged", val:"8", ctx:"AEI-SAP-DR-2026-024 → 031. Each with reasoning trail + dated timeline."},
+      {label:"Value at Stake", val:"€6.4B", ctx:"Cumulative exposure across the open strategic decisions in the portfolio."}
+    ],
+    graph:{ title:"Genotype graph", sub:"34 nodes · 6 dimensions",
+      nodes:[
+        {x:140,y:90,r:24,label:"AI Portfolio",drives:[0],txt:"14 active AI initiatives across BTP, Joule, S/4HANA, Industry Cloud. Fragmentation Z-score 2.6 above peer median."},
+        {x:300,y:60,r:18,label:"Industry Cloud",drives:[1],txt:"€680M cumulative spend; vertical sprawl diluting the core platform narrative."},
+        {x:430,y:120,r:20,label:"Acquisitions",drives:[2],txt:"€3.6B integration exposure across recent deals; absorption velocity below peer benchmark."},
+        {x:250,y:170,r:15,label:"Joule",drives:[0],txt:"Consolidation anchor. Roadmap can absorb Launchpad capabilities within 90 days."},
+        {x:90,y:190,r:13,label:"Capital",drives:[0,1],txt:"€112M unattributed to revenue. Lowest-ROI bucket: AI Launchpad."},
+        {x:380,y:210,r:14,label:"Governance",drives:[0,2],txt:"Sunset path within Executive Board authority. No shareholder vote required."}
+      ]},
+    sim:{ title:"Consolidation Simulator", sub:"Year-1 realizable value",
+      levers:[
+        {name:"AI portfolio consolidation", stake:2100, factor:0.185, val:82},
+        {name:"Industry Cloud rationalization", stake:680, factor:0.235, val:70},
+        {name:"Acquisition integration tempo", stake:3600, factor:0.041, val:55}
+      ], reco:[82,70,55] },
+    decisions:[
+      {tag:"Decision Phenotype · 01", name:"CONSOLIDATE", em:"the AI portfolio", rec:"Record AEI-SAP-DR-2026-027 · Conf. 0.78", body:"Sunset the AI Launchpad track, absorb differentiated capability into Joule, resequence the Industry Cloud AI roadmap. €60M Year-1 cost release.",
+        agents:[["PORTFOLIO","14 active initiatives, 4 with overlapping IP claims. Fragmentation 2.6σ above peer median."],["CAPITAL","€680M cumulative spend; €112M unattributed to revenue. Launchpad lowest ROI."],["PEER","Oracle, IBM, Microsoft executed analogous consolidations 2023–2025."],["GOVERNANCE","Sunset within EB authority; no shareholder vote; 90-day legal timeline."]]},
+      {tag:"Decision Phenotype · 02", name:"RESEQUENCE", em:"Industry Cloud", rec:"Record AEI-SAP-DR-2026-029 · Conf. 0.71", body:"Defer two vertical builds, redirect €180M toward the three highest-attach verticals. Protects core platform narrative against analyst fatigue.",
+        agents:[["MARKET","Analyst sentiment fatigued on multi-vertical sprawl; focus rated favorably."],["CAPITAL","€180M reallocation lifts blended vertical ROI by an estimated 1.4×."],["TALENT","Deferred-build teams redeployable to attach-rate verticals without attrition."]]},
+      {tag:"Decision Phenotype · 03", name:"ACQUIRE", em:"customer-success capability", rec:"Record AEI-SAP-DR-2026-031 · Conf. 0.66", body:"€720M bolt-on to close the post-sale success gap flagged by three cohort peers. Highest-confidence path to net-retention lift.",
+        agents:[["PEER","Three cohort members closed the same gap via acquisition, not build."],["MARKET","Net-retention delta vs peers traced to post-sale, not product."],["GOVERNANCE","Deal size within standing M&A mandate; board ratification only."]]}
+    ],
+    blindspots:[
+      {id:"BS-01",title:"AI portfolio fragmentation",desc:"Fourteen initiatives competing for one budget owner.",val:"€2B+ at stake"},
+      {id:"BS-02",title:"Industry Cloud dilution",desc:"Vertical sprawl weakening the core platform story.",val:"€680M"},
+      {id:"BS-03",title:"Acquisition integration drag",desc:"Absorption velocity below peer benchmark.",val:"€3.6B+ exposure"}
+    ]
+  },
+
+  nordhaven: {
+    name:"Nordhaven Industries AG", sector:"Industrial Manufacturing · Mid-cap · €4.2B revenue",
+    quarter:"AEI Score · Q3 2026 · v1.4 · Illustrative composite",
+    score:2.95, scoreMax:0.35, band:"Band C · Mid-Maturity", bandColor:"var(--burnt)",
+    trajectory:"2.88 → 2.92 → 2.95 ↑",
+    values:[
+      {label:"Year-1 Value Identified", val:"€120M", ctx:"Across plant, portfolio and supply-chain decisions. Lower-bound, CFO-verifiable."},
+      {label:"Decisions Logged", val:"5", ctx:"AEI-NORD-DR-2026-009 → 013. Reasoning trails + dated event timelines."},
+      {label:"Value at Stake", val:"€560M", ctx:"Cumulative exposure across the open strategic decisions in the network."}
+    ],
+    graph:{ title:"Genotype graph", sub:"28 nodes · 6 dimensions",
+      nodes:[
+        {x:130,y:100,r:23,label:"Plant Network",drives:[1],txt:"11 production sites; 3 below 60% utilization. Consolidation candidate cluster in DACH region."},
+        {x:300,y:70,r:19,label:"Product Lines",drives:[0],txt:"Legacy SKUs carrying 40% of complexity for 9% of margin. Output overlaps the duplicate CapEx line."},
+        {x:440,y:130,r:17,label:"Supply Chain",drives:[2],txt:"Single-source dependency on 2 tier-1 suppliers; resequencing reduces stoppage risk."},
+        {x:230,y:180,r:14,label:"CapEx",drives:[0],txt:"€90M committed to a line that overlaps an underused existing asset."},
+        {x:95,y:200,r:13,label:"Energy",drives:[1],txt:"Energy-intensive sites exposed to NRW tariff volatility; consolidation removes the worst two."},
+        {x:390,y:205,r:14,label:"Workforce",drives:[1],txt:"Skilled-labor concentration risk at the two consolidation-candidate plants."}
+      ]},
+    sim:{ title:"Restructuring Simulator", sub:"Year-1 realizable value",
+      levers:[
+        {name:"Plant network consolidation", stake:240, factor:0.330, val:62},
+        {name:"Product portfolio rationalization", stake:180, factor:0.360, val:58},
+        {name:"Supply-chain resequencing", stake:140, factor:0.380, val:50}
+      ], reco:[62,58,50] },
+    decisions:[
+      {tag:"Decision Phenotype · 01", name:"STOP", em:"the duplicate CapEx line", rec:"Record AEI-NORD-DR-2026-010 · Conf. 0.74", body:"Halt the €90M greenfield line that overlaps an underused existing asset at the Essen site. Redirect toward consolidation. Largest single Year-1 release.",
+        agents:[["CAPITAL","€90M committed against an asset at 58% utilization 40km away."],["PORTFOLIO","Planned output duplicates existing capacity; no incremental demand signal."],["GOVERNANCE","Halt within CFO authority; supervisory board notification only."],["PEER","Two mid-cap industrials reversed comparable lines after AEI-style review."]]},
+      {tag:"Decision Phenotype · 02", name:"RESEQUENCE", em:"the plant network", rec:"Record AEI-NORD-DR-2026-012 · Conf. 0.69", body:"Consolidate three sub-60% sites into two, phased over 18 months. €60M Year-1 value, protected against workforce-concentration risk via redeployment.",
+        agents:[["NETWORK","3 of 11 sites below 60% utilization; demand absorbable by 2 sites."],["WORKFORCE","Skilled-labor risk mitigated by phased 18-month redeployment plan."],["ENERGY","Consolidation removes 2 high-tariff NRW sites from the cost base."]]},
+      {tag:"Decision Phenotype · 03", name:"ACQUIRE", em:"second-source supply", rec:"Record AEI-NORD-DR-2026-013 · Conf. 0.63", body:"Bolt-on or long-term contract a second tier-1 supplier to break single-source dependency. Reduces modeled stoppage exposure by an estimated 70%.",
+        agents:[["SUPPLY","2 tier-1 suppliers carry 80% of critical input; single-source fragility."],["MARKET","Stoppage exposure modeled at €40M/event; second source cuts to €12M."],["CAPITAL","Contract route preferred over acquisition on Year-1 cash impact."]]}
+    ],
+    blindspots:[
+      {id:"BS-01",title:"Duplicate CapEx commitment",desc:"€90M line overlapping an underused existing asset.",val:"€90M"},
+      {id:"BS-02",title:"Plant under-utilization",desc:"Three sites below 60%, dragging fixed-cost base.",val:"€60M/yr"},
+      {id:"BS-03",title:"Single-source supply fragility",desc:"Two suppliers carry 80% of critical inputs.",val:"€40M/event"}
+    ]
+  },
+
+  kestrel: {
+    name:"Kestrel Group", sector:"PE Portfolio Company · Buy-and-build · €1.1B EV",
+    quarter:"AEI Score · Q3 2026 · v0.9 · Illustrative composite",
+    score:2.62, scoreMax:0.42, band:"Band D · Early-Hold", bandColor:"var(--oxblood)",
+    trajectory:"2.55 → 2.58 → 2.62 ↑",
+    values:[
+      {label:"Year-1 Value Identified", val:"€85M", ctx:"EBITDA + exit-multiple uplift across hold decisions. Partner-verifiable."},
+      {label:"Decisions Logged", val:"4", ctx:"AEI-KEST-DR-2026-006 → 009. Partner-facing reasoning trails."},
+      {label:"Value at Exit", val:"€1.8B", ctx:"Modeled enterprise value at optimized exit vs current €1.1B."}
+    ],
+    graph:{ title:"Genotype graph", sub:"22 nodes · 6 dimensions",
+      nodes:[
+        {x:140,y:95,r:23,label:"Add-on Pipeline",drives:[0],txt:"Six qualified bolt-ons; two at sub-platform multiples. Immediate multiple-arbitrage candidates."},
+        {x:305,y:70,r:18,label:"EBITDA Bridge",drives:[1],txt:"Margin-expansion program 40% executed. Pricing and procurement levers under-pulled."},
+        {x:440,y:125,r:17,label:"Debt Structure",drives:[2],txt:"Covenant headroom narrowing as rates rise; refinancing runway ~14 months."},
+        {x:240,y:180,r:14,label:"Management",drives:[2],txt:"Key-person concentration at platform level; exit-readiness depends on bench depth."},
+        {x:95,y:195,r:14,label:"Exit Multiple",drives:[2],txt:"Comparable transactions support a 1.5× multiple step-up at optimized timing."},
+        {x:390,y:205,r:15,label:"Synergies",drives:[0],txt:"Cross-portfolio procurement and shared-services synergies unrealized in current bolt-ons."}
+      ]},
+    sim:{ title:"Value Creation Simulator", sub:"Year-1 realizable value",
+      levers:[
+        {name:"Add-on acquisition pace", stake:320, factor:0.180, val:58},
+        {name:"Margin expansion program", stake:240, factor:0.220, val:62},
+        {name:"Exit timing optimization", stake:180, factor:0.200, val:52}
+      ], reco:[58,62,52] },
+    decisions:[
+      {tag:"Decision Phenotype · 01", name:"ACQUIRE", em:"the next two add-ons", rec:"Record AEI-KEST-DR-2026-007 · Conf. 0.72", body:"Execute the two highest-fit bolt-ons at sub-platform multiples. €320M EV-uplift path with immediate multiple arbitrage on integration.",
+        agents:[["PIPELINE","6 qualified targets; 2 trading 2.5× below platform multiple."],["CAPITAL","Debt headroom supports both add-ons without an equity cure."],["SYNERGY","Shared procurement lifts combined EBITDA an estimated 70bps."],["MARKET","Sector consolidation window favors the buy-side over the next 4 quarters."]]},
+      {tag:"Decision Phenotype · 02", name:"RESEQUENCE", em:"the value-creation plan", rec:"Record AEI-KEST-DR-2026-008 · Conf. 0.70", body:"Front-load the margin-expansion program ahead of further M&A. Pricing and procurement levers deliver EBITDA before the next add-on closes.",
+        agents:[["EBITDA","Program 40% executed; pricing lever alone worth ~120bps."],["OPS","Procurement consolidation deliverable in 2 quarters, low execution risk."],["MARKET","Organic margin gains de-risk the exit story versus M&A-only growth."]]},
+      {tag:"Decision Phenotype · 03", name:"EXIT", em:"window in ~14 months", rec:"Record AEI-KEST-DR-2026-009 · Conf. 0.65", body:"Model points to a sponsor-to-sponsor or strategic exit in roughly 14 months at an optimized multiple. Begin positioning now: €1.8B modeled EV vs €1.1B today.",
+        agents:[["EXIT","Comparable transactions support a 1.5× multiple step-up at timing."],["DEBT","Refinancing runway aligns with the 14-month positioning window."],["GOVERNANCE","Fund hold-period math favors a process start in Q2 next year."],["MARKET","Strategic-buyer appetite in the sub-sector at a multi-year high."]]}
+    ],
+    blindspots:[
+      {id:"BS-01",title:"Multiple compression risk",desc:"Hold extending into a softening exit window.",val:"€180M EV"},
+      {id:"BS-02",title:"Debt covenant headroom",desc:"Rising rates narrowing the refinancing runway.",val:"€90M"},
+      {id:"BS-03",title:"Management bench depth",desc:"Key-person concentration at the platform level.",val:"Exit-readiness drag"}
+    ]
+  }
+};
+
+const STORE_KEY = "aei_workbench_state_v1";
+let activeCustomer = "sap";
+let seat3Claimed = false;
+const stage = document.getElementById('wb-stage');
+
+/* ---- persistence ---- */
+function saveState(){
+  try{
+    const s={claimed:seat3Claimed,levers:{}};
+    for(const k in CUSTOMERS){ s.levers[k]=CUSTOMERS[k].sim.levers.map(l=>l.val); }
+    localStorage.setItem(STORE_KEY, JSON.stringify(s));
+  }catch(e){/* hosting without storage — in-memory still persists across switches */}
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(STORE_KEY); if(!raw) return;
+    const s=JSON.parse(raw);
+    if(s.levers){ for(const k in s.levers){ if(CUSTOMERS[k]){ s.levers[k].forEach((v,i)=>{ if(CUSTOMERS[k].sim.levers[i]) CUSTOMERS[k].sim.levers[i].val=v; }); } } }
+    if(s.claimed){ seat3Claimed=true; }
+  }catch(e){}
+}
+
+function eur(m){ if(m>=1000){ return "€"+(m/1000).toFixed(2).replace(/\.00$/,'')+"B"; } return "€"+Math.round(m)+"M"; }
+
+/* ============ RENDER ============ */
+function renderWorkbench(key){
+  const c = CUSTOMERS[key];
+  const valuesHTML = c.values.map(v=>`<div class="vcard"><div class="vcard-label">${v.label}</div><div class="vcard-val">${v.val}</div><div class="vcard-ctx">${v.ctx}</div></div>`).join('');
+
+  const nodesHTML = c.graph.nodes.map((n,i)=>`
+    <g class="gnode" data-node="${i}">
+      <circle cx="${n.x}" cy="${n.y}" r="${n.r}" fill="rgba(201,164,76,.10)" stroke="var(--gold-soft)" stroke-width="1.2"/>
+      <circle cx="${n.x}" cy="${n.y}" r="3" fill="var(--gold)"/>
+      <text x="${n.x}" y="${n.y+n.r+13}" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="0.5" fill="var(--bone-2)">${n.label}</text>
+    </g>`).join('');
+  const edges=[[0,3],[1,3],[2,5],[0,4],[2,1],[3,4]];
+  const edgesHTML=edges.map(([a,b])=>{const na=c.graph.nodes[a],nb=c.graph.nodes[b];if(!na||!nb)return '';return `<line x1="${na.x}" y1="${na.y}" x2="${nb.x}" y2="${nb.y}" stroke="var(--border)" stroke-width="1"/>`;}).join('');
+
+  const leversHTML = c.sim.levers.map((l,i)=>`
+    <div class="lever">
+      <div class="lever-top"><div><div class="lever-name">${l.name}</div><div class="lever-stake">Value at stake ${eur(l.stake)}</div></div><div class="lever-pct" id="pct-${i}">${l.val}%</div></div>
+      <input type="range" min="0" max="100" value="${l.val}" data-lever="${i}" />
+    </div>`).join('');
+
+  const decisionsHTML = c.decisions.map((d,i)=>`
+    <div class="decision" data-decision="${i}">
+      <div class="decision-tag">${d.tag}</div>
+      <div class="decision-name">${d.name} <em>${d.em}</em></div>
+      <div class="decision-body">${d.body}</div>
+      <div class="decision-foot"><span>${d.rec}</span><span class="decision-expand">Reasoning →</span></div>
+      <div class="decision-trail"><div class="trail-inner">
+        <div class="trail-label">Reasoning trail · 14-agent ensemble · ${d.agents.length} of 14 shown</div>
+        ${d.agents.map(a=>`<div class="agent"><div class="agent-name">${a[0]}</div><div class="agent-find">${a[1]}</div></div>`).join('')}
+      </div></div>
+    </div>`).join('');
+
+  const bsHTML = c.blindspots.map(b=>`<div class="bs-row"><div class="bs-id">${b.id}</div><div><div class="bs-title">${b.title}</div><div class="bs-desc">${b.desc}</div></div><div class="bs-val">${b.val}</div></div>`).join('');
+
+  stage.innerHTML = `
+    <div class="wb-head">
+      <div class="wb-customer">${c.name}<small>${c.sector} · ${c.quarter}</small></div>
+      <div class="wb-score-block">
+        <div class="wb-score-label">AEI Score</div>
+        <div class="wb-score-val" id="score-display">${c.score.toFixed(2)}</div>
+        <div class="wb-score-band" style="color:${c.bandColor}">${c.band}</div>
+        <div class="wb-traj">${c.trajectory}</div>
+      </div>
+    </div>
+    <div class="vcards">${valuesHTML}</div>
+    <div class="wb-split">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">${c.graph.title}</div><div class="panel-sub">${c.graph.sub}</div></div>
+        <svg class="graph-svg" viewBox="0 0 520 250" xmlns="http://www.w3.org/2000/svg">${edgesHTML}${nodesHTML}</svg>
+        <div class="graph-readout" id="graph-readout"><div class="graph-hint">Click a node to inspect the genotype and surface the decisions it drives.</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title">${c.sim.title}</div><div class="panel-sub">${c.sim.sub}</div></div>
+        <div class="sim-headline"><div class="sim-bigval" id="sim-val">€0M</div><div class="sim-bigval-label">Captured Year-1<strong id="sim-pctcap">0% of ceiling</strong></div></div>
+        <div class="sim-divider"></div>
+        ${leversHTML}
+        <div class="sim-foot"><div class="sim-score">Projected Score<strong id="sim-score">${c.score.toFixed(2)}</strong></div><button class="sim-reco-btn" id="sim-reco">Apply recommended</button></div>
+      </div>
+    </div>
+    <div class="bs-head">Blind spots · named explicitly, valued conservatively</div>
+    <div style="margin-bottom:48px">${bsHTML}</div>
+    <div class="decision-filter" id="decision-filter">
+      <div class="decision-filter-txt">Showing decisions driven by <b id="filter-node">—</b></div>
+      <button class="decision-filter-clear" id="filter-clear">Show all decisions</button>
+    </div>
+    <div class="decisions">${decisionsHTML}</div>
+  `;
+
+  wireGraph(c);
+  wireSim(c);
+  wireDecisions();
+  recomputeSim(c);
+}
+
+/* ---- graph + decision filtering (feature C) ---- */
+function clearFilter(){
+  stage.querySelectorAll('.decision').forEach(d=>d.classList.remove('dimmed','lit'));
+  stage.querySelectorAll('.gnode').forEach(g=>g.classList.remove('sel'));
+  const f=document.getElementById('decision-filter'); if(f) f.classList.remove('on');
+}
+function wireGraph(c){
+  const readout=document.getElementById('graph-readout');
+  const filterBar=document.getElementById('decision-filter');
+  const filterNode=document.getElementById('filter-node');
+  stage.querySelectorAll('.gnode').forEach(g=>{
+    g.addEventListener('click',()=>{
+      const idx=+g.dataset.node, n=c.graph.nodes[idx];
+      const driveNames=n.drives.map(di=>c.decisions[di].name).join(' · ');
+      readout.innerHTML=`<div class="graph-readout-node"><span>${n.label}</span><span class="graph-readout-drives">drives → ${driveNames}</span></div><div class="graph-readout-text">${n.txt}</div>`;
+      stage.querySelectorAll('.gnode').forEach(x=>x.classList.remove('sel'));
+      g.classList.add('sel');
+      // filter decisions
+      stage.querySelectorAll('.decision').forEach(d=>{
+        const di=+d.dataset.decision;
+        if(n.drives.includes(di)){ d.classList.add('lit'); d.classList.remove('dimmed'); }
+        else { d.classList.add('dimmed'); d.classList.remove('lit'); }
+      });
+      filterNode.textContent=n.label;
+      filterBar.classList.add('on');
+    });
+  });
+  document.getElementById('filter-clear').addEventListener('click',()=>{
+    clearFilter();
+    readout.innerHTML='<div class="graph-hint">Click a node to inspect the genotype and surface the decisions it drives.</div>';
+  });
+}
+
+/* ---- simulator (feature B persistence via mutation + localStorage) ---- */
+function wireSim(c){
+  stage.querySelectorAll('input[type=range]').forEach(r=>{
+    r.addEventListener('input',()=>{
+      const i=+r.dataset.lever; c.sim.levers[i].val=+r.value;
+      document.getElementById('pct-'+i).textContent=r.value+'%';
+      recomputeSim(c); saveState();
+      const v=document.getElementById('sim-val'); v.classList.add('pulse'); setTimeout(()=>v.classList.remove('pulse'),120);
+    });
+  });
+  document.getElementById('sim-reco').addEventListener('click',()=>{
+    c.sim.reco.forEach((rv,i)=>{ c.sim.levers[i].val=rv; const s=stage.querySelector(`input[data-lever="${i}"]`); s.value=rv; document.getElementById('pct-'+i).textContent=rv+'%'; });
+    recomputeSim(c); saveState();
+  });
+}
+function recomputeSim(c){
+  let captured=0,maxCap=0;
+  c.sim.levers.forEach(l=>{ captured+=(l.val/100)*l.stake*l.factor; maxCap+=l.stake*l.factor; });
+  document.getElementById('sim-val').textContent=eur(captured);
+  document.getElementById('sim-pctcap').textContent=Math.round((captured/maxCap)*100)+'% of ceiling';
+  const proj=(c.score + (captured/maxCap)*c.scoreMax).toFixed(2);
+  document.getElementById('sim-score').textContent=proj;
+  document.getElementById('score-display').textContent=proj;
+}
+
+/* ---- decisions ---- */
+function wireDecisions(){ stage.querySelectorAll('.decision').forEach(d=>d.addEventListener('click',()=>d.classList.toggle('open'))); }
+
+/* ============ CUSTOMER SWITCH ============ */
+function switchCustomer(key){
+  if(key===activeCustomer) return;
+  if(key==='kestrel' && !seat3Claimed) return;
+  activeCustomer=key;
+  clearFilter();
+  stage.classList.add('swapping');
+  document.querySelectorAll('.wb-tab').forEach(t=>t.classList.toggle('active',t.dataset.customer===key));
+  document.querySelectorAll('.client-chip').forEach(ch=>{
+    if(['sap','nordhaven','kestrel'].includes(ch.dataset.jump)) ch.classList.toggle('active',ch.dataset.jump===key);
+  });
+  setTimeout(()=>{ renderWorkbench(key); stage.classList.remove('swapping'); },300);
+}
+document.querySelectorAll('.wb-tab').forEach(t=>t.addEventListener('click',()=>switchCustomer(t.dataset.customer)));
+document.querySelectorAll('.client-chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    const j=ch.dataset.jump;
+    if(['sap','nordhaven','kestrel'].includes(j)){
+      if(j==='kestrel' && !seat3Claimed){ document.getElementById('room').scrollIntoView({behavior:'smooth'}); return; }
+      switchCustomer(j); document.getElementById('workbench').scrollIntoView({behavior:'smooth'});
+    } else if(j==='room'){ document.getElementById('room').scrollIntoView({behavior:'smooth'}); }
+  });
+});
+
+/* ============ FEATURE A — CLAIM SEAT 03 ============ */
+function showToast(msg){
+  const t=document.getElementById('toast'); document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200);
+}
+function applyClaimedUI(animate){
+  // reveal workbench tab
+  const tab=document.getElementById('tab-kestrel'); tab.classList.remove('locked'); if(animate) tab.classList.add('revealed');
+  // transform roster ghost chip into signed chip
+  const chip=document.getElementById('chip-seat3');
+  chip.classList.remove('ghost'); chip.dataset.jump='kestrel';
+  chip.innerHTML='<span class="dot signed"></span>Kestrel <span class="tag">Signed</span>';
+  // transform the open seat
+  const seat=document.getElementById('seat-open');
+  seat.className='seat filled signed'+(animate?' just-claimed':'');
+  seat.innerHTML=`
+    <div>
+      <div class="seat-num"><span class="sd signed"></span>Seat 03 · Signed</div>
+      <div class="seat-name">Kestrel Group</div>
+      <div class="seat-role">PE portfolio company · Band D · €85M Year-1 value, €1.8B modeled exit. The reference flywheel — a partner who refers the next three.</div>
+    </div>
+    <div class="seat-meta">Open in workbench →</div>`;
+  seat.style.cursor='pointer';
+  // update room copy
+  document.getElementById('room-headline').textContent='All three filled.';
+  document.getElementById('room-sub').textContent='Kestrel Group is live in the workbench — a PE portfolio company, the strongest reference flywheel. The product now runs for three companies across three sectors. The only missing input is a co-founder and the first paying contract.';
+}
+function claimSeat3(){
+  if(seat3Claimed) { switchCustomer('kestrel'); document.getElementById('workbench').scrollIntoView({behavior:'smooth'}); return; }
+  seat3Claimed=true; saveState();
+  applyClaimedUI(true);
+  showToast('Seat 03 signed · Kestrel Group is live in the workbench');
+  setTimeout(()=>{ switchCustomer('kestrel'); document.getElementById('workbench').scrollIntoView({behavior:'smooth'}); },700);
+}
+document.getElementById('seat-open').addEventListener('click',claimSeat3);
+
+/* ============ COMMIT MODAL ============ */
+const modal=document.getElementById('modal-bd');
+document.getElementById('commit-btn').addEventListener('click',()=>{
+  const now=new Date(), opts={day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Berlin'};
+  document.getElementById('modal-ts').textContent=now.toLocaleString('en-GB',opts)+' CET';
+  modal.classList.add('open'); document.body.style.overflow='hidden';
+});
+function closeModal(){modal.classList.remove('open');document.body.style.overflow='';}
+document.getElementById('modal-close').addEventListener('click',closeModal);
+modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ============ INIT ============ */
+loadState();
+if(seat3Claimed){ applyClaimedUI(false); }   // restore claimed state on reload, no animation
+renderWorkbench('sap');
+</script>
+</body>
+</html>
