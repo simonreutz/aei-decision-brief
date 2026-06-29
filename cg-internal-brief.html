@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AEI · Internal Brief · for Capgemini leadership</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0c0e1a;--bg-2:#11142a;--surface:#151829;--surface-2:#1a1e34;--border:#252a44;--border-soft:#1d2138;
+    --gold:#c9a44c;--gold-soft:#8a7333;--gold-glow:rgba(201,164,76,.18);
+    --oxblood:#7a2e2e;--burnt:#c97a3a;--moss:#6b8e5a;--teal:#4a8c8c;
+    --bone:#e8e3d5;--bone-2:#c8c2b1;--mute:#7a8099;--mute-2:#565b76;
+    --serif:'Fraunces','Iowan Old Style',Georgia,serif;--sans:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--bone);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--gold);color:var(--bg)}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(201,164,76,.06),transparent 60%),radial-gradient(ellipse 60% 50% at 90% 110%,rgba(74,140,140,.05),transparent 60%)}
+
+  /* NAV */
+  .nav{position:sticky;top:0;z-index:60;background:rgba(12,14,26,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-soft)}
+  .nav-inner{max-width:1280px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .brand{font-family:var(--serif);font-size:16px;font-weight:500;letter-spacing:-.01em;display:flex;align-items:center;gap:11px}
+  .brand-mark{width:20px;height:20px;border:1.5px solid var(--gold);border-radius:50%;position:relative}
+  .brand-mark::after{content:'';position:absolute;inset:4px;background:var(--gold);border-radius:50%;opacity:.7}
+  .brand-meta{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.12em;text-transform:uppercase;margin-left:12px;padding-left:12px;border-left:1px solid var(--border)}
+  .secnav{display:flex;gap:0;border:1px solid var(--border);flex-wrap:wrap}
+  .sn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:9px 13px;background:transparent;border:none;border-right:1px solid var(--border);color:var(--mute);cursor:pointer;transition:all .2s}
+  .sn:last-child{border-right:none}
+  .sn:hover{color:var(--bone-2)}
+  .sn.on{background:rgba(201,164,76,.08);color:var(--bone)}
+  .back{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);text-decoration:none;border:1px solid var(--border);padding:9px 14px;transition:all .2s}
+  .back:hover{color:var(--gold);border-color:var(--gold)}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+
+  /* HERO */
+  header{padding:64px 0 40px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:12px;margin-bottom:22px}
+  .eyebrow::before{content:'';width:28px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5.4vw,60px);line-height:1.04;letter-spacing:-.03em;margin:0 0 22px;max-width:22ch}
+  h1 em{font-style:italic;color:var(--gold)}
+  .lede{font-family:var(--serif);font-weight:300;font-size:clamp(16px,1.7vw,20px);line-height:1.6;color:var(--bone-2);max-width:66ch}
+  .lede b{color:var(--bone);font-weight:400}
+  .audience{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-2);margin-top:26px;border:1px solid var(--border);padding:9px 14px}
+  .audience .d{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+
+  section{padding:90px 0;border-top:1px solid var(--border-soft);scroll-margin-top:76px}
+  .sec-k{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:18px;display:flex;align-items:center;gap:13px}
+  .sec-k .no{color:var(--gold);font-weight:500}
+  h2{font-family:var(--serif);font-weight:300;font-size:clamp(28px,3.8vw,42px);line-height:1.1;letter-spacing:-.02em;margin:0 0 14px;max-width:24ch}
+  h2 em{font-style:italic;color:var(--gold)}
+  p{color:var(--bone-2);font-size:15.5px;line-height:1.65}
+  p.intro{max-width:62ch;margin:0 0 30px}
+
+  /* WHY — three-column why/what/how */
+  .why{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+  .wcard{border:1px solid var(--border);border-top:2px solid var(--gold-soft);padding:32px 28px;background:var(--surface);display:flex;flex-direction:column}
+  .wcard-tag{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+  .wcard-h{font-family:var(--serif);font-size:24px;color:var(--bone);letter-spacing:-.02em;margin-bottom:14px;font-weight:400;line-height:1.18}
+  .wcard-h em{font-style:italic;color:var(--gold);font-weight:300}
+  .wcard-p{font-size:14.5px;color:var(--bone-2);line-height:1.6;flex:1}
+  .wcard-foot{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-top:18px;padding-top:16px;border-top:1px solid var(--border-soft)}
+
+  /* STAGES */
+  .stages{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:30px;position:relative}
+  .stage{border:1px solid var(--border);border-left:none;padding:28px 24px;background:var(--surface);position:relative}
+  .stage:first-child{border-left:1px solid var(--border)}
+  .stage.now{background:linear-gradient(180deg,rgba(201,164,76,.06),transparent);border-top:2px solid var(--gold)}
+  .stage-now-tag{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;background:var(--gold);color:var(--bg);padding:3px 10px;white-space:nowrap}
+  .stage-no{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .stage-when{font-family:var(--mono);font-size:11px;color:var(--bone-2);margin-bottom:14px}
+  .stage-t{font-family:var(--serif);font-size:21px;color:var(--bone);letter-spacing:-.01em;margin-bottom:12px}
+  .stage-l{list-style:none;padding:0;margin:0 0 18px}
+  .stage-l li{font-size:13px;color:var(--bone-2);line-height:1.5;padding:5px 0 5px 14px;position:relative}
+  .stage-l li::before{content:'';position:absolute;left:0;top:13px;width:6px;height:1px;background:var(--gold-soft)}
+  .stage-gate{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;border-top:1px solid var(--border-soft);padding-top:12px;line-height:1.5}
+  .stage-gate b{color:var(--burnt);display:block;letter-spacing:.14em;margin-bottom:4px}
+
+  /* QUADRANTS — strategic options */
+  .quadrant-frame{margin-top:30px;border:1px solid var(--border);background:var(--surface);padding:36px}
+  .quadrant-svg{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
+  .options{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+  .opt{border:1px solid var(--border);border-top:2px solid var(--border);padding:22px;background:var(--surface);cursor:default;transition:transform .2s;display:flex;flex-direction:column}
+  .opt:hover{transform:translateY(-2px)}
+  .opt.rec{border-top-color:var(--gold);background:linear-gradient(180deg,rgba(201,164,76,.05),transparent)}
+  .opt-tag{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .opt.rec .opt-tag{color:var(--gold)}
+  .opt-h{font-family:var(--serif);font-size:18px;color:var(--bone);letter-spacing:-.01em;margin-bottom:8px;line-height:1.2}
+  .opt-h em{font-style:italic;color:var(--gold);font-weight:300}
+  .opt-d{font-size:13px;color:var(--bone-2);line-height:1.55;flex:1;margin-bottom:14px}
+  .opt-stats{border-top:1px solid var(--border-soft);padding-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+  .opt-stats b{display:block;color:var(--bone);font-family:var(--serif);font-size:13px;letter-spacing:-.01em;text-transform:none;margin-top:3px;font-weight:400}
+  .opt.rec .opt-stats b{color:var(--gold)}
+
+  /* G2M */
+  .g2m-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+  .g2mp{border:1px solid var(--border);padding:24px;background:var(--surface);border-left:2px solid var(--gold-soft)}
+  .g2mp-t{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  .g2mp-h{font-family:var(--serif);font-size:20px;color:var(--bone);letter-spacing:-.01em;margin-bottom:10px;line-height:1.2}
+  .g2mp-p{font-size:13.5px;color:var(--bone-2);line-height:1.55}
+
+  .motion{margin-top:36px;border:1px solid var(--border);padding:32px;background:var(--surface)}
+  .motion-h{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+  .funnel{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--border-soft)}
+  .fcell{padding:20px 16px;border-right:1px solid var(--border-soft);position:relative;background:var(--bg-2)}
+  .fcell:last-child{border-right:none;background:rgba(201,164,76,.06)}
+  .fcell-no{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .fcell-t{font-family:var(--serif);font-size:15px;color:var(--bone);line-height:1.2;margin-bottom:8px}
+  .fcell-d{font-size:12px;color:var(--mute);line-height:1.5}
+  .fcell-conv{position:absolute;top:50%;right:-8px;transform:translateY(-50%);font-family:var(--mono);font-size:11px;color:var(--gold);background:var(--bg);padding:2px 6px;border:1px solid var(--gold-soft);z-index:2}
+  .fcell:last-child .fcell-conv{display:none}
+
+  /* BUDGET */
+  .budget{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .bgbox{border:1px solid var(--border);background:var(--surface);padding:28px}
+  .bgbox.full{grid-column:1/-1}
+  .bg-h{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .bg-bars{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+  .bg-row{display:grid;grid-template-columns:88px 1fr 90px;gap:14px;align-items:center}
+  .bg-row .lbl{font-family:var(--mono);font-size:11px;color:var(--bone-2);letter-spacing:.04em}
+  .bg-row .lbl small{display:block;font-size:9px;color:var(--mute);margin-top:2px;letter-spacing:.04em;text-transform:uppercase}
+  .bg-track{height:18px;background:var(--bg-2);border:1px solid var(--border-soft);position:relative;overflow:hidden}
+  .bg-fill{height:100%;background:linear-gradient(90deg,var(--gold-soft),var(--gold));width:0;transition:width 1.4s cubic-bezier(.2,.7,.3,1)}
+  .bg-fill.cost{background:linear-gradient(90deg,var(--oxblood),var(--burnt))}
+  .bg-v{font-family:var(--mono);font-size:12px;color:var(--bone);text-align:right}
+  .bg-net{margin-top:18px;padding:16px;background:var(--bg-2);border-left:2px solid var(--gold);font-family:var(--mono);font-size:12px;color:var(--bone-2);letter-spacing:.04em;line-height:1.6}
+  .bg-net b{color:var(--gold);font-family:var(--serif);font-size:17px;letter-spacing:-.01em;font-weight:400}
+
+  .cost-stack{display:flex;flex-direction:column;gap:10px}
+  .cs-row{display:grid;grid-template-columns:130px 1fr 70px;gap:14px;padding:9px 0;border-bottom:1px solid var(--border-soft);align-items:center}
+  .cs-row:last-child{border-bottom:none}
+  .cs-l{font-family:var(--serif);font-size:14px;color:var(--bone)}
+  .cs-l small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--mute);text-transform:uppercase;margin-top:2px}
+  .cs-bar{height:6px;background:var(--bg-2);border:1px solid var(--border-soft);position:relative;overflow:hidden}
+  .cs-fill{height:100%;background:var(--gold-soft);width:0;transition:width 1.3s cubic-bezier(.2,.7,.3,1)}
+  .cs-v{font-family:var(--mono);font-size:11px;color:var(--bone-2);text-align:right}
+
+  /* MARKETING */
+  .mkt-layers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:30px}
+  .mkt{border:1px solid var(--border);padding:24px;background:var(--surface)}
+  .mkt-t{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  .mkt-h{font-family:var(--serif);font-size:20px;color:var(--bone);letter-spacing:-.01em;margin-bottom:10px;line-height:1.2}
+  .mkt-p{font-size:13.5px;color:var(--bone-2);line-height:1.55;margin-bottom:14px}
+  .mkt-tactics{font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--mute);line-height:2;border-top:1px solid var(--border-soft);padding-top:12px}
+  .mkt-tactics b{color:var(--bone-2)}
+
+  /* WHAT IT TAKES */
+  .ask{margin-top:30px;border:1px solid var(--border);background:var(--surface)}
+  .ask-row{display:grid;grid-template-columns:34px 1fr 1fr 1fr;gap:24px;padding:22px 28px;border-bottom:1px solid var(--border-soft);align-items:start}
+  .ask-row:last-child{border-bottom:none}
+  .ask-row.hot{background:linear-gradient(90deg,rgba(201,164,76,.05),transparent)}
+  .ask-no{font-family:var(--mono);font-size:13px;color:var(--gold)}
+  .ask-t{font-family:var(--serif);font-size:18px;color:var(--bone);letter-spacing:-.01em;line-height:1.25}
+  .ask-t small{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--mute);text-transform:uppercase;margin-top:5px}
+  .ask-col-l{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+  .ask-col-d{font-size:13px;color:var(--bone-2);line-height:1.5}
+  .ask-head{display:grid;grid-template-columns:34px 1fr 1fr 1fr;gap:24px;padding:14px 28px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+
+  /* CLOSING */
+  .closing{padding:80px 0;text-align:center;border-top:1px solid var(--border-soft)}
+  .closing h2{margin:0 auto 22px;max-width:24ch}
+  .closing-sub{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--bone-2);max-width:54ch;margin:0 auto 36px;line-height:1.55}
+  .closing-link{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:14px 26px;display:inline-block;transition:all .25s}
+  .closing-link:hover{background:var(--gold);color:var(--bg);letter-spacing:.18em}
+
+  footer{padding:44px 28px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--mute-2);letter-spacing:.12em;text-transform:uppercase;border-top:1px solid var(--border-soft)}
+  footer span{color:var(--gold)}
+
+  @media(max-width:900px){
+    .why,.options,.g2m-pillars,.mkt-layers,.budget,.stages,.funnel{grid-template-columns:1fr}
+    .stage{border-left:1px solid var(--border)}
+    .opt-stats{grid-template-columns:1fr 1fr}
+    .ask-row,.ask-head{grid-template-columns:30px 1fr;gap:14px}
+    .ask-col-l,.ask-col-d{grid-column:2}
+    .ask-head span:nth-child(3),.ask-head span:nth-child(4){display:none}
+    section{padding:60px 0}
+    .secnav{order:3;width:100%;justify-content:flex-start;overflow-x:auto}
+  }
+/* ============ FLOATING / DASHBOARD POLISH ============ */
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,164,76,0),0 18px 50px -20px rgba(0,0,0,.5)}50%{box-shadow:0 0 24px -4px rgba(201,164,76,.12),0 18px 50px -20px rgba(0,0,0,.5)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.float-card{position:relative;transition:transform .4s cubic-bezier(.2,.7,.3,1),box-shadow .4s}
+.float-card:hover{transform:translateY(-5px);box-shadow:0 28px 60px -24px rgba(0,0,0,.6),0 0 30px -10px rgba(201,164,76,.15)}
+
+/* hero live-ticker chips */
+.ticker{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+.tk{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--bone-2);border:1px solid var(--border);padding:10px 15px;background:var(--surface);position:relative;overflow:hidden}
+.tk::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(201,164,76,.07),transparent);background-size:200% 100%;animation:shimmer 4s linear infinite;pointer-events:none}
+.tk b{color:var(--gold);font-family:var(--serif);font-size:15px;font-weight:400;letter-spacing:-.01em}
+.tk .tkd{width:6px;height:6px;border-radius:50%;background:var(--moss);box-shadow:0 0 8px var(--moss);flex-shrink:0;animation:breathe 2s ease-in-out infinite}
+
+/* ============ MARKET OUTLOOK ============ */
+.mkt-hero{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;margin-top:30px;align-items:center}
+@media(max-width:900px){.mkt-hero{grid-template-columns:1fr}}
+.mkt-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mstat{border:1px solid var(--border);padding:24px;background:var(--surface);position:relative;animation:floatY 7s ease-in-out infinite}
+.mstat:nth-child(2){animation-delay:-2s}
+.mstat:nth-child(3){animation-delay:-4s}
+.mstat:nth-child(4){animation-delay:-1s}
+.mstat-v{font-family:var(--serif);font-size:38px;font-weight:300;color:var(--gold);line-height:1;letter-spacing:-.02em}
+.mstat-v small{font-size:18px;color:var(--bone-2)}
+.mstat-l{font-size:13px;color:var(--bone-2);line-height:1.45;margin-top:10px}
+.mstat-src{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute-2);margin-top:12px;padding-top:10px;border-top:1px solid var(--border-soft)}
+
+/* growth curve viz */
+.curve-box{border:1px solid var(--border);background:var(--surface);padding:28px}
+.curve-h{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.curve-sub{font-size:12px;color:var(--mute);margin-bottom:18px}
+.curve-svg{width:100%;height:auto}
+
+/* gartner predictions strip */
+.preds{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+@media(max-width:900px){.preds{grid-template-columns:1fr}}
+.pred{border:1px solid var(--border);border-left:2px solid var(--gold);padding:22px;background:var(--surface)}
+.pred-yr{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.pred-claim{font-family:var(--serif);font-size:17px;color:var(--bone);line-height:1.35;letter-spacing:-.01em;margin-bottom:10px}
+.pred-claim b{color:var(--gold);font-style:italic;font-weight:300}
+.pred-src{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute-2)}
+
+.sources{margin-top:30px;border-top:1px solid var(--border-soft);padding-top:20px;font-family:var(--mono);font-size:10px;letter-spacing:.03em;color:var(--mute-2);line-height:1.9}
+.sources b{color:var(--bone-2)}
+
+/* whitespace positioning line */
+.position-line{margin-top:36px;border:1px solid var(--gold-soft);background:linear-gradient(135deg,rgba(201,164,76,.06),transparent);padding:30px 34px}
+.position-line .pl-k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.position-line .pl-t{font-family:var(--serif);font-size:clamp(20px,2.4vw,28px);font-weight:300;color:var(--bone);line-height:1.35;letter-spacing:-.01em}
+.position-line .pl-t em{font-style:italic;color:var(--gold)}
+
+/* ============ BUSINESS DEVELOPMENT JOURNEY ============ */
+.journey{margin-top:34px;position:relative}
+.j-rail{position:absolute;left:27px;top:30px;bottom:30px;width:2px;background:linear-gradient(180deg,var(--gold-soft),var(--border),var(--gold-soft));z-index:0}
+.j-step{display:grid;grid-template-columns:56px 1fr;gap:24px;position:relative;z-index:1;margin-bottom:16px}
+.j-node{width:56px;display:flex;flex-direction:column;align-items:center}
+.j-dot{width:30px;height:30px;border-radius:50%;background:var(--surface);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--gold);position:relative;z-index:2}
+.j-step.climax .j-dot{background:var(--gold);color:var(--bg);box-shadow:0 0 0 6px var(--gold-glow)}
+.j-when{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-top:8px;text-align:center;line-height:1.3}
+.j-card{border:1px solid var(--border);background:var(--surface);padding:22px 26px;transition:transform .3s,border-color .3s}
+.j-card:hover{transform:translateX(4px);border-color:var(--gold-soft)}
+.j-step.climax .j-card{border-color:var(--gold);background:linear-gradient(135deg,rgba(201,164,76,.05),transparent)}
+.j-phase{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.j-t{font-family:var(--serif);font-size:21px;color:var(--bone);letter-spacing:-.01em;margin-bottom:8px;line-height:1.2}
+.j-t em{font-style:italic;color:var(--gold);font-weight:300}
+.j-d{font-size:14px;color:var(--bone-2);line-height:1.6;margin-bottom:14px}
+.j-meta{display:flex;gap:22px;flex-wrap:wrap;border-top:1px solid var(--border-soft);padding-top:13px}
+.j-metric{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.j-metric b{display:block;font-family:var(--serif);font-size:16px;color:var(--gold);letter-spacing:-.01em;text-transform:none;margin-top:4px;font-weight:400}
+.j-artifact{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:var(--bone-2);display:inline-flex;align-items:center;gap:7px}
+.j-artifact::before{content:'◆';color:var(--gold);font-size:8px}
+
+/* forever-ARR climax band */
+.forever{margin-top:30px;border:1px solid var(--gold);background:linear-gradient(135deg,rgba(201,164,76,.08),transparent 70%);padding:40px;text-align:center;position:relative;overflow:hidden;animation:glowPulse 5s ease-in-out infinite}
+.forever::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 0%,rgba(201,164,76,.08),transparent 70%);pointer-events:none}
+.forever-k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.forever-v{font-family:var(--serif);font-size:clamp(40px,6vw,64px);font-weight:300;color:var(--gold);line-height:1;letter-spacing:-.03em;margin-bottom:8px}
+.forever-l{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--bone-2);margin-bottom:24px}
+.forever-ladder{display:flex;justify-content:center;gap:0;flex-wrap:wrap;border:1px solid var(--border);max-width:640px;margin:0 auto}
+.fl{flex:1;min-width:120px;padding:16px 14px;border-right:1px solid var(--border-soft)}
+.fl:last-child{border-right:none}
+.fl-y{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:7px}
+.fl-v{font-family:var(--serif);font-size:19px;color:var(--bone);letter-spacing:-.01em}
+.fl:last-child .fl-v{color:var(--gold)}
+
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="brand-mark"></span>AEI · Internal Brief<span class="brand-meta">For Capgemini leadership</span></div>
+    <div class="secnav">
+      <button class="sn on" data-go="why">Why</button>
+      <button class="sn" data-go="market">Market</button>
+      <button class="sn" data-go="stages">Stages</button>
+      <button class="sn" data-go="options">Options</button>
+      <button class="sn" data-go="g2m">G2M</button>
+      <button class="sn" data-go="budget">Budget</button>
+      <button class="sn" data-go="marketing">Marketing</button>
+      <button class="sn" data-go="ask">What it takes</button>
+      <button class="sn" data-go="journey">First client</button>
+    </div>
+    <a href="index.html" class="back">&larr; Project</a>
+  </div>
+</nav>
+
+<header class="wrap">
+  <p class="eyebrow">AEI · Internal Brief · for Capgemini leadership</p>
+  <h1>The category Capgemini is positioned to claim &mdash; <em>but only if we move now.</em></h1>
+  <p class="lede">The strategic-decision quadrant of decision intelligence is empty and just got validated by Gartner. The competitor in the operational quadrant is venture-scale. Capgemini already has the relationships, the credibility and the buyer access AEI needs to land &mdash; <b>the channel exists; the product now exists too.</b> This brief sets out why AEI is the move, the four stages to hunt the xbn-EUR market, the three structural paths, and what it takes to get going.</p>
+  <div class="audience"><span class="d"></span>Internal · Capgemini leadership · confidential</div>
+  <div class="ticker">
+    <span class="tk"><span class="tkd"></span>Category validated <b>Mar 2026</b></span>
+    <span class="tk">DI market <b>$50B</b> by 2030</span>
+    <span class="tk">Strategic quadrant <b>empty</b></span>
+    <span class="tk">Window <b>~18 months</b></span>
+  </div>
+</header>
+
+<!-- WHY / WHAT / HOW -->
+<section id="why">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">01</span>Why · What · How</div>
+    <h2>Why Capgemini, in one page.</h2>
+    <p class="intro">AEI productizes the highest-margin work Capgemini already delivers &mdash; strategic advisory at the board level &mdash; into a recurring intelligence subscription with bound artifacts. The work is the same; the economics are not.</p>
+
+    <div class="why">
+      <div class="wcard">
+        <div class="wcard-tag">Why</div>
+        <div class="wcard-h">The channel <em>already exists.</em></div>
+        <div class="wcard-p">CFO, Chief Strategy Officer and board access is the bottleneck for every player chasing this category. Capgemini sits in those rooms today, quarter after quarter. That access cannot be bought by an independent venture; it can be activated by a CG-backed product. The window is the eighteen months before someone else names the category.</div>
+        <div class="wcard-foot">Channel · credibility · relationships</div>
+      </div>
+      <div class="wcard">
+        <div class="wcard-tag">What</div>
+        <div class="wcard-h">A persistent <em>intelligence subscription.</em></div>
+        <div class="wcard-p">Not a consulting engagement, not a dashboard. A live workbench plus a monthly or quarterly bound briefing pack, anchored to a six-dimension score that is updated weekly against the customer's own systems and a constructed peer cohort. Recurring revenue, 80%+ gross margin, sticky by the artifact ritual itself.</div>
+        <div class="wcard-foot">Recurring · bound · scored</div>
+      </div>
+      <div class="wcard">
+        <div class="wcard-tag">How</div>
+        <div class="wcard-h">Wedge to <em>annuity.</em></div>
+        <div class="wcard-p">Capgemini account teams open the door; the consulting diagnosis is the wedge; the subscription is the annuity. The same buyer relationship that produced one project becomes a multi-year intelligence contract priced between &euro;300K and &euro;800K per year &mdash; with platform expansion paths into PE portfolios and the broader Innovation Edition.</div>
+        <div class="wcard-foot">Wedge &middot; subscribe &middot; expand</div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- MARKET OUTLOOK -->
+<section id="market">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">02</span>Market outlook &middot; the window</div>
+    <h2>A market validated, <em>and a quadrant still empty.</em></h2>
+    <p class="intro">The decision intelligence category just crossed from emerging to established &mdash; Gartner published its <b>inaugural Magic Quadrant for Decision Intelligence Platforms in March 2026</b>. The money is real and the analysts are watching. But every named player sits in the operational quadrant. The strategic, board-level quadrant is the white space AEI is built for.</p>
+
+    <div class="mkt-hero">
+      <div class="mkt-stat-grid">
+        <div class="mstat float-card"><div class="mstat-v">$13.3<small>B</small></div><div class="mstat-l">Decision intelligence market size, 2024</div><div class="mstat-src">MarketsandMarkets, 2024</div></div>
+        <div class="mstat float-card"><div class="mstat-v">$50<small>B</small></div><div class="mstat-l">Projected market size by 2030</div><div class="mstat-src">MarketsandMarkets · 24.7% CAGR</div></div>
+        <div class="mstat float-card"><div class="mstat-v">50<small>%</small></div><div class="mstat-l">of business decisions AI-augmented or automated by 2027</div><div class="mstat-src">Gartner, 2025</div></div>
+        <div class="mstat float-card"><div class="mstat-v">1<small>st</small></div><div class="mstat-l">Gartner Magic Quadrant for DI Platforms, published Mar 2026</div><div class="mstat-src">Gartner / SD Times, 2026</div></div>
+      </div>
+      <div class="curve-box float-card">
+        <div class="curve-h">Market trajectory · 2024 → 2030</div>
+        <div class="curve-sub">Global decision intelligence platform spend, USD billions</div>
+        <svg class="curve-svg" viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="cfill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c9a44c" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#c9a44c" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="34" y1="150" x2="300" y2="150" stroke="#252a44"/>
+          <line x1="34" y1="20" x2="34" y2="150" stroke="#252a44"/>
+          <path id="curveArea" d="M34,138 C110,128 170,96 230,58 C260,40 285,26 300,20 L300,150 L34,150 Z" fill="url(#cfill)" opacity="0"/>
+          <path id="curveLine" d="M34,138 C110,128 170,96 230,58 C260,40 285,26 300,20" fill="none" stroke="#c9a44c" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="600" stroke-dashoffset="600"/>
+          <circle cx="34" cy="138" r="4" fill="#c9a44c"/>
+          <circle cx="300" cy="20" r="5" fill="#c9a44c"><animate attributeName="r" values="5;7;5" dur="2.5s" repeatCount="indefinite"/></circle>
+          <text x="34" y="167" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7a8099">2024</text>
+          <text x="300" y="167" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#7a8099">2030</text>
+          <text x="44" y="134" font-family="Fraunces" font-size="11" fill="#e8e3d5">$13B</text>
+          <text x="296" y="16" text-anchor="end" font-family="Fraunces" font-size="12" fill="#c9a44c">$50B</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="preds">
+      <div class="pred float-card"><div class="pred-yr">By 2027</div><div class="pred-claim"><b>25% of ungoverned LLM decisions</b> will cause financial or reputational loss &mdash; from bias, weak critical thinking and AI sycophancy.</div><div class="pred-src">Gartner · DI predictions, 2026</div></div>
+      <div class="pred float-card"><div class="pred-yr">By 2028</div><div class="pred-claim"><b>25% of CDAO vision statements</b> will become "decision-centric," surpassing "data-driven" as the leading slogan.</div><div class="pred-src">Gartner · DI predictions, 2026</div></div>
+      <div class="pred float-card"><div class="pred-yr">By 2030</div><div class="pred-claim">Explicitly modelled decisions will be <b>5&times; more trusted and 80% faster</b> than ungoverned ones, enabled by DI platforms.</div><div class="pred-src">Gartner · via SD Times, 2026</div></div>
+    </div>
+
+    <div class="position-line">
+      <div class="pl-k">Where AEI sits</div>
+      <div class="pl-t">Every vendor in Gartner's inaugural quadrant &mdash; FICO, Quantexa, SAS, IBM, Aera &mdash; instruments <em>operational</em> decisions: pricing, supply chain, fraud, the daily and weekly cadence. None instrument the <em>strategic</em> ones: capital allocation, M&amp;A, transformation, portfolio &mdash; the quarterly, board-level calls where a single decision moves billions. <em>That quadrant is empty. AEI is built for it.</em></div>
+    </div>
+
+    <div class="sources">
+      <b>Sources:</b> Gartner, <i>Magic Quadrant for Decision Intelligence Platforms</i> (inaugural, March 2026) &middot; Gartner, <i>Top Data &amp; Analytics Predictions 2025&ndash;2030</i> &middot; MarketsandMarkets, <i>Decision Intelligence Market &mdash; Global Forecast to 2030</i> &middot; Grand View Research, <i>Decision Intelligence Market Report, 2030</i>. Figures are drawn from published third-party research; AEI's own customer figures throughout this brief are illustrative composites.
+    </div>
+  </div>
+</section>
+
+
+<!-- STAGES -->
+<section id="stages">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">03</span>AEI Stages</div>
+    <h2>What needs to happen, <em>in four stages.</em></h2>
+    <p class="intro">From a built product today to a category-leading position by 2032. Each stage has a duration, a target outcome, and a gate condition. Stage 1 starts the moment we agree to move.</p>
+
+    <div class="stages">
+      <div class="stage now">
+        <div class="stage-now-tag">We are here</div>
+        <div class="stage-no">Stage 0</div>
+        <div class="stage-when">Now</div>
+        <div class="stage-t">Proof</div>
+        <ul class="stage-l">
+          <li>Methodology, six-dimension rubric &amp; design language</li>
+          <li>Seven-artifact suite built and shareable</li>
+          <li>Two live demo instances (SAP, Capgemini)</li>
+          <li>Workbench MVP with three customers and a simulator</li>
+        </ul>
+        <div class="stage-gate"><b>Gate · met</b>Working software, not slides. Suite linkable today.</div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-no">Stage 1</div>
+        <div class="stage-when">Months 1&ndash;4</div>
+        <div class="stage-t">Foundation</div>
+        <ul class="stage-l">
+          <li>Founding engineer &amp; founding GTM hired</li>
+          <li>Persistence layer built &mdash; weekly ingestion, one genotype in Postgres</li>
+          <li>Three CG-anchored pilot accounts named &amp; signed</li>
+          <li>Pre-seed runway secured (~&euro;4&ndash;5M)</li>
+        </ul>
+        <div class="stage-gate"><b>Gate · score evolution</b>Demonstrable week-1 vs week-6 score delta on a paying account.</div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-no">Stage 2</div>
+        <div class="stage-when">Months 4&ndash;18</div>
+        <div class="stage-t">Productize the wedge</div>
+        <ul class="stage-l">
+          <li>10&ndash;15 active CG-introduced accounts</li>
+          <li>Innovation Edition launched as line-owner wedge</li>
+          <li>Two cohorts productized (enterprise software, industrials)</li>
+          <li>~&euro;5&ndash;8M ARR &middot; first reference flywheel turning</li>
+        </ul>
+        <div class="stage-gate"><b>Gate · repeatable motion</b>Three CG-led deals close without founder presence.</div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-no">Stage 3</div>
+        <div class="stage-when">Years 2&ndash;6</div>
+        <div class="stage-t">Hunt the xbn-EUR market</div>
+        <ul class="stage-l">
+          <li>~800 listed companies &amp; PE portfolios in coverage</li>
+          <li>PE portfolio licenses (&euro;1&ndash;3M/yr) operating at scale</li>
+          <li>Category named by Gartner with AEI as Leader</li>
+          <li>~&euro;350M ARR &middot; IPO or strategic exit window opens</li>
+        </ul>
+        <div class="stage-gate"><b>Gate · category leadership</b>First analyst Magic Quadrant published with AEI named.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DECISION QUADRANT — strategic options -->
+<section id="options">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">04</span>Strategic options &middot; three structural paths</div>
+    <h2>Speed to market <em>vs the moat we create.</em></h2>
+    <p class="intro">There are three plausible ways Capgemini takes AEI to market. Each is honestly drawn on the same axes &mdash; how fast we hunt the xbn market against the durability of the strategic position we build. The third path is the one that reaches both.</p>
+
+    <div class="quadrant-frame">
+      <svg class="quadrant-svg" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="qgrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1d2138" stroke-width="0.5"/></pattern>
+        </defs>
+        <rect width="680" height="400" fill="url(#qgrid)" opacity="0.5"/>
+        <line x1="60" y1="340" x2="640" y2="340" stroke="#252a44"/>
+        <line x1="60" y1="40" x2="60" y2="340" stroke="#252a44"/>
+        <line x1="350" y1="40" x2="350" y2="340" stroke="#252a44" stroke-dasharray="2,4" stroke-width="0.5"/>
+        <line x1="60" y1="190" x2="640" y2="190" stroke="#252a44" stroke-dasharray="2,4" stroke-width="0.5"/>
+
+        <text x="350" y="372" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="#7a8099">SPEED TO XBN-EUR MARKET &rarr;</text>
+        <text x="30" y="190" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="#7a8099" transform="rotate(-90 30 190)">STRATEGIC MOAT &rarr;</text>
+
+        <!-- Option A: service offering (fast, low moat) -->
+        <circle cx="500" cy="270" r="44" fill="#7a2e2e" fill-opacity="0.16" stroke="#7a2e2e" stroke-width="1"/>
+        <circle cx="500" cy="270" r="5" fill="#7a2e2e"/>
+        <text x="500" y="252" text-anchor="middle" font-family="Fraunces" font-size="14" fill="#e8e3d5">A &middot; Service offering</text>
+        <text x="500" y="296" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#c8c2b1">FAST &middot; LOW MOAT</text>
+
+        <!-- Option B: joint product (medium / medium) -->
+        <circle cx="350" cy="200" r="46" fill="#c97a3a" fill-opacity="0.16" stroke="#c97a3a" stroke-width="1"/>
+        <circle cx="350" cy="200" r="5" fill="#c97a3a"/>
+        <text x="350" y="180" text-anchor="middle" font-family="Fraunces" font-size="14" fill="#e8e3d5">B &middot; Joint product</text>
+        <text x="350" y="226" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#c8c2b1">MEDIUM &middot; MEDIUM</text>
+
+        <!-- Option C: platform with CG distribution (recommended — gold, pulsing) -->
+        <circle cx="220" cy="120" r="58" fill="#c9a44c" fill-opacity="0.18" stroke="#c9a44c" stroke-width="1.5" stroke-dasharray="3,3">
+          <animate attributeName="r" values="58;62;58" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="220" cy="120" r="7" fill="#c9a44c"/>
+        <text x="220" y="98" text-anchor="middle" font-family="Fraunces" font-size="16" fill="#e8e3d5">C &middot; Platform</text>
+        <text x="220" y="150" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#c9a44c">RECOMMENDED</text>
+        <text x="220" y="164" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="1" fill="#c8c2b1">SLOWER START &middot; DURABLE MOAT</text>
+
+        <text x="350" y="30" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="12" fill="#565b76">&mdash; the empty Gartner quadrant &mdash;</text>
+      </svg>
+    </div>
+
+    <div class="options">
+      <div class="opt">
+        <div class="opt-tag">Path A</div>
+        <div class="opt-h">AEI as a <em>CG service offering</em></div>
+        <div class="opt-d">AEI delivered project-by-project as a high-end advisory engagement. Fast revenue, familiar shape &mdash; but no platform moat, no recurring revenue, no category claim.</div>
+        <div class="opt-stats"><div>Time to revenue<b>3&ndash;6 months</b></div><div>5-yr ceiling<b>~&euro;30M consulting fees</b></div></div>
+      </div>
+      <div class="opt">
+        <div class="opt-tag">Path B</div>
+        <div class="opt-h">AEI as a <em>joint product</em></div>
+        <div class="opt-d">Co-branded AEI/CG product, sold through CG channels but with shared roadmap and IP. Faster than independent, slower than internal &mdash; medium moat, partial category claim.</div>
+        <div class="opt-stats"><div>Time to revenue<b>9&ndash;12 months</b></div><div>5-yr ceiling<b>~&euro;120M ARR</b></div></div>
+      </div>
+      <div class="opt rec">
+        <div class="opt-tag">&#9733; Recommended &middot; Path C</div>
+        <div class="opt-h">AEI as a <em>platform &middot; CG as distribution</em></div>
+        <div class="opt-d">AEI built as a venture-grade platform with CG as the lead distribution channel. Recurring subscription economics, full category claim, durable moat through the persistent decision corpus. The slower start that reaches the xbn-EUR ceiling.</div>
+        <div class="opt-stats"><div>Time to revenue<b>6&ndash;9 months</b></div><div>5-yr ceiling<b>~&euro;350M ARR &middot; xbn exit</b></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- G2M -->
+<section id="g2m">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">05</span>Go-to-market</div>
+    <h2>The motion &mdash; <em>first-mover, channel-led.</em></h2>
+    <p class="intro">The category is empty today. The first credible product with a bound artifact in the boardroom defines it. Capgemini's channel is what shortens that race from years to quarters.</p>
+
+    <div class="g2m-pillars">
+      <div class="g2mp">
+        <div class="g2mp-t">The wedge</div>
+        <div class="g2mp-h">The Board Briefing Pack</div>
+        <div class="g2mp-p">A bound quarterly pack, shipped to each board member. Tangible, board-level, hard to cancel. This is the single artifact that sells the subscription &mdash; everything upstream of it is just the engine that makes it credible.</div>
+      </div>
+      <div class="g2mp">
+        <div class="g2mp-t">The buyer</div>
+        <div class="g2mp-h">CFO &middot; Chief Strategy &middot; Board</div>
+        <div class="g2mp-p">The exact rooms Capgemini already sits in. The buyer owns the decisions AEI instruments &mdash; not a procurement function, not an IT line. The channel match is the structural advantage.</div>
+      </div>
+      <div class="g2mp">
+        <div class="g2mp-t">The expansion</div>
+        <div class="g2mp-h">Innovation Edition &middot; PE portfolio</div>
+        <div class="g2mp-p">Two adjacent buyer doors: the Chief Innovation Officer (Innovation Edition, &euro;180K/yr) and PE general partners (portfolio license, &euro;1&ndash;3M/yr). Land at the board; expand to the function and the holding.</div>
+      </div>
+    </div>
+
+    <div class="motion">
+      <div class="motion-h">First-mover funnel &middot; from CG introduction to recurring contract</div>
+      <div class="funnel">
+        <div class="fcell"><div class="fcell-no">01</div><div class="fcell-t">CG introduction</div><div class="fcell-d">Existing account team opens the door at the right level.</div><div class="fcell-conv">~60%</div></div>
+        <div class="fcell"><div class="fcell-no">02</div><div class="fcell-t">Score Phase 0</div><div class="fcell-d">Inaugural scored read of the company &mdash; the demo moment.</div><div class="fcell-conv">~55%</div></div>
+        <div class="fcell"><div class="fcell-no">03</div><div class="fcell-t">Onboarding Folio</div><div class="fcell-d">Bound first artifact handed to the board. Begins the ritual.</div><div class="fcell-conv">~75%</div></div>
+        <div class="fcell"><div class="fcell-no">04</div><div class="fcell-t">First Briefing Pack</div><div class="fcell-d">Quarterly bound pack lands in each board member's hands.</div><div class="fcell-conv">~85%</div></div>
+        <div class="fcell"><div class="fcell-no">05</div><div class="fcell-t">Annual subscription</div><div class="fcell-d">Multi-year contract: &euro;300&ndash;800K list, renewing.</div></div>
+      </div>
+      <p style="margin-top:18px;font-size:13px;color:var(--mute);font-family:var(--serif);font-style:italic">Modelled funnel for the channel-led motion. The artifact ritual is what compounds: each touchpoint hands the buyer something physical and decision-grade.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BUDGET -->
+<section id="budget">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">06</span>Budget plan &middot; 24-month directional view</div>
+    <h2>What it costs, <em>what it earns.</em></h2>
+    <p class="intro">Directional, not board-grade. The numbers are illustrative of the Path C model: venture-grade build with CG channel acceleration, pre-seed at end of Year 1, Series A around Month 22. The shape is what matters &mdash; cost concentrated in the foundation year, revenue compounding from Month 9.</p>
+
+    <div class="budget">
+      <div class="bgbox">
+        <div class="bg-h">Booked ARR ramp &middot; Year 1 &middot; quarterly exit</div>
+        <div class="bg-bars">
+          <div class="bg-row"><div class="lbl">Q1<small>foundation</small></div><div class="bg-track"><div class="bg-fill" data-w="3"></div></div><div class="bg-v">&euro;0</div></div>
+          <div class="bg-row"><div class="lbl">Q2<small>1st signed</small></div><div class="bg-track"><div class="bg-fill" data-w="33"></div></div><div class="bg-v">&euro;120K</div></div>
+          <div class="bg-row"><div class="lbl">Q3<small>2nd signed</small></div><div class="bg-track"><div class="bg-fill" data-w="67"></div></div><div class="bg-v">&euro;240K</div></div>
+          <div class="bg-row"><div class="lbl">Q4<small>3rd signed</small></div><div class="bg-track"><div class="bg-fill" data-w="100"></div></div><div class="bg-v">&euro;360K</div></div>
+        </div>
+        <div class="bg-net"><b>Year-1 exit ARR: &euro;360K</b>3 founding customers &times; &euro;120K (60% off &euro;300K list) &middot; recognised revenue ~&euro;0.2M partial-year</div>
+      </div>
+
+      <div class="bgbox">
+        <div class="bg-h">Cost stack &middot; Year 1 &middot; ~&euro;3.2M</div>
+        <div class="bg-bars">
+          <div class="bg-row"><div class="lbl">Q1</div><div class="bg-track"><div class="bg-fill cost" data-w="22"></div></div><div class="bg-v">&euro;0.55M</div></div>
+          <div class="bg-row"><div class="lbl">Q2</div><div class="bg-track"><div class="bg-fill cost" data-w="28"></div></div><div class="bg-v">&euro;0.75M</div></div>
+          <div class="bg-row"><div class="lbl">Q3</div><div class="bg-track"><div class="bg-fill cost" data-w="36"></div></div><div class="bg-v">&euro;0.90M</div></div>
+          <div class="bg-row"><div class="lbl">Q4</div><div class="bg-track"><div class="bg-fill cost" data-w="40"></div></div><div class="bg-v">&euro;1.00M</div></div>
+        </div>
+        <div class="bg-net" style="border-left-color:var(--burnt)"><b style="color:var(--burnt)">Year-1 burn: ~&euro;3.2M</b>Funded by ~&euro;4&ndash;5M pre-seed &middot; 18-month runway at this burn</div>
+      </div>
+
+      <div class="bgbox full">
+        <div class="bg-h">Cost stack composition &middot; where Year-1 money goes</div>
+        <div class="cost-stack">
+          <div class="cs-row"><div class="cs-l">Founding team<small>2 hires + founders</small></div><div class="cs-bar"><div class="cs-fill" data-w="58"></div></div><div class="cs-v">&euro;1.85M</div></div>
+          <div class="cs-row"><div class="cs-l">Build &amp; persistence layer<small>engineering, data, infra</small></div><div class="cs-bar"><div class="cs-fill" data-w="22"></div></div><div class="cs-v">&euro;0.70M</div></div>
+          <div class="cs-row"><div class="cs-l">GTM &amp; demand<small>marketing, events, pre-sales</small></div><div class="cs-bar"><div class="cs-fill" data-w="12"></div></div><div class="cs-v">&euro;0.40M</div></div>
+          <div class="cs-row"><div class="cs-l">Operations &amp; setup<small>entity, legal, accounting, advisors</small></div><div class="cs-bar"><div class="cs-fill" data-w="8"></div></div><div class="cs-v">&euro;0.25M</div></div>
+        </div>
+      </div>
+
+      <div class="bgbox full">
+        <div class="bg-h">Year-2 outlook &middot; the inflection</div>
+        <div class="bg-bars">
+          <div class="bg-row"><div class="lbl">Revenue<small>~12 accounts + Innovation Edition</small></div><div class="bg-track"><div class="bg-fill" data-w="72"></div></div><div class="bg-v">&euro;5&ndash;8M ARR</div></div>
+          <div class="bg-row"><div class="lbl">Burn<small>scaling team to ~15</small></div><div class="bg-track"><div class="bg-fill cost" data-w="55"></div></div><div class="bg-v">~&euro;6.5M</div></div>
+        </div>
+        <div class="bg-net">From &euro;360K to &euro;5&ndash;8M ARR &middot; Series A target Month 22 (&euro;12&ndash;18M) &middot; ~&euro;25M ARR path by end of Year 3.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETING -->
+<section id="marketing">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">07</span>Marketing plan</div>
+    <h2>No slides. <em>Working software, bound artifacts, named conversations.</em></h2>
+    <p class="intro">The category will be named in the next eighteen months. The firm that ships the first bound artifact into a real boardroom &mdash; not the firm with the loudest content marketing &mdash; gets to define it. AEI's marketing motion mirrors the product itself: artifact-first, sober, hard to fake.</p>
+
+    <div class="mkt-layers">
+      <div class="mkt">
+        <div class="mkt-t">Layer 1 &middot; the wedge</div>
+        <div class="mkt-h">Artifact-led demand</div>
+        <div class="mkt-p">Every prospect interaction ends with an artifact they can hold or click. The live workbench in the room; the bound Onboarding Folio after signing; the quarterly Board Briefing Pack on the renewal cycle. Demand generated by the artifact, not the deck.</div>
+        <div class="mkt-tactics">&middot; <b>Live demos</b> on the customer's own data<br/>&middot; <b>Bound Onboarding Folio</b> at signing<br/>&middot; <b>Quarterly Briefing Pack</b> shipped physically</div>
+      </div>
+      <div class="mkt">
+        <div class="mkt-t">Layer 2 &middot; the category</div>
+        <div class="mkt-h">Define the language first</div>
+        <div class="mkt-p">The category does not yet have a name. We claim "strategic decision intelligence" &mdash; the natural adjacency to the operational quadrant Gartner just validated &mdash; in long-form essays, briefings to two named analysts per quarter, and a single annual "State of Strategic Decisions" report.</div>
+        <div class="mkt-tactics">&middot; <b>Two analyst briefings</b> per quarter<br/>&middot; <b>One annual state-of-category report</b><br/>&middot; <b>Editorial essays</b> in two outlets (HBR, Sifted)</div>
+      </div>
+      <div class="mkt">
+        <div class="mkt-t">Layer 3 &middot; the room</div>
+        <div class="mkt-h">Closed events &middot; not stages</div>
+        <div class="mkt-p">Three intimate annual events &mdash; CFO dinners, board chair roundtables &mdash; co-hosted with Capgemini, where the workbench is run live against an anonymized cohort. The right twelve people in a room outperforms a thousand at a stage.</div>
+        <div class="mkt-tactics">&middot; <b>3 closed events</b> per year &middot; &lt;20 seats each<br/>&middot; <b>Board-chair roundtables</b> in DACH, UK, US<br/>&middot; <b>PE GP dinners</b> in London &amp; New York</div>
+      </div>
+    </div>
+
+    <p style="margin-top:36px;max-width:60ch;font-family:var(--serif);font-style:italic;color:var(--bone-2);font-size:16px">No paid advertising. No outbound SDR motion. The artifact is the brand &mdash; and the channel is the relationship.</p>
+  </div>
+</section>
+
+<!-- WHAT IT TAKES -->
+<section id="ask">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">08</span>What it takes</div>
+    <h2>The operational ask, <em>concrete and dated.</em></h2>
+    <p class="intro">Path C succeeds or fails on five things in the first six months. Each one has what AEI brings and what we ask Capgemini to bring. None of them are optional, and none of them are abstract.</p>
+
+    <div class="ask">
+      <div class="ask-head">
+        <span>#</span>
+        <span>Move</span>
+        <span>AEI brings</span>
+        <span>Capgemini brings</span>
+      </div>
+
+      <div class="ask-row hot">
+        <div class="ask-no">01</div>
+        <div><div class="ask-t">Two founding hires<small>Months 1&ndash;2 &middot; highest-leverage move</small></div></div>
+        <div><div class="ask-col-l">AEI brings</div><div class="ask-col-d">Founding engineer &amp; founding GTM signed; equity 5&ndash;12% combined; full operational ownership.</div></div>
+        <div><div class="ask-col-l">Capgemini brings</div><div class="ask-col-d">Warm introductions into the Celonis / Personio / Palantir alumni network. No headcount transfers needed.</div></div>
+      </div>
+
+      <div class="ask-row">
+        <div class="ask-no">02</div>
+        <div><div class="ask-t">Three pilot accounts<small>Months 1&ndash;4 &middot; the proof flywheel</small></div></div>
+        <div><div class="ask-col-l">AEI brings</div><div class="ask-col-d">Founding-customer pricing (&euro;120K, 60% off list); full Onboarding Folio &amp; first Briefing Pack within the engagement.</div></div>
+        <div><div class="ask-col-l">Capgemini brings</div><div class="ask-col-d">Three named accounts where the CFO or CSO relationship is active. One DACH industrial, one enterprise software, one PE portfolio company.</div></div>
+      </div>
+
+      <div class="ask-row">
+        <div class="ask-no">03</div>
+        <div><div class="ask-t">Persistence layer<small>Months 2&ndash;6 &middot; the technical milestone</small></div></div>
+        <div><div class="ask-col-l">AEI brings</div><div class="ask-col-d">Weekly ingestion pipeline; one customer genotype in Postgres; demonstrable week-1 vs week-6 score evolution.</div></div>
+        <div><div class="ask-col-l">Capgemini brings</div><div class="ask-col-d">Data-architecture sponsorship inside the pilot accounts; integration sign-off paths for SAP S/4HANA, Planview, Anaplan, Workday.</div></div>
+      </div>
+
+      <div class="ask-row">
+        <div class="ask-no">04</div>
+        <div><div class="ask-t">Pre-seed runway<small>Months 4&ndash;6 &middot; the capital event</small></div></div>
+        <div><div class="ask-col-l">AEI brings</div><div class="ask-col-d">&euro;4&ndash;5M target from Earlybird, HV, Project A or Cherry. 18-month runway. Founder time to fundraise allocated.</div></div>
+        <div><div class="ask-col-l">Capgemini brings</div><div class="ask-col-d">Reference call support for diligence; first-customer testimonials cleared for use in the pitch.</div></div>
+      </div>
+
+      <div class="ask-row">
+        <div class="ask-no">05</div>
+        <div><div class="ask-t">Category positioning<small>Months 1&ndash;6 &middot; the time-sensitive land grab</small></div></div>
+        <div><div class="ask-col-l">AEI brings</div><div class="ask-col-d">Long-form essays &amp; two analyst briefings per quarter; the "State of Strategic Decisions" annual report.</div></div>
+        <div><div class="ask-col-l">Capgemini brings</div><div class="ask-col-d">Co-host of one CFO roundtable per quarter; one named CG thought-leader as visible co-author of the annual report.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESS DEVELOPMENT JOURNEY -->
+<section id="journey">
+  <div class="wrap">
+    <div class="sec-k"><span class="no">09</span>How we serve a first client &middot; from handshake to forever ARR</div>
+    <h2>One client, <em>step by step, to a relationship that never ends.</em></h2>
+    <p class="intro">A worked example &mdash; a mid-cap industrial, introduced by a Capgemini account team. This is the motion that turns a single warm introduction into a compounding, multi-year intelligence subscription. Each step hands the client something physical and decision-grade, and each artifact makes the next renewal more obvious.</p>
+
+    <div class="journey">
+      <div class="j-rail"></div>
+
+      <div class="j-step">
+        <div class="j-node"><div class="j-dot">1</div><div class="j-when">Week 0</div></div>
+        <div class="j-card float-card">
+          <div class="j-phase">The introduction</div>
+          <div class="j-t">A warm door, <em>not a cold pitch</em></div>
+          <div class="j-d">A Capgemini account partner already inside the CFO's office flags a live tension: the board keeps re-litigating the same capital-allocation question every quarter. No procurement, no RFP &mdash; a peer-level introduction to a problem the buyer already feels.</div>
+          <div class="j-meta">
+            <div class="j-metric">Cost to AEI<b>~half a day</b></div>
+            <div class="j-metric">What the client gets<b class="j-artifact" style="font-size:13px">A conversation, not a deck</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-node"><div class="j-dot">2</div><div class="j-when">Weeks 1&ndash;2</div></div>
+        <div class="j-card float-card">
+          <div class="j-phase">The score</div>
+          <div class="j-t">An inaugural read &mdash; <em>their company, scored</em></div>
+          <div class="j-d">AEI runs a Phase-0 scored read against public filings and a constructed peer cohort &mdash; no integration yet. The client sees their own strategic genotype, their band, and the one blind spot worth the most money. This is the moment the room goes quiet.</div>
+          <div class="j-meta">
+            <div class="j-metric">Engagement<b>&euro;0 · sponsored read</b></div>
+            <div class="j-artifact">Live Workbench demo on their data</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-node"><div class="j-dot">3</div><div class="j-when">Month 1</div></div>
+        <div class="j-card float-card">
+          <div class="j-phase">The first artifact</div>
+          <div class="j-t">A bound <em>Onboarding Folio</em> on the table</div>
+          <div class="j-d">The client signs a founding-customer agreement. The relationship opens with an object: a bound Onboarding Folio &mdash; inaugural score, genotype map, blind-spot register, peer cohort. It signals institution-grade, not a tool trial. The ritual begins.</div>
+          <div class="j-meta">
+            <div class="j-metric">Contract<b>&euro;120K · founding (60% off)</b></div>
+            <div class="j-artifact">Bound Onboarding Folio</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-node"><div class="j-dot">4</div><div class="j-when">Months 2&ndash;3</div></div>
+        <div class="j-card float-card">
+          <div class="j-phase">The persistence layer</div>
+          <div class="j-t">The score <em>starts to move</em></div>
+          <div class="j-d">Read-only connections to their systems go live &mdash; weekly ingestion begins. By week six the score has visibly shifted as a real decision lands. The client now sees something no consultant ever gave them: their strategic position, updating itself. This is the switch from project to platform.</div>
+          <div class="j-meta">
+            <div class="j-metric">Cadence<b>Weekly · continuous</b></div>
+            <div class="j-artifact">Live score evolution · week 1 vs week 6</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-node"><div class="j-dot">5</div><div class="j-when">Month 3</div></div>
+        <div class="j-card float-card">
+          <div class="j-phase">The decision</div>
+          <div class="j-t">A board call, <em>with a euro number on it</em></div>
+          <div class="j-d">The first quarterly Board Briefing Pack ships &mdash; bound, one per board member. It puts a decision in front of the board with a value, a confidence, and an audit trail. The board acts on it. AEI is now in the boardroom's quarterly cadence, by invitation.</div>
+          <div class="j-meta">
+            <div class="j-metric">Value surfaced<b>8&ndash;12&times; the fee</b></div>
+            <div class="j-artifact">Quarterly Board Briefing Pack</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step">
+        <div class="j-node"><div class="j-dot">6</div><div class="j-when">Months 6&ndash;12</div></div>
+        <div class="j-card float-card">
+          <div class="j-phase">The expansion</div>
+          <div class="j-t">From one seat to <em>the whole house</em></div>
+          <div class="j-d">The CFO relationship widens. The Chief Innovation Officer wants the Innovation Edition for the R&amp;D portfolio. The strategy team wants the live workbench between quarters. The single board contract becomes three lines of revenue inside the same logo &mdash; and renews to list price.</div>
+          <div class="j-meta">
+            <div class="j-metric">Account ARR<b>&euro;120K &rarr; &euro;480K+</b></div>
+            <div class="j-artifact">Innovation Edition + Workbench seats</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="j-step climax">
+        <div class="j-node"><div class="j-dot">∞</div><div class="j-when">Year 2+</div></div>
+        <div class="j-card float-card">
+          <div class="j-phase">Forever ARR</div>
+          <div class="j-t">The relationship <em>that can't be cancelled</em></div>
+          <div class="j-d">By year two, AEI holds the client's strategic memory &mdash; every decision logged, every quarter bound into an annual Legacy Volume. Cancelling means throwing away the institutional record of their own strategic history. The switching cost is not the software; it is the memory. This is the annuity.</div>
+          <div class="j-meta">
+            <div class="j-metric">Net retention<b>&gt;120%</b></div>
+            <div class="j-artifact">Annual Legacy Volume · the moat</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOREVER ARR climax -->
+    <div class="forever">
+      <div class="forever-k">One client · the lifetime value of the artifact ritual</div>
+      <div class="forever-v">&euro;120K &rarr; &euro;1M+</div>
+      <div class="forever-l">per-account ARR, compounding across the relationship &mdash; the wedge becomes the annuity</div>
+      <div class="forever-ladder">
+        <div class="fl"><div class="fl-y">Year 1 · founding</div><div class="fl-v">&euro;120K</div></div>
+        <div class="fl"><div class="fl-y">Year 2 · list + expand</div><div class="fl-v">&euro;480K</div></div>
+        <div class="fl"><div class="fl-y">Year 3 · multi-function</div><div class="fl-v">&euro;750K</div></div>
+        <div class="fl"><div class="fl-y">Year 4+ · enterprise</div><div class="fl-v">&euro;1M+</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="wrap">
+    <h2>The product exists. <em>The channel exists.</em><br/>The window is open for eighteen months.</h2>
+    <p class="closing-sub">Everything in this brief is built or buildable inside six months. The only thing that is not built is the decision to move. The rest of the suite &mdash; the live workbench, the architecture engine, the bound briefing pack, the methodology &mdash; sits one click away.</p>
+    <a class="closing-link" href="index.html">&larr; Back to the full project</a>
+  </div>
+</section>
+
+<footer>AEI &middot; Internal Brief &middot; Genotwin GmbH &middot; <span>Confidential &middot; for Capgemini leadership</span></footer>
+
+<script>
+  // section-nav highlighting
+  const sections=['why','market','stages','options','g2m','budget','marketing','ask','journey'];
+  const navBtns=document.querySelectorAll('.sn');
+  navBtns.forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.go;document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}));
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){const id=e.target.id;navBtns.forEach(b=>b.classList.toggle('on',b.dataset.go===id));}});
+  },{rootMargin:'-30% 0px -60% 0px',threshold:0});
+  sections.forEach(id=>{const el=document.getElementById(id);if(el)io.observe(el);});
+
+  // animate bars on enter
+  function animBars(root){
+    root.querySelectorAll('.bg-fill,.cs-fill').forEach(f=>{
+      if(f.dataset.done)return;
+      const w=f.dataset.w+'%';f.style.width='0';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.width=w;f.dataset.done=1;}));
+    });
+  }
+  const bIO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)animBars(e.target);});},{threshold:0.2});
+  document.querySelectorAll('#budget').forEach(s=>bIO.observe(s));
+  // animate market growth curve when it scrolls into view
+  const curveIO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const ln=document.getElementById('curveLine');const ar=document.getElementById('curveArea');if(ln){ln.style.transition='stroke-dashoffset 1.8s ease';ln.style.strokeDashoffset='0';}if(ar){ar.style.transition='opacity 1.6s ease .4s';ar.style.opacity='1';}curveIO.disconnect();}});},{threshold:0.3});
+  const mk=document.getElementById('market');if(mk)curveIO.observe(mk);
+</script>
+</body>
+</html>
