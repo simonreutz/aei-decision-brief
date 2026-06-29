@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AEI · Architecture, Data Flow &amp; Decision Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0c0e1a;--bg-2:#11142a;--surface:#151829;--surface-2:#1a1e34;
+    --border:#252a44;--border-soft:#1d2138;
+    --gold:#c9a44c;--gold-soft:#8a7333;--gold-glow:rgba(201,164,76,.18);
+    --oxblood:#7a2e2e;--burnt:#c97a3a;--moss:#6b8e5a;--teal:#4a8c8c;
+    --bone:#e8e3d5;--bone-2:#c8c2b1;--mute:#7a8099;--mute-2:#565b76;
+    --paper:#f4ecd8;--paper-ink:#2a2418;--paper-soft:#6b5d3a;--paper-line:#c9bf9e;
+    --serif:'Fraunces','Iowan Old Style',Georgia,serif;--sans:'Inter',-apple-system,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--bone);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--gold);color:var(--bg)}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(201,164,76,.06),transparent 60%),radial-gradient(ellipse 60% 50% at 90% 110%,rgba(74,140,140,.05),transparent 60%)}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+
+  header{padding:54px 0 30px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:12px;margin-bottom:20px}
+  .eyebrow::before{content:'';width:28px;height:1px;background:var(--gold)}
+  h1{font-family:var(--serif);font-weight:400;letter-spacing:-.02em;font-size:clamp(30px,4vw,46px);line-height:1.08;margin:0 0 18px;max-width:21ch}
+  h1 em{font-style:italic;color:var(--gold);font-weight:300}
+  .sub{font-family:var(--serif);font-weight:300;font-size:clamp(15px,1.5vw,18px);color:var(--bone-2);max-width:68ch;line-height:1.55}
+  .sub b{color:var(--gold);font-weight:400;font-style:italic}
+
+  .controls{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin:36px 0 8px;padding-bottom:22px;border-bottom:1px solid var(--border-soft)}
+  .legend{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+  .lg{display:flex;align-items:center;gap:8px}.lg .sw{width:11px;height:11px;border-radius:2px}
+  .sw.tap{background:var(--gold)}.sw.crawl{background:var(--teal)}.sw.engine{background:var(--bone-2)}.sw.artifact{background:var(--burnt)}.sw.loop{background:transparent;border:1px dashed var(--oxblood)}
+  .ctrl-btns{display:flex;gap:10px}
+  .btn{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:13px 22px;cursor:pointer;border-radius:0;transition:all .25s;border:1px solid var(--gold);background:var(--gold);color:var(--bg);font-weight:500}
+  .btn:hover{background:var(--bone);border-color:var(--bone);letter-spacing:.18em}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn.ghost{background:transparent;color:var(--mute);border-color:var(--border)}
+  .btn.ghost:hover{color:var(--gold);border-color:var(--gold);background:transparent;letter-spacing:.14em}
+
+  .narration{min-height:24px;margin:18px 0 6px;font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--mute);display:flex;align-items:center;gap:10px;transition:color .3s}
+  .narration.active{color:var(--gold)}
+  .narration .nd{width:7px;height:7px;border-radius:50%;background:var(--border);transition:all .3s}
+  .narration.active .nd{background:var(--gold);box-shadow:0 0 10px var(--gold)}
+
+  .canvas-scroll{overflow-x:auto;overflow-y:hidden;margin:8px -28px 0;padding:24px 28px 40px}
+  .canvas{position:relative;min-width:1080px;display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:64px;align-items:stretch}
+  .col{display:flex;flex-direction:column;justify-content:center;gap:14px;position:static}
+  .col-title{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:4px;display:flex;align-items:center;gap:10px}
+  .col-title .ci{width:18px;height:1px;background:var(--gold-soft)}
+  .col-sub{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute-2);margin:14px 0 2px}
+  svg.links{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:visible}
+  svg.links path.deco{pointer-events:none}
+  svg.links path.hit{pointer-events:stroke;cursor:help}
+  .col,.node{z-index:2;position:relative}
+  .node.stream-end{border-color:var(--gold)!important;box-shadow:0 0 0 1px var(--gold-glow)}
+
+  /* stream tooltip */
+  .stip{position:fixed;z-index:300;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .16s,transform .16s;background:var(--surface-2);border:1px solid var(--gold-soft);border-left:2px solid var(--gold);padding:13px 16px;max-width:300px;box-shadow:0 16px 44px rgba(0,0,0,.5)}
+  .stip.show{opacity:1;transform:translateY(0)}
+  .stip-head{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .stip-head b{color:var(--bone)}
+  .stip-arrow{color:var(--gold)}
+  .stip-carry{font-family:var(--mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+  .stip-payload{font-family:var(--serif);font-size:15px;color:var(--bone);line-height:1.3;margin-bottom:10px}
+  .stip-payload em{color:var(--gold);font-style:italic;font-weight:300}
+  .stip-cadence{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);display:flex;align-items:center;gap:7px;border-top:1px solid var(--border-soft);padding-top:9px}
+  .stip-dot{width:6px;height:6px;border-radius:50%}
+  .cad-weekly{background:var(--gold)} .cad-continuous{background:var(--moss)} .cad-quarterly{background:var(--burnt)} .cad-annual{background:var(--teal)} .cad-signing{background:var(--bone-2)}
+
+  .node{background:var(--surface);border:1px solid var(--border);padding:14px 16px;cursor:pointer;transition:border-color .25s,background .25s,box-shadow .35s,transform .25s;border-left:2px solid var(--border)}
+  .node:hover{border-color:var(--gold-soft);background:var(--surface-2);transform:translateY(-1px)}
+  .node:hover .node-cta{opacity:1}
+  .node.sel{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-glow)}
+  .node.tap{border-left-color:var(--gold)}.node.crawl{border-left-color:var(--teal)}.node.engine{border-left-color:var(--bone-2)}.node.artifact{border-left-color:var(--burnt)}
+  .node.engine{animation:breatheNode 4.5s ease-in-out infinite}
+  @keyframes breatheNode{0%,100%{box-shadow:0 0 0 0 rgba(201,164,76,0)}50%{box-shadow:0 0 14px 0 rgba(201,164,76,.06)}}
+  .node.pulse{box-shadow:0 0 0 3px var(--gold-glow),0 8px 30px rgba(201,164,76,.15)!important;border-color:var(--gold);background:var(--surface-2);transform:translateY(-1px);animation:none}
+  .node.materialize{animation:mat .9s cubic-bezier(.2,.7,.3,1)}
+  @keyframes mat{0%{box-shadow:0 0 0 0 var(--gold)}30%{box-shadow:0 0 0 8px rgba(201,164,76,.35)}100%{box-shadow:0 0 0 1px var(--gold-glow)}}
+  .node-title{font-family:var(--serif);font-size:16px;color:var(--bone);letter-spacing:-.01em;line-height:1.15}
+  .node-sub{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);margin-top:5px}
+  .node.engine .node-title{font-size:15px}
+  .node-cta{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-top:9px;opacity:.55;transition:opacity .25s}
+  .node-badge{position:absolute;top:-9px;right:10px;font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;background:var(--gold);color:var(--bg);padding:3px 7px;opacity:0;transition:opacity .4s}
+  .node.bound .node-badge{opacity:1}
+
+  footer{padding:40px 28px 56px;text-align:center;font-family:var(--mono);font-size:10px;color:var(--mute-2);letter-spacing:.12em;text-transform:uppercase}
+  footer span{color:var(--gold)}
+
+  /* MODAL */
+  .modal-bd{position:fixed;inset:0;background:rgba(8,10,18,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .25s}
+  .modal-bd.open{display:flex;opacity:1}
+  .modal{background:var(--surface);border:1px solid var(--border);max-width:720px;width:100%;max-height:90vh;display:flex;flex-direction:column;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.55);transform:translateY(18px);transition:transform .35s cubic-bezier(.2,.7,.3,1)}
+  .modal-bd.open .modal{transform:translateY(0)}
+  .modal-top{padding:26px 32px 20px;flex-shrink:0;border-bottom:1px solid var(--border-soft)}
+  .modal-step{display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:16px}
+  .modal-step .stage-pill{padding:4px 10px;border:1px solid;border-radius:1px}
+  .stage-pill.tap{color:var(--gold);border-color:var(--gold-soft)}.stage-pill.crawl{color:var(--teal);border-color:var(--teal)}.stage-pill.engine{color:var(--bone-2);border-color:var(--mute-2)}.stage-pill.artifact{color:var(--burnt);border-color:var(--burnt)}
+  .modal-title{font-family:var(--serif);font-size:27px;color:var(--bone);letter-spacing:-.02em;line-height:1.12;margin-bottom:8px}
+  .modal-plain{font-size:14.5px;color:var(--bone-2);line-height:1.55}
+  .modal-plain b{color:var(--gold);font-weight:500}
+  .modal-body{padding:22px 32px;overflow-y:auto;flex:1}
+
+  .dash-kpis{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);margin-bottom:16px}
+  .kpi{padding:14px 16px;border-right:1px solid var(--border-soft)}
+  .kpi:last-child{border-right:none}
+  .kpi-v{font-family:var(--serif);font-size:24px;color:var(--gold);line-height:1}
+  .kpi-l{font-family:var(--mono);font-size:8.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);margin-top:8px;display:flex;align-items:center;gap:5px}
+  .kpi-t{font-size:8px}.kpi-t.up{color:var(--moss)}.kpi-t.down{color:var(--burnt)}.kpi-t.flat{color:var(--mute-2)}
+
+  .dash-signal{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-style:italic;font-size:15px;color:var(--bone);padding:13px 16px;background:var(--bg-2);border-left:2px solid var(--gold);margin-bottom:20px;line-height:1.4}
+  .sig-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);flex-shrink:0;animation:breathe 2s ease-in-out infinite}
+  @keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+
+  .art-caption{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .art-caption::before{content:'';width:14px;height:1px;background:var(--gold-soft)}
+  .dash-visual{margin-bottom:6px}
+
+  .dsupport-head{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin:24px 0 12px;display:flex;align-items:center;gap:8px}
+  .dsupport-head::before{content:'';width:14px;height:1px;background:var(--gold-soft)}
+  .dsupport{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .dcard{border:1px solid var(--border);border-top:2px solid var(--border);padding:14px;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s,background .2s;background:var(--surface-2);display:flex;flex-direction:column}
+  .dcard:hover{transform:translateY(-2px);border-color:var(--gold-soft)}
+  .dcard.rec{border-top-color:var(--gold)}
+  .dcard.chosen{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-glow);background:rgba(201,164,76,.05)}
+  .dc-k{font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+  .dcard.rec .dc-k{color:var(--gold)}
+  .dc-k .star{color:var(--gold)}
+  .dc-a{font-family:var(--serif);font-size:15px;color:var(--bone);line-height:1.18;margin-bottom:8px}
+  .dc-why{font-size:11.5px;color:var(--mute);line-height:1.4;margin-bottom:12px;flex:1}
+  .dc-foot{border-top:1px solid var(--border-soft);padding-top:10px;display:flex;flex-direction:column;gap:7px}
+  .dc-imp{font-family:var(--mono);font-size:11px;color:var(--gold)}
+  .dc-c{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:9px;color:var(--mute)}
+  .cf{flex:1;height:3px;background:var(--border)}
+  .cfill{height:100%;background:var(--gold-soft);width:0;transition:width .85s cubic-bezier(.2,.7,.3,1)}
+  .dsupport-out{font-family:var(--mono);font-size:11px;color:var(--bone-2);margin-top:14px;padding:13px 16px;background:var(--bg-2);border:1px dashed var(--gold-soft);letter-spacing:.02em;line-height:1.5}
+  .dsupport-out b{color:var(--gold)}
+
+  .modal-why{margin:0 32px;padding:18px 0 4px;border-top:1px solid var(--border-soft)}
+  .modal-why-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .modal-why-text{font-size:14px;color:var(--bone-2);line-height:1.55}
+  .modal-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 32px 24px;flex-shrink:0;gap:12px}
+  .nav-mini{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:11px 18px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--bone-2);transition:all .2s}
+  .nav-mini:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+  .nav-mini:disabled{opacity:.35;cursor:default}
+  .nav-next{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:500}
+  .nav-next:hover{background:var(--bone);border-color:var(--bone);color:var(--bg)}
+  .modal-close{position:absolute;top:18px;right:18px;width:30px;height:30px;border:1px solid var(--border);background:transparent;color:var(--mute);font-size:16px;cursor:pointer;line-height:1;transition:all .2s;z-index:3}
+  .modal-close:hover{color:var(--gold);border-color:var(--gold)}
+
+  /* artifact kit */
+  .art-table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .art-table th{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
+  .art-table td{padding:9px 10px;border-bottom:1px solid var(--border-soft);color:var(--bone-2)}
+  .art-table td.num{font-family:var(--mono);text-align:right;color:var(--bone)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:1px}
+  .pill.green{color:var(--moss);background:rgba(107,142,90,.14)}.pill.amber{color:var(--burnt);background:rgba(201,122,58,.14)}.pill.red{color:#c96a6a;background:rgba(201,106,106,.14)}
+  .contrast{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  .c-box{border:1px solid var(--border);padding:18px}.c-box.stated{border-left:2px solid var(--mute)}.c-box.revealed{border-left:2px solid var(--gold)}
+  .c-label{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+  .c-text{font-family:var(--serif);font-size:15px;color:var(--bone);line-height:1.4}.c-box.revealed .c-text{color:var(--gold)}
+  .bars{display:flex;flex-direction:column;gap:11px}
+  .bar-row{display:grid;grid-template-columns:130px 1fr 38px;gap:14px;align-items:center}
+  .bar-l{font-family:var(--serif);font-size:13px;color:var(--bone-2)}
+  .track{height:6px;background:var(--border);position:relative}
+  .fill{height:100%;background:var(--gold);width:0;transition:width .85s cubic-bezier(.2,.7,.3,1)}
+  .fill.low{background:var(--burnt)}.fill.ok{background:var(--moss)}
+  .bar-v{font-family:var(--mono);font-size:12px;color:var(--bone);text-align:right}
+  .decision-card{border:1px solid var(--border);border-top:2px solid var(--oxblood);padding:22px}
+  .dc-tag{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--oxblood);margin-bottom:8px}
+  .dc-name{font-family:var(--serif);font-size:24px;color:var(--bone);letter-spacing:-.02em;margin-bottom:14px}
+  .dc-name em{color:var(--gold);font-style:italic;font-weight:300}
+  .dcg{display:flex;border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);margin:14px 0}
+  .dcg .cell{flex:1;padding:14px 0;border-right:1px solid var(--border-soft)}.dcg .cell:last-child{border-right:none}
+  .dcg .v{font-family:var(--serif);font-size:20px;color:var(--gold)}.dcg .l{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:5px}
+  .dc-rec2{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-top:6px}
+  .ver-row{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;padding:8px 0;border-bottom:1px solid var(--border-soft)}.ver-row:last-child{border-bottom:none}
+  .ver-tag{color:var(--mute)}.ver-now{color:var(--gold)}.ver-arrow{color:var(--mute-2)}.ver-change{color:var(--bone-2);font-family:var(--sans);font-size:12px}
+  .dim-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .dim-chip{font-family:var(--mono);font-size:10px;padding:6px 10px;border:1px solid var(--border);color:var(--bone-2)}.dim-chip b{color:var(--gold);margin-left:6px}
+  .before-after{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
+  .ba-box{border:1px solid var(--border);padding:14px}.ba-box.after{border-left:2px solid var(--gold)}
+  .ba-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:9px}
+  .ba-line{font-family:var(--mono);font-size:11px;color:var(--bone-2);line-height:1.7}.ba-arrow{font-size:20px;color:var(--gold)}
+  .agent-card{border-left:2px solid var(--gold);background:var(--bg-2);padding:13px 16px;margin-bottom:10px}
+  .agent-card .ac-name{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--gold);margin-bottom:5px}
+  .agent-card .ac-find{font-size:13px;color:var(--bone-2);line-height:1.45}
+  .stat-row{display:flex;border:1px solid var(--border);margin-bottom:16px}
+  .stat-row .stat{flex:1;padding:14px 16px;border-right:1px solid var(--border-soft)}.stat-row .stat:last-child{border-right:none}
+  .stat-row .stat-v{font-family:var(--serif);font-size:22px;color:var(--gold)}.stat-row .stat-l{font-family:var(--mono);font-size:8.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);margin-top:6px}
+  .paper{background:var(--paper);color:var(--paper-ink);padding:30px 32px;font-family:var(--serif);position:relative}
+  .paper::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--oxblood))}
+  .p-kicker{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-soft);margin-bottom:14px}
+  .p-title{font-family:var(--serif);font-size:26px;color:#1a1610;letter-spacing:-.02em;line-height:1.12;margin-bottom:6px}
+  .p-titles{font-style:italic;color:var(--paper-soft);font-size:15px;margin-bottom:20px}
+  .p-rule{height:1px;background:var(--paper-line);margin:18px 0}
+  .p-toc{list-style:none;padding:0;margin:0}
+  .p-toc li{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dotted var(--paper-line);font-size:14px;color:var(--paper-ink)}
+  .p-toc li span:last-child{font-family:var(--mono);font-size:11px;color:var(--paper-soft)}
+  .p-letter{font-size:14px;line-height:1.65;color:var(--paper-ink);font-style:italic}
+  .p-sign{margin-top:16px;font-family:var(--serif);font-style:italic;font-size:15px;color:#1a1610}
+  .p-sign small{display:block;font-family:var(--mono);font-style:normal;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--paper-soft);margin-top:3px}
+  .p-traj{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px;color:#1a1610;margin:10px 0}.p-traj .now{color:var(--oxblood);font-weight:500}
+  .p-deci{border-left:2px solid var(--oxblood);padding:10px 14px;margin:10px 0;background:rgba(122,46,46,.05)}.p-deci b{color:#1a1610}
+  .p-spine{display:flex;align-items:center;justify-content:center;min-height:120px;border:1px solid var(--paper-line);background:linear-gradient(135deg,#efe6cf,#f6efdc);flex-direction:column;gap:8px;text-align:center}
+  .screen-note{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-top:14px;display:flex;align-items:center;gap:8px}
+  .mini-wb{border:1px solid var(--border);background:var(--bg-2)}
+  .mini-wb-head{display:flex;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border-soft)}
+  .mini-wb-name{font-family:var(--serif);font-size:18px;color:var(--bone)}.mini-wb-score{font-family:var(--serif);font-size:24px;color:var(--gold)}
+  .mini-vc{display:grid;grid-template-columns:repeat(3,1fr)}
+  .mini-vc div{padding:14px 16px;border-right:1px solid var(--border-soft)}.mini-vc div:last-child{border-right:none}
+  .mini-vc .mv{font-family:var(--serif);font-size:19px;color:var(--gold)}.mini-vc .ml{font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:5px}
+
+  @media(max-width:760px){
+    .canvas-scroll{margin:8px -28px 0}
+    .contrast,.before-after,.mini-vc,.dash-kpis,.dsupport{grid-template-columns:1fr}
+    .before-after .ba-arrow{transform:rotate(90deg)}
+    .dcg,.stat-row{flex-direction:column}.dcg .cell,.stat-row .stat{border-right:none;border-bottom:1px solid var(--border-soft)}
+    .bar-row{grid-template-columns:100px 1fr 34px}.kpi,.dcard{border-right:none;border-bottom:1px solid var(--border-soft)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">AEI · Architecture · data flow · decision support</p>
+    <h1>Every layer is a dashboard. <em>Every layer offers a choice.</em></h1>
+    <p class="sub">This is how AEI sits inside a company and turns raw system data into board-ready decisions. Click any box for its live sub-dashboard &mdash; with the data it produces and a <b>decision-support deck</b>: a recommended path plus alternatives you can weigh. <b>Hover any stream</b> to see what it carries between the boxes. One company (<b>SAP SE</b>) is followed end to end &mdash; open any box, then press <b>Next</b> to walk the whole machine.</p>
+  </header>
+
+  <div class="controls">
+    <div class="legend">
+      <span class="lg"><span class="sw tap"></span>Systems of record</span>
+      <span class="lg"><span class="sw crawl"></span>External crawl</span>
+      <span class="lg"><span class="sw engine"></span>Engine</span>
+      <span class="lg"><span class="sw artifact"></span>Artifacts</span>
+      <span class="lg"><span class="sw loop"></span>Decision memory loop</span>
+    </div>
+    <div class="ctrl-btns">
+      <button class="btn" id="tour-btn">▸ Start the walkthrough</button>
+      <button class="btn" id="run-btn">▸ Run the pipeline</button>
+      <button class="btn ghost" id="reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <div class="narration" id="narration"><span class="nd"></span><span id="narration-txt">Click any box for its dashboard &amp; decision support — or run the pipeline to generate a Board Briefing.</span></div>
+
+  <div class="canvas-scroll">
+    <div class="canvas" id="canvas">
+      <svg class="links" id="links"></svg>
+      <div class="col" id="col-inputs">
+        <div class="col-title"><span class="ci"></span>Inputs</div>
+        <div class="col-sub">Systems of record · read-only</div><div id="grp-taps"></div>
+        <div class="col-sub">External signal crawl</div><div id="grp-crawl"></div>
+      </div>
+      <div class="col" id="col-engine"><div class="col-title"><span class="ci"></span>The engine · persistent</div><div id="grp-engine"></div></div>
+      <div class="col" id="col-artifacts"><div class="col-title"><span class="ci"></span>Artifacts · into your board cadence</div><div id="grp-artifacts"></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>AEI · Genotwin GmbH · Architecture, data flow &amp; decision support · <span>The decision telemetry layer</span></footer>
+
+<div class="stip" id="stip">
+  <div class="stip-head"><b id="stip-from">From</b> <span class="stip-arrow">→</span> <b id="stip-to">To</b></div>
+  <div class="stip-carry">Carries</div>
+  <div class="stip-payload" id="stip-payload">payload</div>
+  <div class="stip-cadence"><span class="stip-dot" id="stip-dot"></span><span id="stip-cadence">cadence</span></div>
+</div>
+
+<div class="modal-bd" id="modal-bd">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">×</button>
+    <div class="modal-top">
+      <div class="modal-step"><span class="stage-pill" id="m-pill">Stage</span><span id="m-step">Step 1 of 19</span></div>
+      <div class="modal-title" id="m-title">Title</div>
+      <div class="modal-plain" id="m-plain">Plain explanation</div>
+    </div>
+    <div class="modal-body" id="m-body"></div>
+    <div class="modal-why"><div class="modal-why-label">Why this matters</div><div class="modal-why-text" id="m-why">Why</div></div>
+    <div class="modal-nav"><button class="nav-mini" id="m-prev">← Previous stage</button><button class="nav-mini nav-next" id="m-next">Next stage →</button></div>
+  </div>
+</div>
+
+<script>
+const NODES={sap:{type:'tap',title:'SAP S/4HANA'},planview:{type:'tap',title:'Planview'},anaplan:{type:'tap',title:'Anaplan'},workday:{type:'tap',title:'Workday Adaptive'},dwh:{type:'tap',title:'Data Warehouse'},filings:{type:'crawl',title:'Filings & Disclosures'},analyst:{type:'crawl',title:'Analyst & Gartner'},patents:{type:'crawl',title:'Patents & R&D'},peers:{type:'crawl',title:'Peer Cohort'},ingest:{type:'engine',title:'Ingestion & Normalize'},store:{type:'engine',title:'Genotype Store'},graph:{type:'engine',title:'Semantic Genotype Graph'},agents:{type:'engine',title:'14-Agent Ensemble'},scoring:{type:'engine',title:'6-Dimension Scoring'},phenotype:{type:'engine',title:'Phenotype Generator'},folio:{type:'artifact',title:'Onboarding Folio'},workbench:{type:'artifact',title:'Live Workbench'},briefing:{type:'artifact',title:'Board Briefing Pack'},legacy:{type:'artifact',title:'Annual Legacy Volume'}};
+const SUB={sap:'ERP · portfolio & spend',planview:'R&D / PPM portfolio',anaplan:'Enterprise planning',workday:'Financial planning',dwh:'Snowflake / SAP BW',filings:'Annual & ad-hoc reports',analyst:'Market & category',patents:'IP velocity',peers:'Public peer data',ingest:'Weekly cadence',store:'Postgres · persistent',graph:'Genotype → phenotype',agents:'Specialist reasoning',scoring:'Confidence + reasoning',phenotype:'Decisions + €',folio:'At contract signing',workbench:'Continuous surface',briefing:'Quarterly · bound · shipped',legacy:'Yearly bound record'};
+const LAYOUT={taps:['sap','planview','anaplan','workday','dwh'],crawl:['filings','analyst','patents','peers'],engine:['ingest','store','graph','agents','scoring','phenotype'],artifacts:['folio','workbench','briefing','legacy']};
+const ORDER=[...LAYOUT.taps,...LAYOUT.crawl,...LAYOUT.engine,...LAYOUT.artifacts];
+const CONNECTIONS=[];[...LAYOUT.taps,...LAYOUT.crawl].forEach(s=>CONNECTIONS.push([s,'ingest','in']));for(let i=0;i<LAYOUT.engine.length-1;i++)CONNECTIONS.push([LAYOUT.engine[i],LAYOUT.engine[i+1],'chain']);LAYOUT.artifacts.forEach(a=>CONNECTIONS.push(['phenotype',a,'out']));CONNECTIONS.push(['phenotype','store','feedback']);
+
+/* what each stream transports (key: from>to) */
+const STREAM={
+  'sap>ingest':{p:'R&D spend · portfolio · capital commitments',c:'weekly'},
+  'planview>ingest':{p:'Project portfolio · resourcing · health',c:'weekly'},
+  'anaplan>ingest':{p:'Plans vs capacity · scenario variance',c:'weekly'},
+  'workday>ingest':{p:'Budgets · forecasts · actuals',c:'weekly'},
+  'dwh>ingest':{p:'Historical decisions & outcomes',c:'weekly'},
+  'filings>ingest':{p:'Stated strategy & disclosures',c:'weekly'},
+  'analyst>ingest':{p:'Market & analyst sentiment',c:'weekly'},
+  'patents>ingest':{p:'IP filing velocity by theme',c:'weekly'},
+  'peers>ingest':{p:'Peer cohort public data',c:'weekly'},
+  'ingest>store':{p:'Normalized weekly genotype delta',c:'weekly'},
+  'store>graph':{p:'Versioned genotype state',c:'weekly'},
+  'graph>agents':{p:'Scored semantic graph · 6 dimensions',c:'weekly'},
+  'agents>scoring':{p:'14 agent findings + reasoning trails',c:'weekly'},
+  'scoring>phenotype':{p:'Aggregate score · confidence · blind spots',c:'weekly'},
+  'phenotype>folio':{p:'Inaugural decision set + genotype map',c:'signing'},
+  'phenotype>workbench':{p:'Live decision phenotypes — <em>STOP / RESEQUENCE / ACQUIRE</em>',c:'continuous'},
+  'phenotype>briefing':{p:'Quarter decisions · € values · reasoning trails',c:'quarterly'},
+  'phenotype>legacy':{p:'Annual decision corpus',c:'annual'},
+  'phenotype>store':{p:'Logged decisions → <em>decision memory</em> (attribution loop)',c:'continuous'}
+};
+const CAD_LABEL={weekly:'Weekly stream',continuous:'Continuous',quarterly:'Quarterly · bound',annual:'Annual · bound',signing:'Once · at signing'};
+
+/* ============ DASHBOARDS (harmonized: kpis · signal · visual · decision support · why) ============ */
+const ART={
+ sap:{plain:'AEI reads your live spend and portfolio data — <b>read-only, nothing re-keyed</b>. Most of the financial signal starts here.',
+  kpis:[{v:'€680M',l:'Cumulative AI spend',t:'up'},{v:'€112M',l:'Unattributed to revenue',t:'down'},{v:'14',l:'Active initiatives',t:'flat'}],
+  signal:'Spend is fragmenting across 14 initiatives — AI Launchpad is the weakest ROI bucket.',
+  cap:'What AEI reads · SAP S/4HANA · SAP SE',
+  html:`<table class="art-table"><thead><tr><th>AI initiative</th><th style="text-align:right">Committed</th><th style="text-align:right">YTD spend</th><th>Status</th></tr></thead><tbody><tr><td>AI Launchpad</td><td class="num">€60M</td><td class="num">€41M</td><td><span class="pill amber">Low ROI</span></td></tr><tr><td>Joule (assistant)</td><td class="num">€180M</td><td class="num">€120M</td><td><span class="pill green">Core</span></td></tr><tr><td>Industry Cloud · Retail</td><td class="num">€95M</td><td class="num">€88M</td><td><span class="pill amber">Overlap</span></td></tr><tr><td>+11 further initiatives</td><td class="num">€345M</td><td class="num">€272M</td><td><span class="pill red">Fragmented</span></td></tr></tbody></table>`,
+  dec:[{r:1,a:'Flag Launchpad for consolidation review',w:'Lowest ROI, capability absorbable elsewhere.',imp:'€60M Y1 release',c:.78},{r:0,a:'Keep funding · ROI gate at Q4',w:'Defers the call one quarter; risk carries.',imp:'€0 now',c:.55},{r:0,a:'Immediate freeze',w:'Captures value fast but high disruption.',imp:'€60M · high risk',c:.40}],
+  why:'Strategy decisions get measured against where the money actually went — not where the slides said it would.'},
+
+ planview:{plain:'AEI sees the live project portfolio — phase, people, health — so it knows what is real and resourced.',
+  kpis:[{v:'220',l:'FTEs on Joule',t:'up'},{v:'4',l:'Projects amber/red',t:'down'},{v:'18',l:'FTEs · at-risk project',t:'flat'}],
+  signal:'The success-platform integration is under-resourced and at risk.',
+  cap:'What AEI reads · Planview · SAP SE',
+  html:`<table class="art-table"><thead><tr><th>Project</th><th>Phase</th><th style="text-align:right">FTEs</th><th>Health</th></tr></thead><tbody><tr><td>Joule GA</td><td>Build</td><td class="num">220</td><td><span class="pill green">Green</span></td></tr><tr><td>Launchpad v2</td><td>Plan</td><td class="num">60</td><td><span class="pill amber">Amber</span></td></tr><tr><td>Industry Cloud expansion</td><td>Build</td><td class="num">140</td><td><span class="pill amber">Amber</span></td></tr><tr><td>Success-platform integration</td><td>Discovery</td><td class="num">18</td><td><span class="pill red">At risk</span></td></tr></tbody></table>`,
+  dec:[{r:1,a:'Reallocate Launchpad FTEs to Joule',w:'Frees skilled staff to the core track.',imp:'+60 FTE to core',c:.74},{r:0,a:'Hire externally',w:'Adds capacity but slow and costly.',imp:'3–6 mo lead time',c:.52},{r:0,a:'Acquire the capability',w:'Fastest, but a capital decision.',imp:'€720M (ACQUIRE)',c:.60}],
+  why:'Tells AEI which projects are funded, staffed and moving — the raw input to any "resequence" call.'},
+
+ anaplan:{plain:'AEI compares the <b>plan</b> to <b>reality</b>. The gap between them is usually where the risk hides.',
+  kpis:[{v:'+13%',l:'AI capex variance',t:'down'},{v:'€72M',l:'Overrun vs plan',t:'down'},{v:'2',l:'Scenarios off-plan',t:'flat'}],
+  signal:'AI portfolio is running 13% over plan with no revenue attribution.',
+  cap:'What AEI reads · Anaplan · SAP SE',
+  html:`<table class="art-table"><thead><tr><th>Scenario</th><th style="text-align:right">Planned</th><th style="text-align:right">Tracking</th><th>Variance</th></tr></thead><tbody><tr><td>AI portfolio FY26</td><td class="num">€540M</td><td class="num">€612M</td><td><span class="pill red">+13%</span></td></tr><tr><td>Industry Cloud FY26</td><td class="num">€210M</td><td class="num">€241M</td><td><span class="pill amber">+15%</span></td></tr><tr><td>Core platform FY26</td><td class="num">€480M</td><td class="num">€470M</td><td><span class="pill green">−2%</span></td></tr></tbody></table>`,
+  dec:[{r:1,a:'Re-baseline at consolidated scope',w:'Aligns the envelope to the real plan.',imp:'€72M back on plan',c:.72},{r:0,a:'Hold plan, absorb overrun',w:'Avoids disruption, accepts the bleed.',imp:'−€72M carried',c:.48},{r:0,a:'Flat 13% cut',w:'Simple, but blunt and morale-costly.',imp:'€72M · indiscriminate',c:.44}],
+  why:'When the plan and the actual spend disagree, that gap is a blind spot — and blind spots are where the value estimates come from.'},
+
+ workday:{plain:'AEI pulls budgets, forecasts and actuals — the numbers that make every estimate <b>CFO-verifiable</b>.',
+  kpis:[{v:'€112M',l:'Forecast unattributed',t:'down'},{v:'78%',l:'Budget consumed',t:'up'},{v:'€60M',l:'Launchpad cost line',t:'flat'}],
+  signal:'€112M of AI spend cannot be tied to revenue.',
+  cap:'What AEI reads · Workday Adaptive · SAP SE',
+  html:`<table class="art-table"><thead><tr><th>Line</th><th style="text-align:right">Budget</th><th style="text-align:right">Forecast</th><th style="text-align:right">Actual YTD</th></tr></thead><tbody><tr><td>R&D — AI programs</td><td class="num">€540M</td><td class="num">€612M</td><td class="num">€421M</td></tr><tr><td>Unattributed to revenue</td><td class="num">—</td><td class="num">€112M</td><td class="num">€88M</td></tr><tr><td>Launchpad cost line</td><td class="num">€60M</td><td class="num">€60M</td><td class="num">€41M</td></tr></tbody></table>`,
+  dec:[{r:1,a:'Attribute or release the €112M',w:'Forces every euro to a revenue line.',imp:'€112M clarified',c:.76},{r:0,a:'Carry forward to FY27',w:'Buys time, defers the reckoning.',imp:'€0 now',c:.50},{r:0,a:'Partial release (€60M Launchpad)',w:'Captures the clear case only.',imp:'€60M Y1',c:.68}],
+  why:'Every euro AEI says a decision is worth traces back to these lines. The CFO can check it.'},
+
+ dwh:{plain:'AEI taps the historical record to see how past decisions actually played out.',
+  kpis:[{v:'142',l:'Past decisions',t:'flat'},{v:'118',l:'With outcomes',t:'up'},{v:'83%',l:'Pattern match',t:'up'}],
+  signal:'Today\u2019s fragmentation matches the 2021 pattern that resolved by consolidation.',
+  cap:'What AEI reads · Data Warehouse · SAP SE',
+  html:`<table class="art-table"><thead><tr><th>Past pattern</th><th>Outcome</th></tr></thead><tbody><tr><td>Portfolio fragmentation (2021)</td><td><span class="pill green">Consolidation worked</span></td></tr><tr><td>Vertical sprawl (2022)</td><td><span class="pill amber">Mixed</span></td></tr><tr><td>Acqui-integration (2024)</td><td><span class="pill green">Above plan</span></td></tr></tbody></table>`,
+  dec:[{r:1,a:'Weight the 2021 precedent',w:'Closest match, clean outcome.',imp:'+0.06 confidence',c:.75},{r:0,a:'Treat as novel',w:'Ignores history; higher uncertainty.',imp:'−0.10 confidence',c:.45},{r:0,a:'Blend precedent + current',w:'Balanced but slower to converge.',imp:'neutral',c:.62}],
+  why:'History is how AEI knows which patterns repeat. Past decisions become the signal that grades today\u2019s.'},
+
+ filings:{plain:'AEI reads what the company tells the market — and checks it against the telemetry.',
+  kpis:[{v:'1',l:'Stated strategy',t:'flat'},{v:'14',l:'Revealed tracks',t:'down'},{v:'9pt',l:'Narrative gap',t:'down'}],
+  signal:'The public "AI everywhere" story diverges sharply from the fragmented reality.',
+  cap:'Stated intent vs revealed action · SAP SE',
+  html:`<div class="contrast"><div class="c-box stated"><div class="c-label">What the filing says</div><div class="c-text">"AI woven across the entire product portfolio."</div></div><div class="c-box revealed"><div class="c-label">What the spend reveals</div><div class="c-text">14 separate initiatives · 4 overlapping · 1 budget owner.</div></div></div>`,
+  dec:[{r:1,a:'Align narrative to a Joule-led story',w:'Closes the gap; analysts reward focus.',imp:'narrative risk ↓',c:.70},{r:0,a:'Maintain breadth narrative',w:'Consistent, but the gap keeps widening.',imp:'risk carries',c:.46},{r:0,a:'Go quiet until consolidation lands',w:'Avoids overclaiming; cedes airtime.',imp:'neutral',c:.55}],
+  why:'The space between the story and the spend is exactly where strategic drift lives. AEI measures that gap.'},
+
+ analyst:{plain:'AEI tracks how analysts and the market see the company — the outside view that keeps the score honest.',
+  kpis:[{v:'Lead',l:'Category position',t:'up'},{v:'44%',l:'Narrative clarity',t:'down'},{v:'71%',l:'Multi-track fatigue',t:'down'}],
+  signal:'Analysts increasingly read multi-track as fragmentation, not breadth.',
+  cap:'Market & category read · SAP SE',
+  html:`<div class="bars"><div class="bar-row"><div class="bar-l">Category position</div><div class="track"><div class="fill ok" style="width:86%"></div></div><div class="bar-v">Lead</div></div><div class="bar-row"><div class="bar-l">AI narrative clarity</div><div class="track"><div class="fill low" style="width:44%"></div></div><div class="bar-v">Low</div></div><div class="bar-row"><div class="bar-l">Multi-track fatigue</div><div class="track"><div class="fill low" style="width:71%"></div></div><div class="bar-v">High</div></div></div>`,
+  dec:[{r:1,a:'Pre-brief analysts on consolidation',w:'Controls the story before earnings.',imp:'sentiment ↑',c:.69},{r:0,a:'Wait for next earnings',w:'Lower effort; cedes the narrative.',imp:'neutral',c:.50},{r:0,a:'No external comms',w:'Zero exposure, zero correction.',imp:'fatigue ↑',c:.38}],
+  why:'Your AEI band is peer-relative. The outside view stops the company grading its own homework.'},
+
+ patents:{plain:'AEI watches patent filings as an early signal of where R&D is really pointed — often months ahead of any announcement.',
+  kpis:[{v:'+78%',l:'Joule filings (4Q)',t:'up'},{v:'−16%',l:'Launchpad filings',t:'down'},{v:'4Q',l:'Trend window',t:'flat'}],
+  signal:'R&D is already voting for Joule; Launchpad themes are decaying.',
+  cap:'IP velocity by theme · SAP SE · trailing 4 quarters',
+  html:`<div class="bars"><div class="bar-row"><div class="bar-l">Generative AI / Joule</div><div class="track"><div class="fill ok" style="width:78%"></div></div><div class="bar-v">↑</div></div><div class="bar-row"><div class="bar-l">Industry Cloud</div><div class="track"><div class="fill" style="width:34%"></div></div><div class="bar-v">→</div></div><div class="bar-row"><div class="bar-l">Launchpad themes</div><div class="track"><div class="fill low" style="width:16%"></div></div><div class="bar-v">↓</div></div></div>`,
+  dec:[{r:1,a:'Follow the signal — consolidate to Joule',w:'IP momentum already points there.',imp:'aligns R&D + spend',c:.73},{r:0,a:'Maintain Launchpad IP track',w:'Hedges, but funds a decaying theme.',imp:'−ROI drift',c:.42},{r:0,a:'License-out dormant Launchpad IP',w:'Monetizes what you\u2019d otherwise shelve.',imp:'+€ one-off',c:.58}],
+  why:'Filings lead announcements by months. It\u2019s an early-warning system for portfolio drift.'},
+
+ peers:{plain:'AEI builds a peer set so every score means something <b>relative</b> — not a number floating in space.',
+  kpis:[{v:'3.35',l:'SAP AEI score',t:'up'},{v:'3.16',l:'Cohort median',t:'flat'},{v:'2/6',l:'Rank in cohort',t:'up'}],
+  signal:'Above peer median — but Peer A leads on capital discipline.',
+  cap:'Peer cohort · enterprise software · Q3 2026',
+  html:`<table class="art-table"><thead><tr><th>Company</th><th style="text-align:right">AEI score</th><th>Band</th></tr></thead><tbody><tr style="background:rgba(201,164,76,.07)"><td><b style="color:var(--gold)">SAP SE</b></td><td class="num">3.35</td><td><span class="pill green">B · Above-Peer</span></td></tr><tr><td>Peer A</td><td class="num">3.41</td><td><span class="pill green">B</span></td></tr><tr><td>Peer B</td><td class="num">3.12</td><td><span class="pill amber">C</span></td></tr><tr><td>Peer C</td><td class="num">2.98</td><td><span class="pill amber">C</span></td></tr></tbody></table>`,
+  dec:[{r:1,a:'Close the discipline gap vs Peer A',w:'Single highest-leverage move to lead.',imp:'rank 2 → 1',c:.71},{r:0,a:'Hold position, defend lead',w:'Lower effort; risks being overtaken.',imp:'neutral',c:.55},{r:0,a:'Reconstruct the cohort',w:'Changes the mirror, not the company.',imp:'optics only',c:.30}],
+  why:'"Band B Above-Peer" only means something next to the right companies. This cohort gives the score weight.'},
+
+ ingest:{plain:'Several messy sources become <b>one clean record</b> — every week. The unglamorous step that makes AEI continuous.',
+  kpis:[{v:'9',l:'Sources merged',t:'flat'},{v:'Weekly',l:'Refresh cadence',t:'up'},{v:'1',l:'Unified schema',t:'flat'}],
+  signal:'Weekly cadence keeps the genotype within 7 days of reality.',
+  cap:'Normalization · raw sources → one record',
+  html:`<div class="before-after"><div class="ba-box"><div class="ba-label">Raw · 4 sources</div><div class="ba-line">SAP: cost-ctr 4411 €41M<br>Planview: "Launchpad v2" Amber<br>Workday: line AI-07 €60M<br>Filing: "AI everywhere"</div></div><div class="ba-arrow">→</div><div class="ba-box after"><div class="ba-label">One normalized fact</div><div class="ba-line" style="color:var(--gold)">initiative: AI Launchpad<br>committed: €60M · spent: €41M<br>roi: low · status: consolidation cand.</div></div></div>`,
+  dec:[{r:1,a:'Weekly ingestion (current)',w:'Best cost-to-freshness balance.',imp:'7-day latency',c:.80},{r:0,a:'Daily ingestion',w:'Marginal freshness, real cost.',imp:'higher run cost',c:.52},{r:0,a:'Event-triggered (board cycle)',w:'Cheapest; misses between-cycle drift.',imp:'lower coverage',c:.46}],
+  why:'Once-a-year consultants can\u2019t do this. Doing it weekly is what turns a report into a living instrument.'},
+
+ store:{plain:'The company\u2019s strategic "genotype" is <b>saved and versioned</b> over time. This memory is the part competitors can\u2019t copy.',
+  kpis:[{v:'3',l:'Quarterly versions',t:'up'},{v:'+0.2',l:'Capital Disc. QoQ',t:'up'},{v:'8',l:'Decisions logged',t:'up'}],
+  signal:'Genotype is trending up; the consolidation decision is now logged.',
+  cap:'Versioned genotype record · SAP SE',
+  html:`<div class="ver-row"><span class="ver-tag">v3.0 · Q1</span><span class="ver-arrow">·</span><span class="ver-change">Capital Discipline 3.2</span></div><div class="ver-row"><span class="ver-tag">v3.1 · Q2</span><span class="ver-arrow">·</span><span class="ver-change">3.2 → 3.3 · Launchpad flagged</span></div><div class="ver-row"><span class="ver-now">v3.2 · Q3 (now)</span><span class="ver-arrow">·</span><span class="ver-change" style="color:var(--gold)">3.3 → 3.4 · consolidation logged</span></div>`,
+  dec:[{r:1,a:'Persist full decision corpus',w:'Compounding moat; network effects.',imp:'moat ↑',c:.79},{r:0,a:'Persist scores only',w:'Lighter, but loses the reasoning trail.',imp:'memory ↓',c:.48},{r:0,a:'Reset baseline yearly',w:'Clean slate; throws away the compounding.',imp:'moat lost',c:.28}],
+  why:'Because it\u2019s saved every quarter, AEI <i>remembers</i>. That growing memory is the moat — and why renewals compound.'},
+
+ graph:{plain:'The company is drawn as a <b>scored map</b> across six dimensions. Decisions are read straight off this map.',
+  kpis:[{v:'34',l:'Genotype nodes',t:'flat'},{v:'6',l:'Dimensions',t:'flat'},{v:'3.0',l:'Capital (weakest)',t:'down'}],
+  signal:'The Capital dimension is the structural drag on the score.',
+  cap:'Semantic genotype graph · SAP SE (excerpt)',
+  html:`<svg viewBox="0 0 440 150" style="width:100%;height:auto;margin-bottom:14px"><line x1="90" y1="50" x2="200" y2="90" stroke="var(--border)"/><line x1="200" y1="90" x2="330" y2="45" stroke="var(--border)"/><line x1="200" y1="90" x2="330" y2="115" stroke="var(--border)"/><circle cx="90" cy="50" r="20" fill="rgba(201,164,76,.12)" stroke="var(--gold-soft)"/><circle cx="90" cy="50" r="3" fill="var(--gold)"/><text x="90" y="88" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--bone-2)">AI Portfolio</text><circle cx="200" cy="90" r="16" fill="rgba(201,164,76,.12)" stroke="var(--gold-soft)"/><circle cx="200" cy="90" r="3" fill="var(--gold)"/><text x="200" y="124" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--bone-2)">Capital</text><circle cx="330" cy="45" r="14" fill="rgba(201,164,76,.12)" stroke="var(--gold-soft)"/><text x="330" y="22" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--bone-2)">Joule</text><circle cx="330" cy="115" r="14" fill="rgba(201,164,76,.12)" stroke="var(--gold-soft)"/><text x="330" y="142" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="var(--bone-2)">Governance</text></svg><div class="dim-chips"><span class="dim-chip">Vision<b>3.6</b></span><span class="dim-chip">Talent<b>3.4</b></span><span class="dim-chip">Capital<b>3.0</b></span><span class="dim-chip">Technical<b>3.5</b></span><span class="dim-chip">Market<b>3.3</b></span><span class="dim-chip">Discipline<b>3.2</b></span></div>`,
+  dec:[{r:1,a:'Target the Capital dimension',w:'Weakest node = highest leverage.',imp:'fastest band move',c:.74},{r:0,a:'Target Market dimension',w:'Visible, but lower structural payoff.',imp:'slower lift',c:.52},{r:0,a:'Broad uplift across all six',w:'Diffuse effort, diluted impact.',imp:'low per-€ return',c:.44}],
+  why:'It\u2019s the company\u2019s strategy rendered as something you can literally point at — the structure recommendations come out of.'},
+
+ agents:{plain:'<b>14 specialist agents</b> each examine the company and leave a finding. Every recommendation arrives with its reasoning trail.',
+  kpis:[{v:'14',l:'Agents',t:'flat'},{v:'12/14',l:'Converge consolidate',t:'up'},{v:'0.78',l:'Consensus',t:'up'}],
+  signal:'12 of 14 agents converge on consolidation; 2 dissent on timing.',
+  cap:'Agent findings · CONSOLIDATE decision · 4 of 14 shown',
+  html:`<div class="agent-card"><div class="ac-name">PORTFOLIO</div><div class="ac-find">14 active initiatives, 4 with overlapping IP claims. Fragmentation 2.6σ above peer median.</div></div><div class="agent-card"><div class="ac-name">CAPITAL</div><div class="ac-find">€680M cumulative spend; €112M unattributed. Launchpad is the lowest-ROI bucket.</div></div><div class="agent-card"><div class="ac-name">PEER</div><div class="ac-find">Three cohort peers executed analogous consolidations 2023–2025.</div></div><div class="agent-card"><div class="ac-name">GOVERNANCE</div><div class="ac-find">Sunset path within EB authority; no shareholder vote; 90-day timeline.</div></div>`,
+  dec:[{r:1,a:'Proceed · footnote the 2 dissents',w:'Strong consensus; timing noted, not blocking.',imp:'decision ready',c:.78},{r:0,a:'Delay to resolve dissent',w:'Higher certainty, lost quarter.',imp:'−1 quarter',c:.55},{r:0,a:'Escalate split to human strategist',w:'Adds judgment; adds latency.',imp:'human-in-loop',c:.62}],
+  why:'Nothing is a black box. You can see which specialist said what, and why — that\u2019s what makes it defensible in a boardroom.'},
+
+ scoring:{plain:'The six dimensions roll up into <b>one score with a confidence level</b> — a number leadership can track quarter to quarter.',
+  kpis:[{v:'3.35',l:'Aggregate score',t:'up'},{v:'B',l:'Band · Above-Peer',t:'flat'},{v:'0.78',l:'Confidence',t:'up'}],
+  signal:'Above-peer overall, dragged by Capital and Discipline.',
+  cap:'Score breakdown · SAP SE · Q3 2026',
+  html:`<div class="stat-row"><div class="stat"><div class="stat-v">3.35</div><div class="stat-l">Aggregate</div></div><div class="stat"><div class="stat-v">B</div><div class="stat-l">Above-Peer</div></div><div class="stat"><div class="stat-v">0.78</div><div class="stat-l">Confidence</div></div></div><div class="bars"><div class="bar-row"><div class="bar-l">Vision</div><div class="track"><div class="fill ok" style="width:72%"></div></div><div class="bar-v">3.6</div></div><div class="bar-row"><div class="bar-l">Talent</div><div class="track"><div class="fill ok" style="width:68%"></div></div><div class="bar-v">3.4</div></div><div class="bar-row"><div class="bar-l">Capital</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="bar-v">3.0</div></div><div class="bar-row"><div class="bar-l">Technical</div><div class="track"><div class="fill ok" style="width:70%"></div></div><div class="bar-v">3.5</div></div><div class="bar-row"><div class="bar-l">Market</div><div class="track"><div class="fill" style="width:66%"></div></div><div class="bar-v">3.3</div></div><div class="bar-row"><div class="bar-l">Discipline</div><div class="track"><div class="fill" style="width:64%"></div></div><div class="bar-v">3.2</div></div></div>`,
+  dec:[{r:1,a:'Prioritize Capital Discipline',w:'Fastest route to the next band.',imp:'3.35 → 3.5 path',c:.75},{r:0,a:'Prioritize Market conviction',w:'Improves optics, slower structural gain.',imp:'slower',c:.53},{r:0,a:'Defend current band',w:'Hold steady; no upside captured.',imp:'flat',c:.50}],
+  why:'One number the board can follow over time — with all the detail one click underneath it.'},
+
+ phenotype:{plain:'The machine outputs <b>actual decisions</b> — each with a euro value, a confidence, and a logged record. These are the alternatives the board weighs.',
+  kpis:[{v:'€60M',l:'Year-1 release',t:'up'},{v:'€2.1B',l:'Value at stake',t:'flat'},{v:'0.78',l:'Confidence',t:'up'}],
+  signal:'Three viable phenotypes — CONSOLIDATE dominates on value-adjusted confidence.',
+  cap:'Decision phenotype · recommended · SAP SE',
+  html:`<div class="decision-card"><div class="dc-tag">Recommended phenotype</div><div class="dc-name">CONSOLIDATE <em>the AI portfolio</em></div><div class="dcg"><div class="cell"><div class="v">€60M</div><div class="l">Year-1 release</div></div><div class="cell"><div class="v">€2.1B</div><div class="l">At stake</div></div><div class="cell"><div class="v">0.78</div><div class="l">Confidence</div></div></div><div style="font-size:13.5px;color:var(--bone-2);line-height:1.55">Sunset AI Launchpad, absorb its capability into Joule, resequence the Industry Cloud AI roadmap.</div><div class="dc-rec2">Record AEI-SAP-DR-2026-027 · logged to institutional record</div></div>`,
+  dec:[{r:1,a:'CONSOLIDATE the AI portfolio',w:'Highest value-adjusted confidence.',imp:'€60M Y1 · €2.1B',c:.78},{r:0,a:'RESEQUENCE only (softer)',w:'Reallocates without sunsetting.',imp:'€180M reallocation',c:.71},{r:0,a:'STATUS QUO + monitor',w:'No action; risk fully carried.',imp:'€0 · risk holds',c:.50}],
+  why:'This is the whole point. Not a dashboard — a decision you can act on, with a number attached and a trail you can audit.'},
+
+ folio:{plain:'At signing, the customer receives a <b>bound book</b>: their first score, genotype map, blind-spot register. The relationship starts with an object.',
+  kpis:[{v:'5',l:'Sections',t:'flat'},{v:'3.35',l:'Inaugural score',t:'flat'},{v:'3',l:'Blind spots',t:'flat'}],
+  signal:'The first bound artifact sets the tone of the relationship.',
+  cap:'Onboarding Folio · handed over at signing',
+  html:`<div class="paper"><div class="p-kicker">Genotwin · Onboarding Folio</div><div class="p-title">SAP SE</div><div class="p-titles">Inaugural strategic genotype · Q2 2026</div><div class="p-rule"></div><ul class="p-toc"><li><span>I · Inaugural AEI Score</span><span>3.35 · Band B</span></li><li><span>II · Genotype Map</span><span>34 nodes</span></li><li><span>III · Blind-Spot Register</span><span>3 · €6.4B</span></li><li><span>IV · Peer Cohort</span><span>6 members</span></li><li><span>V · Method & Reproducibility</span><span>11 pp</span></li></ul></div>`,
+  dec:[{r:1,a:'Bound physical folio at signing',w:'Signals an institution-grade relationship.',imp:'+perceived value',c:.72},{r:0,a:'Digital-only folio',w:'Cheaper, but loses the ceremony.',imp:'−gravitas',c:.55},{r:0,a:'Hybrid · digital + annual print',w:'Balances cost and presence.',imp:'middle path',c:.66}],
+  why:'Something physical lands on the boardroom table on day one. It signals this is institution-grade, not a SaaS trial.'},
+
+ workbench:{plain:'The <b>always-on surface</b> the customer logs into between quarters — value first, then scores, then decisions.',
+  kpis:[{v:'Live',l:'Status',t:'up'},{v:'8',l:'Decisions tracked',t:'up'},{v:'€520M',l:'Value in view',t:'up'}],
+  signal:'Always-on surface for between-quarter monitoring.',
+  cap:'Live Workbench · what the customer logs into',
+  html:`<div class="mini-wb"><div class="mini-wb-head"><div class="mini-wb-name">SAP SE</div><div class="mini-wb-score">3.35</div></div><div class="mini-vc"><div><div class="mv">€520M</div><div class="ml">Year-1 value</div></div><div><div class="mv">8</div><div class="ml">Decisions</div></div><div><div class="mv">€6.4B</div><div class="ml">At stake</div></div></div></div><div class="screen-note"><span>▸</span> This one is live — open the full interactive Workbench in the suite.</div>`,
+  dec:[{r:1,a:'CFO + Strategy team seats',w:'Right hands, controlled surface.',imp:'targeted access',c:.74},{r:0,a:'Board-only access',w:'Exclusive, but starves the operators.',imp:'narrow',c:.52},{r:0,a:'Full-org read access',w:'Maximal transparency, control risk.',imp:'broad · noisy',c:.48}],
+  why:'Middle management lives here day-to-day. The board gets the quarterly pack. Same data, two audiences.'},
+
+ briefing:{plain:'Every quarter, a <b>bound pack ships to each board member</b>. This is the product the board holds — and the main thing that sells the subscription.',
+  kpis:[{v:'13',l:'Pages',t:'flat'},{v:'Quarterly',l:'Cadence',t:'up'},{v:'8',l:'Decisions logged',t:'up'}],
+  signal:'Primary GTM artifact — ship cadence drives perceived value.',
+  cap:'Board Briefing Pack · Q3 2026 · page 1 of 13',
+  html:`<div class="paper"><div class="p-kicker">Genotwin · Board Briefing Pack · Q3 2026</div><div class="p-title">SAP SE</div><p class="p-letter">"This quarter the portfolio-fragmentation pattern crossed the threshold where consolidation becomes the higher-value path. Two decisions are put to the board, with €520M of Year-1 value identified."</p><div class="p-sign">Dr. Lena Fischer<small>Lead Strategist · Genotwin</small></div><div class="p-rule"></div><div class="p-traj">Trajectory: 3.35 <span>→</span> 3.38 <span>→</span> <span class="now">3.42</span></div><div class="p-deci"><b>Decision 1 ·</b> Sunset AI Launchpad → €60M release</div><div class="p-deci"><b>Decision 2 ·</b> Acquire customer-success → €720M</div></div>`,
+  dec:[{r:1,a:'Quarterly bound + shipped',w:'Ceremony + cadence = perceived value.',imp:'renewal anchor',c:.77},{r:0,a:'Monthly digital digest',w:'More frequent, less weight.',imp:'−gravitas',c:.54},{r:0,a:'On-decision alerts only',w:'Timely, but no standing ritual.',imp:'reactive',c:.50}],
+  why:'This is what a board member opens. It\u2019s the artifact that makes a recurring fee feel obviously worth it.'},
+
+ legacy:{plain:'Once a year, the year\u2019s decisions are bound into a <b>permanent volume</b> — the company\u2019s strategic memory, made physical.',
+  kpis:[{v:'31',l:'Decisions · 2026',t:'up'},{v:'4',l:'Quarters bound',t:'flat'},{v:'1',l:'Legacy volume',t:'flat'}],
+  signal:'The annual record turns a subscription into an institution.',
+  cap:'Annual Legacy Volume · SAP SE · 2026',
+  html:`<div class="paper"><div class="p-spine"><div class="p-kicker" style="margin:0">Genotwin Legacy Volume</div><div class="p-title" style="font-size:28px">SAP SE · 2026</div><div class="p-titles" style="margin:0">31 decisions logged · 4 quarters bound</div></div></div>`,
+  dec:[{r:1,a:'Annual bound legacy volume',w:'A company won\u2019t cancel its own history.',imp:'retention ↑',c:.73},{r:0,a:'Rolling digital archive',w:'Searchable, but disposable-feeling.',imp:'−stickiness',c:.55},{r:0,a:'Both · digital + bound',w:'Belt and braces; higher cost.',imp:'max retention',c:.68}],
+  why:'It turns a software subscription into an institution. A company doesn\u2019t cancel the record of its own strategic history.'}
+};
+
+/* ============ BUILD CANVAS ============ */
+const canvas=document.getElementById('canvas'),svg=document.getElementById('links'),elById={};
+function nodeEl(id){const n=NODES[id],d=document.createElement('div');d.className='node '+n.type;d.dataset.id=id;
+  d.innerHTML=`<div class="node-badge">Bound</div><div class="node-title">${n.title}</div><div class="node-sub">${SUB[id]}</div><div class="node-cta">Open dashboard →</div>`;
+  d.addEventListener('click',()=>openArtifact(id));elById[id]=d;return d;}
+LAYOUT.taps.forEach(id=>document.getElementById('grp-taps').appendChild(nodeEl(id)));
+LAYOUT.crawl.forEach(id=>document.getElementById('grp-crawl').appendChild(nodeEl(id)));
+LAYOUT.engine.forEach(id=>document.getElementById('grp-engine').appendChild(nodeEl(id)));
+LAYOUT.artifacts.forEach(id=>document.getElementById('grp-artifacts').appendChild(nodeEl(id)));
+['grp-taps','grp-crawl','grp-engine','grp-artifacts'].forEach(g=>{const e=document.getElementById(g);e.style.display='flex';e.style.flexDirection='column';e.style.gap='12px';});
+
+/* ============ CONNECTORS ============ */
+const KIND_COLOR={in:'var(--gold-soft)',chain:'var(--bone-2)',out:'var(--burnt)',feedback:'var(--oxblood)'};
+const pathRefs=[];
+function anchor(el,s){const x=el.offsetLeft,y=el.offsetTop,w=el.offsetWidth,h=el.offsetHeight;if(s==='r')return[x+w,y+h/2];if(s==='l')return[x,y+h/2];if(s==='t')return[x+w/2,y];return[x+w/2,y+h];}
+function buildPath(f,t,k){const a=elById[f],b=elById[t];if(!a||!b)return'';let p1,p2,c1,c2;if(k==='chain'){p1=anchor(a,'b');p2=anchor(b,'t');const dy=Math.max(24,(p2[1]-p1[1])/2);c1=[p1[0],p1[1]+dy];c2=[p2[0],p2[1]-dy];}else if(k==='feedback'){p1=anchor(a,'l');p2=anchor(b,'l');const mx=Math.min(p1[0],p2[0])-90;c1=[mx,p1[1]];c2=[mx,p2[1]];}else{p1=anchor(a,'r');p2=anchor(b,'l');const dx=Math.max(50,(p2[0]-p1[0])/2);c1=[p1[0]+dx,p1[1]];c2=[p2[0]-dx,p2[1]];}return `M${p1[0]},${p1[1]} C${c1[0]},${c1[1]} ${c2[0]},${c2[1]} ${p2[0]},${p2[1]}`;}
+function drawLinks(){svg.innerHTML='';pathRefs.length=0;const W=canvas.scrollWidth,H=canvas.scrollHeight;svg.setAttribute('width',W);svg.setAttribute('height',H);svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  // arrowhead markers (one per kind colour)
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  Object.entries(KIND_COLOR).forEach(([k,col])=>{
+    const mk=document.createElementNS('http://www.w3.org/2000/svg','marker');
+    mk.setAttribute('id','ar-'+k);mk.setAttribute('markerWidth','7');mk.setAttribute('markerHeight','7');mk.setAttribute('refX','5.5');mk.setAttribute('refY','3');mk.setAttribute('orient','auto');mk.setAttribute('markerUnits','userSpaceOnUse');
+    const tri=document.createElementNS('http://www.w3.org/2000/svg','path');tri.setAttribute('d','M0,0 L6,3 L0,6 Z');tri.setAttribute('fill',col);tri.setAttribute('opacity','0.65');
+    mk.appendChild(tri);defs.appendChild(mk);
+  });
+  svg.appendChild(defs);
+  CONNECTIONS.forEach(([f,t,k],i)=>{const d=buildPath(f,t,k);if(!d)return;const col=KIND_COLOR[k];
+    const base=document.createElementNS('http://www.w3.org/2000/svg','path');base.setAttribute('class','deco');base.setAttribute('d',d);base.setAttribute('fill','none');base.setAttribute('stroke',col);base.setAttribute('stroke-width','1');base.setAttribute('opacity',k==='feedback'?'0.5':'0.32');if(k==='feedback')base.setAttribute('stroke-dasharray','4,4');base.setAttribute('marker-end','url(#ar-'+k+')');svg.appendChild(base);
+    const flow=document.createElementNS('http://www.w3.org/2000/svg','path');flow.setAttribute('class','deco');flow.setAttribute('d',d);flow.setAttribute('fill','none');flow.setAttribute('stroke',col);flow.setAttribute('stroke-width','1.6');flow.setAttribute('stroke-dasharray','2,12');flow.setAttribute('stroke-linecap','round');flow.setAttribute('opacity','0.9');flow.style.animation=`flow ${k==='feedback'?6:3.2}s linear infinite`;flow.style.animationDelay=(-(i%5)*0.5)+'s';svg.appendChild(flow);
+    // invisible wide hit-path for hover
+    const hit=document.createElementNS('http://www.w3.org/2000/svg','path');hit.setAttribute('class','hit');hit.setAttribute('d',d);hit.setAttribute('fill','none');hit.setAttribute('stroke','transparent');hit.setAttribute('stroke-width','16');svg.appendChild(hit);
+    const ref={from:f,to:t,kind:k,base,flow,hit};
+    hit.addEventListener('mouseenter',()=>streamEnter(ref));
+    hit.addEventListener('mousemove',moveTip);
+    hit.addEventListener('mouseleave',streamLeave);
+    pathRefs.push(ref);});}
+const styleEl=document.createElement('style');styleEl.textContent='@keyframes flow{from{stroke-dashoffset:140}to{stroke-dashoffset:0}}';document.head.appendChild(styleEl);
+function highlightConnections(id){pathRefs.forEach(p=>{const on=(p.from===id||p.to===id);p.flow.setAttribute('opacity',on?'1':'0.18');p.base.setAttribute('opacity',on?'0.7':'0.12');p.flow.setAttribute('stroke-width',on?'2.2':'1.2');});}
+function clearHighlight(){pathRefs.forEach(p=>{p.flow.setAttribute('opacity','0.9');p.flow.setAttribute('stroke-width','1.6');p.base.setAttribute('opacity',p.kind==='feedback'?'0.5':'0.32');});}
+
+/* ============ STREAM HOVER ============ */
+const stip=document.getElementById('stip');
+function streamEnter(ref){
+  if(modal.classList.contains('open'))return;
+  const s=STREAM[ref.from+'>'+ref.to];if(!s)return;
+  pathRefs.forEach(p=>{const on=p===ref;p.flow.setAttribute('opacity',on?'1':'0.14');p.flow.setAttribute('stroke-width',on?'2.8':'1.1');p.base.setAttribute('opacity',on?'0.85':'0.1');});
+  [ref.from,ref.to].forEach(id=>elById[id]&&elById[id].classList.add('stream-end'));
+  document.getElementById('stip-from').textContent=NODES[ref.from].title;
+  document.getElementById('stip-to').textContent=NODES[ref.to].title;
+  document.getElementById('stip-payload').innerHTML=s.p;
+  document.getElementById('stip-cadence').textContent=CAD_LABEL[s.c];
+  document.getElementById('stip-dot').className='stip-dot cad-'+s.c;
+  stip.classList.add('show');
+}
+function moveTip(e){
+  const pad=16,w=stip.offsetWidth||280,h=stip.offsetHeight||120;
+  let x=e.clientX+pad,y=e.clientY+pad;
+  if(x+w>window.innerWidth-8)x=e.clientX-w-pad;
+  if(y+h>window.innerHeight-8)y=e.clientY-h-pad;
+  stip.style.left=x+'px';stip.style.top=y+'px';
+}
+function streamLeave(){stip.classList.remove('show');clearHighlight();Object.values(elById).forEach(e=>e.classList.remove('stream-end'));}
+
+/* ============ MODAL RENDER (harmonized dashboard) ============ */
+const modal=document.getElementById('modal-bd'),mBody=document.getElementById('m-body');
+const TYPE_LABEL={tap:'System of record',crawl:'External crawl',engine:'Engine stage',artifact:'Artifact'};
+let currentId=null;
+
+function deck(decs){
+  const cards=decs.map((d,i)=>`<div class="dcard ${d.r?'rec':''} ${d.r?'chosen':''}" data-i="${i}" data-a="${d.a}" data-imp="${d.imp}"><div class="dc-k">${d.r?'<span class="star">★</span> Recommended':'Alternative'}</div><div class="dc-a">${d.a}</div><div class="dc-why">${d.w}</div><div class="dc-foot"><span class="dc-imp">${d.imp}</span><span class="dc-c"><span class="cf"><span class="cfill" data-w="${Math.round(d.c*100)}"></span></span>${d.c.toFixed(2)}</span></div></div>`).join('');
+  const rec=decs.find(d=>d.r)||decs[0];
+  return `<div class="dsupport-head">Decision support · choose a path</div><div class="dsupport">${cards}</div><div class="dsupport-out" id="dsupport-out">Selected path → <b>${rec.a}</b> · ${rec.imp}</div>`;
+}
+function kpiStrip(kpis){return `<div class="dash-kpis">${kpis.map(k=>`<div class="kpi"><div class="kpi-v" data-count="${k.v}">${k.v}</div><div class="kpi-l">${k.l}${k.t?` <span class="kpi-t ${k.t}">${k.t==='up'?'▲':k.t==='down'?'▼':'—'}</span>`:''}</div></div>`).join('')}</div>`;}
+
+function openArtifact(id){
+  currentId=id;const n=NODES[id],a=ART[id],idx=ORDER.indexOf(id);
+  Object.values(elById).forEach(e=>e.classList.remove('sel'));elById[id].classList.add('sel');highlightConnections(id);
+  const pill=document.getElementById('m-pill');pill.className='stage-pill '+n.type;pill.textContent=TYPE_LABEL[n.type];
+  document.getElementById('m-step').textContent=`Step ${idx+1} of ${ORDER.length}`;
+  document.getElementById('m-title').textContent=n.title;
+  document.getElementById('m-plain').innerHTML=a.plain;
+  document.getElementById('m-why').textContent=a.why;
+  document.getElementById('m-prev').disabled=(idx===0);
+  document.getElementById('m-next').textContent=(idx===ORDER.length-1)?'Done ✓':'Next stage →';
+  mBody.innerHTML = kpiStrip(a.kpis)
+    + `<div class="dash-signal"><span class="sig-dot"></span>${a.signal}</div>`
+    + `<div class="art-caption">${a.cap}</div>`
+    + `<div class="dash-visual">${a.html}</div>`
+    + deck(a.dec);
+  wireDeck();
+  modal.classList.add('open');document.body.style.overflow='hidden';mBody.scrollTop=0;
+  requestAnimationFrame(()=>{animateCounts();animateBars();});
+}
+function wireDeck(){
+  const out=document.getElementById('dsupport-out');
+  mBody.querySelectorAll('.dcard').forEach(card=>{
+    card.addEventListener('click',()=>{
+      mBody.querySelectorAll('.dcard').forEach(c=>c.classList.remove('chosen'));
+      card.classList.add('chosen');
+      out.innerHTML=`Selected path → <b>${card.dataset.a}</b> · ${card.dataset.imp}`;
+    });
+  });
+}
+function animateCounts(){
+  mBody.querySelectorAll('[data-count]').forEach(el=>{
+    const raw=el.dataset.count;const m=raw.match(/^([^\d\-]*)(-?[\d.]+)(.*)$/);
+    if(!m){el.textContent=raw;return;}
+    const pre=m[1],num=parseFloat(m[2]),suf=m[3],dec=(m[2].split('.')[1]||'').length;
+    const dur=850,t0=performance.now();
+    function tick(now){const t=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-t,3),v=num*e;el.textContent=pre+(dec?v.toFixed(dec):Math.round(v))+suf;if(t<1)requestAnimationFrame(tick);else el.textContent=raw;}
+    requestAnimationFrame(tick);
+  });
+}
+function animateBars(){
+  mBody.querySelectorAll('.fill').forEach(f=>{const w=f.style.width;f.style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.width=w;}));});
+  mBody.querySelectorAll('.cfill').forEach(f=>{const w=f.dataset.w+'%';f.style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.width=w;}));});
+}
+function step(dir){const idx=ORDER.indexOf(currentId)+dir;if(idx<0)return;if(idx>=ORDER.length){closeModal();return;}openArtifact(ORDER[idx]);}
+function closeModal(){modal.classList.remove('open');document.body.style.overflow='';clearHighlight();Object.values(elById).forEach(e=>e.classList.remove('sel'));}
+document.getElementById('m-prev').addEventListener('click',()=>step(-1));
+document.getElementById('m-next').addEventListener('click',()=>step(1));
+document.getElementById('modal-close').addEventListener('click',closeModal);
+modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+document.addEventListener('keydown',e=>{if(!modal.classList.contains('open'))return;if(e.key==='Escape')closeModal();if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1);});
+document.getElementById('tour-btn').addEventListener('click',()=>openArtifact(ORDER[0]));
+
+/* ============ RUN PIPELINE ============ */
+const narration=document.getElementById('narration'),narrationTxt=document.getElementById('narration-txt');let running=false;
+const SEQUENCE=[{ids:['sap','planview','anaplan','workday','dwh'],txt:'Pulling portfolio, spend & planning telemetry from the systems of record\u2026'},{ids:['filings','analyst','patents','peers'],txt:'Crawling filings, analyst coverage, patents and the peer cohort\u2026'},{ids:['ingest'],txt:'Normalizing every source into one schema \u2014 weekly cadence\u2026'},{ids:['store'],txt:'Writing the versioned genotype into the persistent store\u2026'},{ids:['graph'],txt:'Rendering the company as a scored semantic graph\u2026'},{ids:['agents'],txt:'14 agents reasoning \u2014 each leaving a finding in the trail\u2026'},{ids:['scoring'],txt:'Scoring six dimensions with confidence intervals\u2026'},{ids:['phenotype'],txt:'Generating the decision \u2014 CONSOLIDATE, €60M Year-1, 3 alternatives weighed\u2026'},{ids:['briefing'],txt:'Binding the Q3 Board Briefing Pack \u2014 shipped to each board member.',bind:true}];
+function clearPulse(){Object.values(elById).forEach(e=>e.classList.remove('pulse'));}
+function runPipeline(){if(running)return;running=true;resetView(false);narration.classList.add('active');document.getElementById('run-btn').disabled=true;let s=0;
+  (function next(){if(s>0)SEQUENCE[s-1].ids.forEach(id=>elById[id].classList.remove('pulse'));
+   if(s>=SEQUENCE.length){narrationTxt.textContent='Done. Opening the Board Briefing that was just generated\u2026';elById['briefing'].classList.add('bound');running=false;document.getElementById('run-btn').disabled=false;setTimeout(()=>{openArtifact('briefing');narration.classList.remove('active');},700);return;}
+   const st=SEQUENCE[s];narrationTxt.textContent=st.txt;st.ids.forEach(id=>elById[id].classList.add('pulse'));if(st.ids.length===1)highlightConnections(st.ids[0]);else clearHighlight();if(st.bind)elById['briefing'].classList.add('materialize');s++;setTimeout(next,st.ids.length>1?1100:950);})();}
+function resetView(full=true){clearPulse();clearHighlight();Object.values(elById).forEach(e=>e.classList.remove('sel','bound','materialize'));if(full){narrationTxt.textContent='Click any box for its dashboard & decision support — or run the pipeline to generate a Board Briefing.';narration.classList.remove('active');}}
+document.getElementById('run-btn').addEventListener('click',runPipeline);
+document.getElementById('reset-btn').addEventListener('click',()=>{if(!running)resetView(true);});
+
+function init(){drawLinks();}
+window.addEventListener('load',()=>requestAnimationFrame(init));
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(drawLinks,180);});
+requestAnimationFrame(init);
+</script>
+</body>
+</html>
